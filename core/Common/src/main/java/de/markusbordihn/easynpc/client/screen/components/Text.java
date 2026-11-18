@@ -202,11 +202,10 @@ public class Text {
 
   public static int length(FormattedCharSequence sequence) {
     int[] count = {0};
-    sequence.accept(
-        (index, style, codePoint) -> {
-          count[0]++;
-          return true;
-        });
+    sequence.accept((index, style, codePoint) -> {
+      count[0]++;
+      return true;
+    });
     return count[0];
   }
 
@@ -217,9 +216,8 @@ public class Text {
 
     return sink -> {
       int[] count = {0};
-      return sequence.accept(
-          (index, style, codePoint) ->
-              count[0]++ < maxChars && sink.accept(index, style, codePoint));
+      return sequence.accept((index, style, codePoint) ->
+          count[0]++ < maxChars && sink.accept(index, style, codePoint));
     };
   }
 

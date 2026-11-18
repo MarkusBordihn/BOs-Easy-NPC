@@ -243,8 +243,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.updateAttackSummary();
   }
 
-  private Checkbox getTargetCheckbox(
-      int left, int top, String label, ObjectiveType objectiveType) {
+  private Checkbox getTargetCheckbox(int left, int top, String label, ObjectiveType objectiveType) {
     return new Checkbox(
         left,
         top,
@@ -418,8 +417,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     Component title = TextComponent.getTranslatedConfigText(translationKey);
     Text.drawString(guiGraphics, this.font, title, left, top, Constants.FONT_COLOR_DEFAULT);
     int lineLeft = left + this.font.width(title) + 4;
-    guiGraphics.fill(
-        lineLeft, top + 4, left + CONTENT_WIDTH, top + 5, SECTION_LINE_COLOR);
+    guiGraphics.fill(lineLeft, top + 4, left + CONTENT_WIDTH, top + 5, SECTION_LINE_COLOR);
   }
 
   private int renderLines(

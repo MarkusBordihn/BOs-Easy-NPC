@@ -45,27 +45,24 @@ public class DespawnCommand extends Command {
         .requires(commandSourceStack -> true)
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        despawn(
-                            context.getSource(),
-                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                            NPCRemovalReason.UNLOADED_BY_PLAYER))
+                .executes(context ->
+                    despawn(
+                        context.getSource(),
+                        EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                        NPCRemovalReason.UNLOADED_BY_PLAYER))
                 .then(
                     Commands.argument(REASON_ARG, StringArgumentType.word())
-                        .suggests(
-                            (context, builder) ->
-                                SharedSuggestionProvider.suggest(
-                                    Arrays.stream(NPCRemovalReason.values())
-                                        .filter(NPCRemovalReason::isDespawnReason)
-                                        .map(NPCRemovalReason::name),
-                                    builder))
-                        .executes(
-                            context ->
-                                despawnWithReason(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                                    StringArgumentType.getString(context, REASON_ARG)))));
+                        .suggests((context, builder) ->
+                            SharedSuggestionProvider.suggest(
+                                Arrays.stream(NPCRemovalReason.values())
+                                    .filter(NPCRemovalReason::isDespawnReason)
+                                    .map(NPCRemovalReason::name),
+                                builder))
+                        .executes(context ->
+                            despawnWithReason(
+                                context.getSource(),
+                                EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                                StringArgumentType.getString(context, REASON_ARG)))));
   }
 
   private static int despawnWithReason(

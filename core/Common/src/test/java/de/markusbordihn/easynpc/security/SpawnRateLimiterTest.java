@@ -167,17 +167,16 @@ class SpawnRateLimiterTest {
 
     for (int i = 0; i < threads; i++) {
       Thread worker =
-          new Thread(
-              () -> {
-                try {
-                  startSignal.await();
-                  grantedSpawns.addAndGet(SpawnRateLimiter.checkAndRecord(uuid, limit, 5));
-                } catch (InterruptedException e) {
-                  Thread.currentThread().interrupt();
-                } finally {
-                  doneSignal.countDown();
-                }
-              });
+          new Thread(() -> {
+            try {
+              startSignal.await();
+              grantedSpawns.addAndGet(SpawnRateLimiter.checkAndRecord(uuid, limit, 5));
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+            } finally {
+              doneSignal.countDown();
+            }
+          });
       worker.start();
     }
 

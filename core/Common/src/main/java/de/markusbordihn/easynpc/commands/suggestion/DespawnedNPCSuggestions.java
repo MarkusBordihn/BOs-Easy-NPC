@@ -47,13 +47,12 @@ public class DespawnedNPCSuggestions {
     Stream<String> uuids =
         npcData.getAllUUIDs().stream()
             .filter(uuid -> !npcData.isDeleted(uuid) && !EasyNPCEntityHandler.isLoaded(uuid))
-            .filter(
-                uuid -> {
-                  Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
-                  return metadata.isPresent()
-                      && metadata.get().removalReason().isRestorableReason()
-                      && canAccess(serverPlayer, metadata.get());
-                })
+            .filter(uuid -> {
+              Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
+              return metadata.isPresent()
+                  && metadata.get().removalReason().isRestorableReason()
+                  && canAccess(serverPlayer, metadata.get());
+            })
             .map(UUID::toString);
 
     return SharedSuggestionProvider.suggest(uuids, builder);
@@ -68,12 +67,11 @@ public class DespawnedNPCSuggestions {
     Stream<String> uuids =
         npcData.getAllUUIDs().stream()
             .filter(uuid -> EasyNPCEntityHandler.getReviveRejection(uuid).isEmpty())
-            .filter(
-                uuid ->
-                    npcData
-                        .getMetadata(uuid)
-                        .map(metadata -> canAccess(serverPlayer, metadata))
-                        .orElse(false))
+            .filter(uuid ->
+                npcData
+                    .getMetadata(uuid)
+                    .map(metadata -> canAccess(serverPlayer, metadata))
+                    .orElse(false))
             .map(UUID::toString);
 
     return SharedSuggestionProvider.suggest(uuids, builder);

@@ -20,22 +20,6 @@ class PlayerTextureManagerTest {
     Bootstrap.bootStrap();
   }
 
-  @Test
-  void missingSkinUuidUsesDefaultTexture() {
-    Identifier fallback = Identifier.parse("easy_npc:textures/entity/test.png");
-    assertSame(
-        fallback,
-        PlayerTextureManager.getOrCreateTextureWithDefault(skinData(null), fallback));
-  }
-
-  @Test
-  void blankSkinUuidStillUsesDefaultTexture() {
-    Identifier fallback = Identifier.parse("easy_npc:textures/entity/test.png");
-    assertSame(
-        fallback,
-        PlayerTextureManager.getOrCreateTextureWithDefault(skinData(Constants.BLANK_UUID), fallback));
-  }
-
   private static SkinDataCapable<?> skinData(UUID uuid) {
     return (SkinDataCapable<?>)
         Proxy.newProxyInstance(
@@ -47,5 +31,21 @@ class PlayerTextureManagerTest {
               }
               throw new AssertionError("Texture loading must not access " + method.getName());
             });
+  }
+
+  @Test
+  void missingSkinUuidUsesDefaultTexture() {
+    Identifier fallback = Identifier.parse("easy_npc:textures/entity/test.png");
+    assertSame(
+        fallback, PlayerTextureManager.getOrCreateTextureWithDefault(skinData(null), fallback));
+  }
+
+  @Test
+  void blankSkinUuidStillUsesDefaultTexture() {
+    Identifier fallback = Identifier.parse("easy_npc:textures/entity/test.png");
+    assertSame(
+        fallback,
+        PlayerTextureManager.getOrCreateTextureWithDefault(
+            skinData(Constants.BLANK_UUID), fallback));
   }
 }

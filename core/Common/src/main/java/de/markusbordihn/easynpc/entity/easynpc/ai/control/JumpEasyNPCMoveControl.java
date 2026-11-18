@@ -47,8 +47,9 @@ public class JumpEasyNPCMoveControl extends MoveControl {
   public void tick() {
     if (this.operation == MoveControl.Operation.MOVE_TO && this.followsWantedPosition) {
       this.yRot =
-          (float) (Mth.atan2(this.wantedZ - this.mob.getZ(), this.wantedX - this.mob.getX())
-                  * (180.0 / Math.PI))
+          (float)
+                  (Mth.atan2(this.wantedZ - this.mob.getZ(), this.wantedX - this.mob.getX())
+                      * (180.0 / Math.PI))
               - 90.0F;
     }
 

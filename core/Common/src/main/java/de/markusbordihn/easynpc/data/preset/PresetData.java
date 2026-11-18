@@ -71,44 +71,41 @@ public record PresetData(
           null,
           PresetMetadata.createDefault());
   public static final Codec<PresetData> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      Codec.STRING.fieldOf("name").forGetter(PresetData::name),
-                      BuiltInRegistries.ENTITY_TYPE
-                          .byNameCodec()
-                          .fieldOf("entityType")
-                          .forGetter(PresetData::entityType),
-                      CompoundTag.CODEC.fieldOf("data").forGetter(PresetData::data),
-                      Identifier.CODEC
-                          .optionalFieldOf("location")
-                          .forGetter(
-                              presetData ->
-                                  presetData.location() != null
-                                      ? java.util.Optional.of(presetData.location())
-                                      : java.util.Optional.empty()),
-                      Codec.STRING
-                          .xmap(PresetType::valueOf, PresetType::name)
-                          .optionalFieldOf("presetType")
-                          .forGetter(
-                              presetData ->
-                                  presetData.presetType() != null
-                                      ? java.util.Optional.of(presetData.presetType())
-                                      : java.util.Optional.empty()),
-                      PresetMetadata.CODEC
-                          .optionalFieldOf("metadata", PresetMetadata.createDefault())
-                          .forGetter(PresetData::metadata))
-                  .apply(
-                      instance,
-                      (name, entityType, data, location, presetType, metadata) ->
-                          new PresetData(
-                              name,
-                              entityType,
-                              data,
-                              location.orElse(null),
-                              presetType.orElse(null),
-                              metadata)));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  Codec.STRING.fieldOf("name").forGetter(PresetData::name),
+                  BuiltInRegistries.ENTITY_TYPE
+                      .byNameCodec()
+                      .fieldOf("entityType")
+                      .forGetter(PresetData::entityType),
+                  CompoundTag.CODEC.fieldOf("data").forGetter(PresetData::data),
+                  Identifier.CODEC
+                      .optionalFieldOf("location")
+                      .forGetter(presetData ->
+                          presetData.location() != null
+                              ? java.util.Optional.of(presetData.location())
+                              : java.util.Optional.empty()),
+                  Codec.STRING
+                      .xmap(PresetType::valueOf, PresetType::name)
+                      .optionalFieldOf("presetType")
+                      .forGetter(presetData ->
+                          presetData.presetType() != null
+                              ? java.util.Optional.of(presetData.presetType())
+                              : java.util.Optional.empty()),
+                  PresetMetadata.CODEC
+                      .optionalFieldOf("metadata", PresetMetadata.createDefault())
+                      .forGetter(PresetData::metadata))
+              .apply(
+                  instance,
+                  (name, entityType, data, location, presetType, metadata) ->
+                      new PresetData(
+                          name,
+                          entityType,
+                          data,
+                          location.orElse(null),
+                          presetType.orElse(null),
+                          metadata)));
   public static final StreamCodec<RegistryFriendlyByteBuf, PresetData> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8,

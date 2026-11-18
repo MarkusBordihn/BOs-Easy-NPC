@@ -72,4 +72,14 @@ public final class PresetIdentityTest {
     PresetIdentityTestHelper.assertPresetItemDropsIdentity(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testImportWithMalformedUUIDCreatesNewNPC(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertImportWithMalformedUUIDCreatesNewNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testPresetItemWithMalformedPresetUUIDSpawns(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertPresetItemWithMalformedPresetUUIDSpawns(helper, humanoid());
+    helper.succeed();
+  }
 }

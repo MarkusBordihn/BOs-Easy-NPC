@@ -25,14 +25,19 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SpawnRandomnessHandler;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 public class SpiderBase extends SpiderRaw implements BaseEasyNPC<SpiderRaw> {
@@ -106,5 +111,18 @@ public class SpiderBase extends SpiderRaw implements BaseEasyNPC<SpiderRaw> {
     } else {
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
+  }
+
+  @Override
+  public SpawnGroupData finalizeSpawn(
+      ServerLevelAccessor serverLevelAccessor,
+      DifficultyInstance difficulty,
+      EntitySpawnReason entitySpawnReason,
+      SpawnGroupData spawnGroupData) {
+    return SpawnRandomnessHandler.finalizeSpawnWithoutJockeyOrEffect(
+        this,
+        spawnGroupData,
+        groupData ->
+            super.finalizeSpawn(serverLevelAccessor, difficulty, entitySpawnReason, groupData));
   }
 }

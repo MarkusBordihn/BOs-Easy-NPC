@@ -63,9 +63,7 @@ public record ConditionDataEntry(
         compoundTag.contains(DATA_CUSTOM_CONDITION_ID_TAG)
             ? Identifier.tryParse(compoundTag.getString(DATA_CUSTOM_CONDITION_ID_TAG).orElse(""))
             : null,
-        compoundTag.contains(DATA_TARGET_UUID_TAG)
-            ? CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_UUID_TAG)
-            : null);
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_UUID_TAG, null));
   }
 
   public ConditionDataEntry(ConditionType conditionType) {

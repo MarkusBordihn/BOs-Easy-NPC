@@ -51,20 +51,18 @@ class PresetExportCommand extends Command {
     return Commands.literal(presetType)
         .then(
             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        presetExporter.export(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            null))
+                .executes(context ->
+                    presetExporter.export(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                        null))
                 .then(
                     Commands.argument(NAME_ARG, StringArgumentType.string())
-                        .executes(
-                            context ->
-                                presetExporter.export(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, NAME_ARG)))));
+                        .executes(context ->
+                            presetExporter.export(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StringArgumentType.getString(context, NAME_ARG)))));
   }
 
   private static int exportCustomPreset(

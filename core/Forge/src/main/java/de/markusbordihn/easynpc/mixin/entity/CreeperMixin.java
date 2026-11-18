@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.mixin.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
@@ -40,6 +42,15 @@ public abstract class CreeperMixin extends Monster {
   public void onTick(CallbackInfo callbackInfo) {
     if ((Object) this instanceof EasyNPC<?>) {
       super.tick();
+      callbackInfo.cancel();
+    }
+  }
+
+  @Inject(method = "thunderHit", at = @At("HEAD"), cancellable = true)
+  public void onThunderHit(
+      ServerLevel serverLevel, LightningBolt lightningBolt, CallbackInfo callbackInfo) {
+    if ((Object) this instanceof EasyNPC<?>) {
+      super.thunderHit(serverLevel, lightningBolt);
       callbackInfo.cancel();
     }
   }

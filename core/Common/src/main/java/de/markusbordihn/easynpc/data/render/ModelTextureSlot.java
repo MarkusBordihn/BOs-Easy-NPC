@@ -32,17 +32,14 @@ public record ModelTextureSlot(Optional<Identifier> texture, ModelTextureBlend b
       new ModelTextureSlot(Optional.empty(), ModelTextureBlend.DEFAULT);
 
   private static final Codec<ModelTextureSlot> OBJECT_CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      Identifier.CODEC
-                          .optionalFieldOf("texture")
-                          .forGetter(ModelTextureSlot::texture),
-                      ModelTextureBlend.CODEC
-                          .optionalFieldOf("blend", ModelTextureBlend.DEFAULT)
-                          .forGetter(ModelTextureSlot::blend))
-                  .apply(instance, ModelTextureSlot::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  Identifier.CODEC.optionalFieldOf("texture").forGetter(ModelTextureSlot::texture),
+                  ModelTextureBlend.CODEC
+                      .optionalFieldOf("blend", ModelTextureBlend.DEFAULT)
+                      .forGetter(ModelTextureSlot::blend))
+              .apply(instance, ModelTextureSlot::new));
 
   public static final Codec<ModelTextureSlot> CODEC =
       Codec.either(Identifier.CODEC, OBJECT_CODEC)

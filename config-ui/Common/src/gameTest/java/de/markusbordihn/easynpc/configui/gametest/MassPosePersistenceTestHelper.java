@@ -55,9 +55,8 @@ public final class MassPosePersistenceTestHelper {
   private static final int LEFT_ARM_ROLL_STEP_DEGREES = 15;
   private static final int NPC_COUNT =
       KNOWN_POSE_COUNT * HEAD_YAW_VARIANTS * LEFT_ARM_ROLL_VARIANTS;
-  private static final int CHANGED_POSE_INDEX_SHIFT = NPC_COUNT / 2 + 3;
   public static final int TIMEOUT_TICKS = NPC_COUNT + 400;
-
+  private static final int CHANGED_POSE_INDEX_SHIFT = NPC_COUNT / 2 + 3;
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
   private static final Vec3 PLAYER_POSITION = new Vec3(1, 2, 0);
 
@@ -97,16 +96,15 @@ public final class MassPosePersistenceTestHelper {
     helper
         .startSequence()
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, killedNPCs))
-        .thenExecute(
-            () -> {
-              revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
-              for (EasyNPC<?> revivedNPC : revivedNPCs) {
-                ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
-                applyPose(revivedNPC, changedPose, poseEditor);
-                assertPose(helper, revivedNPC, changedPose, "after changing the pose");
-              }
-              killAll(helper, revivedNPCs);
-            })
+        .thenExecute(() -> {
+          revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
+          for (EasyNPC<?> revivedNPC : revivedNPCs) {
+            ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
+            applyPose(revivedNPC, changedPose, poseEditor);
+            assertPose(helper, revivedNPC, changedPose, "after changing the pose");
+          }
+          killAll(helper, revivedNPCs);
+        })
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, revivedNPCs))
         .thenExecute(() -> reviveAndAssertPoses(helper, changedPoses, "revive after pose change"))
         .thenSucceed();
@@ -135,14 +133,13 @@ public final class MassPosePersistenceTestHelper {
             leftArmInDegrees.z() + leftArmRollOffsetDegrees));
 
     Map<ModelPartType, CustomRotation> rotations = new EnumMap<>(ModelPartType.class);
-    rotationsInDegrees.forEach(
-        (modelPartType, rotationInDegrees) ->
-            rotations.put(
-                modelPartType,
-                new CustomRotation(
-                    toWrappedRadians(rotationInDegrees.x()),
-                    toWrappedRadians(rotationInDegrees.y()),
-                    toWrappedRadians(rotationInDegrees.z()))));
+    rotationsInDegrees.forEach((modelPartType, rotationInDegrees) ->
+        rotations.put(
+            modelPartType,
+            new CustomRotation(
+                toWrappedRadians(rotationInDegrees.x()),
+                toWrappedRadians(rotationInDegrees.y()),
+                toWrappedRadians(rotationInDegrees.z()))));
 
     Map<ModelPartType, CustomPosition> positions = new EnumMap<>(ModelPartType.class);
     if (poseIndex % 4 == 0) {

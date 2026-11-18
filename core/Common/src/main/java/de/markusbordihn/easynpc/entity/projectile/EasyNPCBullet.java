@@ -95,8 +95,7 @@ public class EasyNPCBullet extends AbstractArrow implements EasyNPCProjectile {
     if (projectileType == ProjectileType.FIRE_ARROW) {
       this.igniteForSeconds(FIRE_ARROW_BURN_SECONDS);
     }
-    this.entityData.set(
-        DATA_TRAIL_PARTICLE, (byte) this.projectileData.trailParticle().ordinal());
+    this.entityData.set(DATA_TRAIL_PARTICLE, (byte) this.projectileData.trailParticle().ordinal());
     this.entityData.set(DATA_PROJECTILE_TYPE, (byte) projectileType.ordinal());
   }
 

@@ -6,6 +6,7 @@
   "refmap": "easy_npc.refmap.json",
   "client": [
     "client.gui.GuiEntityRendererMixin",
+    "client.gui.GuiRendererMixin",
     "client.gui.InventoryScreenMixin",
     "compat.mobhealthbar.MobHealthBarMixin",
     "model.EasyNPCAdultFelineModelMixin",
@@ -47,6 +48,7 @@
     "entity.EndermanMixin",
     "entity.EntityWaterStateMixin",
     "entity.FoxMixin",
+    "entity.GhastMixin",
     "entity.PiglinMixin",
     "entity.RaiderMixin",
     "entity.ServerPlayerShoulderMixin",

@@ -52,7 +52,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
             this,
             context.getEquipmentRenderer(),
             LayerType.HORSE_BODY,
-            (renderState) -> renderState.bodyArmorItem,
+            renderState -> renderState.bodyArmorItem,
             new HorseModel(context.bakeLayer(ModelLayers.HORSE_ARMOR)),
             new HorseModel(context.bakeLayer(ModelLayers.HORSE_ARMOR))));
     this.addLayer(
@@ -60,7 +60,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
             this,
             context.getEquipmentRenderer(),
             LayerType.HORSE_SADDLE,
-            (renderState) -> renderState.saddle,
+            renderState -> renderState.saddle,
             new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_SADDLE)),
             new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_SADDLE))));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this));

@@ -56,4 +56,9 @@ public class VindicatorEpicFight extends VindicatorRaw {
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

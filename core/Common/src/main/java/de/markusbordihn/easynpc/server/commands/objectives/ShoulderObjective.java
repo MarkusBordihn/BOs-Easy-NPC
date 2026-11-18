@@ -42,47 +42,42 @@ public class ShoulderObjective extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerSet() {
     return Commands.literal(ObjectiveType.SIT_ON_OWNER_SHOULDER.getFriendlyName())
-        .executes(
-            context ->
-                setSitOnOwnerShoulder(
-                    context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                    ObjectiveDataEntry.DEFAULT_START_DISTANCE,
-                    ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS,
-                    false))
+        .executes(context ->
+            setSitOnOwnerShoulder(
+                context.getSource(),
+                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                ObjectiveDataEntry.DEFAULT_START_DISTANCE,
+                ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS,
+                false))
         .then(
             Commands.argument(START_DISTANCE_ARG, FloatArgumentType.floatArg(0))
-                .executes(
-                    context ->
-                        setSitOnOwnerShoulder(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
-                            ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS,
-                            false))
+                .executes(context ->
+                    setSitOnOwnerShoulder(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                        FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
+                        ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS,
+                        false))
                 .then(
                     Commands.argument(COOLDOWN_TICKS_ARG, IntegerArgumentType.integer(0))
-                        .executes(
-                            context ->
-                                setSitOnOwnerShoulder(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
-                                    IntegerArgumentType.getInteger(context, COOLDOWN_TICKS_ARG),
-                                    false))
+                        .executes(context ->
+                            setSitOnOwnerShoulder(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
+                                IntegerArgumentType.getInteger(context, COOLDOWN_TICKS_ARG),
+                                false))
                         .then(
                             Commands.argument(ONLY_OUT_OF_COMBAT_ARG, BoolArgumentType.bool())
-                                .executes(
-                                    context ->
-                                        setSitOnOwnerShoulder(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
-                                            IntegerArgumentType.getInteger(
-                                                context, COOLDOWN_TICKS_ARG),
-                                            BoolArgumentType.getBool(
-                                                context, ONLY_OUT_OF_COMBAT_ARG))))));
+                                .executes(context ->
+                                    setSitOnOwnerShoulder(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        FloatArgumentType.getFloat(context, START_DISTANCE_ARG),
+                                        IntegerArgumentType.getInteger(context, COOLDOWN_TICKS_ARG),
+                                        BoolArgumentType.getBool(
+                                            context, ONLY_OUT_OF_COMBAT_ARG))))));
   }
 
   public static int setSitOnOwnerShoulder(
@@ -92,8 +87,7 @@ public class ShoulderObjective extends Command {
       int cooldownTicks,
       boolean onlyOutOfCombat) {
     ObjectiveDataEntry currentObjectiveDataEntry =
-        EasyNPCObjectiveHandler.getObjective(
-            easyNPC, ObjectiveType.SIT_ON_OWNER_SHOULDER.name());
+        EasyNPCObjectiveHandler.getObjective(easyNPC, ObjectiveType.SIT_ON_OWNER_SHOULDER.name());
     if (currentObjectiveDataEntry == null) {
       return sendFailureMessage(
           context,

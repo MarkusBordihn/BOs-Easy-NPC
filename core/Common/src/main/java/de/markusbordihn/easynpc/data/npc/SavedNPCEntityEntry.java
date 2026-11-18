@@ -45,7 +45,14 @@ public record SavedNPCEntityEntry(
   // The chunk stays the authoritative copy, so movement alone must not rewrite the NPC file.
   private static final List<String> NPC_DATA_HASH_IGNORED_TAGS =
       List.of(
-          "Air", "Brain", "fall_distance", "Fire", "HurtTime", "Motion", "OnGround", "Pos",
+          "Air",
+          "Brain",
+          "fall_distance",
+          "Fire",
+          "HurtTime",
+          "Motion",
+          "OnGround",
+          "Pos",
           "Rotation");
 
   public static <T extends Mob> SavedNPCEntityEntry fromEasyNPC(EasyNPC<T> easyNPC) {
@@ -92,9 +99,7 @@ public record SavedNPCEntityEntry(
     PresetCompactor.removeEntityTypeDefaultAttributes(hashedData);
 
     // StringTagVisitor sorts compound keys, so the hash does not depend on HashMap order.
-    return Hashing.murmur3_128()
-        .hashString(hashedData.toString(), StandardCharsets.UTF_8)
-        .asLong();
+    return Hashing.murmur3_128().hashString(hashedData.toString(), StandardCharsets.UTF_8).asLong();
   }
 
   public static SavedNPCEntityEntry load(CompoundTag compoundTag) {

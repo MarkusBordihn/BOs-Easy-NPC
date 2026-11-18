@@ -65,20 +65,18 @@ public class ConfigUIMain {
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
-    NeoForge.EVENT_BUS.addListener(
-        (final PlayerEvent.PlayerLoggedOutEvent event) -> {
-          if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            MenuManager.cleanupPlayerMenus(serverPlayer);
-          }
-        });
+    NeoForge.EVENT_BUS.addListener((final PlayerEvent.PlayerLoggedOutEvent event) -> {
+      if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+        MenuManager.cleanupPlayerMenus(serverPlayer);
+      }
+    });
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    modEventBus.addListener(
-        (final RegisterPayloadHandlersEvent event) -> {
-          NetworkHandlerManager.registerHandler(new NetworkHandler());
-          NetworkHandler.registerNetworkHandler(event);
-          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-        });
+    modEventBus.addListener((final RegisterPayloadHandlersEvent event) -> {
+      NetworkHandlerManager.registerHandler(new NetworkHandler());
+      NetworkHandler.registerNetworkHandler(event);
+      NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+    });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
   }
 }

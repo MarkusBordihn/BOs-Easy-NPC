@@ -65,6 +65,12 @@ public record SkinDataEntry(
   static final String DATA_TEXTURE_TAG = "Texture";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  public SkinDataEntry {
+    if (uuid == null) {
+      uuid = Constants.BLANK_UUID;
+    }
+  }
+
   public SkinDataEntry() {
     this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, "", System.currentTimeMillis());
   }
@@ -88,9 +94,7 @@ public record SkinDataEntry(
     this(
         compoundTag.contains(DATA_NAME_TAG) ? compoundTag.getString(DATA_NAME_TAG).orElse("") : "",
         compoundTag.contains(DATA_URL_TAG) ? compoundTag.getString(DATA_URL_TAG).orElse("") : "",
-        compoundTag.contains(DATA_UUID_TAG)
-            ? CompoundTagUtils.readUUID(compoundTag, DATA_UUID_TAG)
-            : Constants.BLANK_UUID,
+        CompoundTagUtils.readUUID(compoundTag, DATA_UUID_TAG, Constants.BLANK_UUID),
         SkinType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         compoundTag.contains(DATA_DISABLE_LAYERS_TAG)
             && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG).orElse(false),

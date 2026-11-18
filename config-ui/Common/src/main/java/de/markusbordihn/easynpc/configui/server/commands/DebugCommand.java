@@ -36,19 +36,17 @@ public class DebugCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("config")
                 .then(LogLevelCommand.register(Constants.LOG_NAME, Constants.MOD_NAME))
                 .then(
                     Commands.argument("enable", BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                setDebug(
-                                    context.getSource(),
-                                    BoolArgumentType.getBool(context, "enable")))));
+                        .executes(context ->
+                            setDebug(
+                                context.getSource(),
+                                BoolArgumentType.getBool(context, "enable")))));
   }
 
   public static int setDebug(CommandSourceStack commandSourceStack, boolean enable) {

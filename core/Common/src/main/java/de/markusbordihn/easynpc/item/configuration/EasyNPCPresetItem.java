@@ -79,8 +79,7 @@ public class EasyNPCPresetItem extends Item {
     if (presetData == null || presetData.data() == null) {
       return null;
     }
-    CompoundTag compoundTag = presetData.data();
-    return CompoundTagUtils.readUUID(compoundTag, PresetDataCapable.PRESET_UUID_TAG);
+    return CompoundTagUtils.readUUID(presetData.data(), PresetDataCapable.PRESET_UUID_TAG, null);
   }
 
   public static String getCustomName(ItemStack itemStack) {

@@ -43,16 +43,14 @@ public class LogLevelCommand extends Command {
     return Commands.literal("loglevel")
         .then(
             Commands.argument(LEVEL_ARG, StringArgumentType.word())
-                .suggests(
-                    (context, builder) ->
-                        SharedSuggestionProvider.suggest(LOG_LEVEL_NAMES, builder))
-                .executes(
-                    context ->
-                        setLogLevel(
-                            context.getSource(),
-                            loggerName,
-                            modName,
-                            StringArgumentType.getString(context, LEVEL_ARG))));
+                .suggests((context, builder) ->
+                    SharedSuggestionProvider.suggest(LOG_LEVEL_NAMES, builder))
+                .executes(context ->
+                    setLogLevel(
+                        context.getSource(),
+                        loggerName,
+                        modName,
+                        StringArgumentType.getString(context, LEVEL_ARG))));
   }
 
   private static int setLogLevel(

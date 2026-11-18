@@ -40,7 +40,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber()
+@EventBusSubscriber
 public class NetworkHandler implements NetworkHandlerInterface {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

@@ -46,31 +46,29 @@ public class EquipmentCommand extends Command {
                             Commands.argument(SLOT_ARG, EquipmentSlotArgument.slot())
                                 .then(
                                     Commands.argument(ITEM_ARG, ItemArgument.item(buildContext))
-                                        .executes(
-                                            context ->
-                                                setItemSlot(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    EquipmentSlotArgument.getEquipmentSlot(
-                                                        context, SLOT_ARG),
-                                                    ItemArgument.getItem(context, ITEM_ARG)
-                                                        .item()
-                                                        .value()))))))
+                                        .executes(context ->
+                                            setItemSlot(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                EquipmentSlotArgument.getEquipmentSlot(
+                                                    context, SLOT_ARG),
+                                                ItemArgument.getItem(context, ITEM_ARG)
+                                                    .item()
+                                                    .value()))))))
         .then(
             Commands.literal("remove")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
                             Commands.argument(SLOT_ARG, EquipmentSlotArgument.slot())
-                                .executes(
-                                    context ->
-                                        removeItemSlot(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            EquipmentSlotArgument.getEquipmentSlot(
-                                                context, SLOT_ARG))))));
+                                .executes(context ->
+                                    removeItemSlot(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        EquipmentSlotArgument.getEquipmentSlot(
+                                            context, SLOT_ARG))))));
   }
 
   private static int setItemSlot(

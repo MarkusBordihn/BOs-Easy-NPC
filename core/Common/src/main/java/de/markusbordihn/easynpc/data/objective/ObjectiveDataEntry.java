@@ -636,9 +636,8 @@ public final class ObjectiveDataEntry {
           this.customObjectiveId != null ? this.customObjectiveId.toString() : this.getTypeName();
     }
 
-    if (compoundTag.contains(DATA_TARGET_ENTITY_UUID_TAG)) {
-      this.targetEntityUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG);
-    }
+    this.targetEntityUUID =
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
     if (compoundTag.contains(DATA_TARGET_PLAYER_NAME_TAG)) {
       this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG).orElse("");
     }
@@ -648,9 +647,8 @@ public final class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_TARGET_ENTITY_TAG_TAG)) {
       this.targetEntityTag = compoundTag.getString(DATA_TARGET_ENTITY_TAG_TAG).orElse("");
     }
-    if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
-      this.targetOwnerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG);
-    }
+    this.targetOwnerUUID =
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
     if (compoundTag.contains(DATA_TARGET_ITEM_TAG)) {
       this.targetItemTag = compoundTag.getString(DATA_TARGET_ITEM_TAG).orElse(null);
     }
@@ -696,9 +694,7 @@ public final class ObjectiveDataEntry {
     }
     if (compoundTag.contains(DATA_ONLY_OUT_OF_COMBAT_TAG)) {
       this.onlyOutOfCombat =
-          compoundTag
-              .getBoolean(DATA_ONLY_OUT_OF_COMBAT_TAG)
-              .orElse(DEFAULT_ONLY_OUT_OF_COMBAT);
+          compoundTag.getBoolean(DATA_ONLY_OUT_OF_COMBAT_TAG).orElse(DEFAULT_ONLY_OUT_OF_COMBAT);
     }
     if (compoundTag.contains(DATA_COOLDOWN_TICKS_TAG)) {
       this.setCooldownTicks(

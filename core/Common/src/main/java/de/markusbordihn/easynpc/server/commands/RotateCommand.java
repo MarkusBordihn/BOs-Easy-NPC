@@ -26,31 +26,29 @@ public class RotateCommand extends Command {
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
                     Commands.argument(YAW_ARG, FloatArgumentType.floatArg(0.0F, 360.0F))
-                        .executes(
-                            context -> {
-                              float yaw = FloatArgumentType.getFloat(context, YAW_ARG);
-                              Collection<? extends EasyNPC<?>> easyNPCs =
-                                  EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG);
-                              return rotateEntity(context.getSource(), easyNPCs, yaw);
-                            })))
+                        .executes(context -> {
+                          float yaw = FloatArgumentType.getFloat(context, YAW_ARG);
+                          Collection<? extends EasyNPC<?>> easyNPCs =
+                              EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG);
+                          return rotateEntity(context.getSource(), easyNPCs, yaw);
+                        })))
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
                     Commands.argument(MODEL_PART_ARG, StringArgumentType.word())
-                        .suggests(
-                            (context, builder) -> {
-                              EasyNPC<?> easyNPC =
-                                  EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
-                              if (easyNPC != null) {
-                                ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-                                builder.suggest(ModelPartType.ROOT.name().toLowerCase(Locale.ROOT));
-                                for (ModelPartType partType :
-                                    modelData.getModelType().getModelParts()) {
-                                  builder.suggest(partType.name().toLowerCase(Locale.ROOT));
-                                }
-                              }
-                              return builder.buildFuture();
-                            })
+                        .suggests((context, builder) -> {
+                          EasyNPC<?> easyNPC =
+                              EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
+                          if (easyNPC != null) {
+                            ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+                            builder.suggest(ModelPartType.ROOT.name().toLowerCase(Locale.ROOT));
+                            for (ModelPartType partType :
+                                modelData.getModelType().getModelParts()) {
+                              builder.suggest(partType.name().toLowerCase(Locale.ROOT));
+                            }
+                          }
+                          return builder.buildFuture();
+                        })
                         .then(
                             Commands.argument(X_ARG, FloatArgumentType.floatArg(-360.0F, 360.0F))
                                 .then(
@@ -60,39 +58,35 @@ public class RotateCommand extends Command {
                                             Commands.argument(
                                                     Z_ARG,
                                                     FloatArgumentType.floatArg(-360.0F, 360.0F))
-                                                .executes(
-                                                    context -> {
-                                                      String partString =
-                                                          StringArgumentType.getString(
-                                                              context, MODEL_PART_ARG);
-                                                      float x =
-                                                          FloatArgumentType.getFloat(
-                                                              context, X_ARG);
-                                                      float y =
-                                                          FloatArgumentType.getFloat(
-                                                              context, Y_ARG);
-                                                      float z =
-                                                          FloatArgumentType.getFloat(
-                                                              context, Z_ARG);
+                                                .executes(context -> {
+                                                  String partString =
+                                                      StringArgumentType.getString(
+                                                          context, MODEL_PART_ARG);
+                                                  float x =
+                                                      FloatArgumentType.getFloat(context, X_ARG);
+                                                  float y =
+                                                      FloatArgumentType.getFloat(context, Y_ARG);
+                                                  float z =
+                                                      FloatArgumentType.getFloat(context, Z_ARG);
 
-                                                      ModelPartType modelPartType =
-                                                          ModelPartType.get(partString);
-                                                      if (modelPartType == ModelPartType.UNKNOWN) {
-                                                        return sendFailureMessage(
-                                                            context.getSource(),
-                                                            "Invalid model part " + partString);
-                                                      }
+                                                  ModelPartType modelPartType =
+                                                      ModelPartType.get(partString);
+                                                  if (modelPartType == ModelPartType.UNKNOWN) {
+                                                    return sendFailureMessage(
+                                                        context.getSource(),
+                                                        "Invalid model part " + partString);
+                                                  }
 
-                                                      Collection<? extends EasyNPC<?>> easyNPCs =
-                                                          EasyNPCArgument.getEntitiesWithAccess(
-                                                              context, NPC_TARGETS_ARG);
+                                                  Collection<? extends EasyNPC<?>> easyNPCs =
+                                                      EasyNPCArgument.getEntitiesWithAccess(
+                                                          context, NPC_TARGETS_ARG);
 
-                                                      return rotateModelPart(
-                                                          context.getSource(),
-                                                          easyNPCs,
-                                                          modelPartType,
-                                                          new CustomRotation(x, y, z));
-                                                    }))))));
+                                                  return rotateModelPart(
+                                                      context.getSource(),
+                                                      easyNPCs,
+                                                      modelPartType,
+                                                      new CustomRotation(x, y, z));
+                                                }))))));
   }
 
   private static int rotateEntity(

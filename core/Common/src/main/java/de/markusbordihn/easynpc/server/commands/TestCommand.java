@@ -53,99 +53,88 @@ public class TestCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("test")
-        .requires(
-            commandSource ->
-                commandSource.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSource ->
+            commandSource.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("spawn")
                 .then(
                     Commands.literal("raw_npc")
-                        .executes(
-                            context ->
-                                spawnAllEntities(context.getSource(), ModRawEntityType.class))
+                        .executes(context ->
+                            spawnAllEntities(context.getSource(), ModRawEntityType.class))
                         .then(
                             Commands.argument(TYPE_ARG, StringArgumentType.word())
-                                .suggests(
-                                    (context, builder) -> {
-                                      for (ModRawEntityType type : ModRawEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
-                                      }
-                                      return builder.buildFuture();
-                                    })
-                                .executes(
-                                    context -> {
-                                      String input =
-                                          StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase(Locale.ROOT);
-                                      ModRawEntityType type;
-                                      try {
-                                        type = ModRawEntityType.valueOf(input);
-                                      } catch (IllegalArgumentException e) {
-                                        throw new SimpleCommandExceptionType(
-                                                Component.literal("Unknown NPC type: " + input))
-                                            .create();
-                                      }
-                                      return spawnSingleEntity(context.getSource(), type);
-                                    })))
+                                .suggests((context, builder) -> {
+                                  for (ModRawEntityType type : ModRawEntityType.values()) {
+                                    builder.suggest(type.name().toLowerCase(Locale.ROOT));
+                                  }
+                                  return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                  String input =
+                                      StringArgumentType.getString(context, TYPE_ARG)
+                                          .toUpperCase(Locale.ROOT);
+                                  ModRawEntityType type;
+                                  try {
+                                    type = ModRawEntityType.valueOf(input);
+                                  } catch (IllegalArgumentException e) {
+                                    throw new SimpleCommandExceptionType(
+                                            Component.literal("Unknown NPC type: " + input))
+                                        .create();
+                                  }
+                                  return spawnSingleEntity(context.getSource(), type);
+                                })))
                 .then(
                     Commands.literal("standard_npc")
-                        .executes(
-                            context ->
-                                spawnAllEntities(context.getSource(), ModNPCEntityType.class))
+                        .executes(context ->
+                            spawnAllEntities(context.getSource(), ModNPCEntityType.class))
                         .then(
                             Commands.argument(TYPE_ARG, StringArgumentType.word())
-                                .suggests(
-                                    (context, builder) -> {
-                                      for (ModNPCEntityType type : ModNPCEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
-                                      }
-                                      return builder.buildFuture();
-                                    })
-                                .executes(
-                                    context -> {
-                                      String input =
-                                          StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase(Locale.ROOT);
-                                      ModNPCEntityType type;
-                                      try {
-                                        type = ModNPCEntityType.valueOf(input);
-                                      } catch (IllegalArgumentException e) {
-                                        throw new SimpleCommandExceptionType(
-                                                Component.literal("Unknown NPC type: " + input))
-                                            .create();
-                                      }
-                                      return spawnSingleEntity(context.getSource(), type);
-                                    })))
+                                .suggests((context, builder) -> {
+                                  for (ModNPCEntityType type : ModNPCEntityType.values()) {
+                                    builder.suggest(type.name().toLowerCase(Locale.ROOT));
+                                  }
+                                  return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                  String input =
+                                      StringArgumentType.getString(context, TYPE_ARG)
+                                          .toUpperCase(Locale.ROOT);
+                                  ModNPCEntityType type;
+                                  try {
+                                    type = ModNPCEntityType.valueOf(input);
+                                  } catch (IllegalArgumentException e) {
+                                    throw new SimpleCommandExceptionType(
+                                            Component.literal("Unknown NPC type: " + input))
+                                        .create();
+                                  }
+                                  return spawnSingleEntity(context.getSource(), type);
+                                })))
                 .then(
                     Commands.literal("custom_npc")
-                        .executes(
-                            context ->
-                                spawnAllEntities(context.getSource(), ModCustomEntityType.class))
+                        .executes(context ->
+                            spawnAllEntities(context.getSource(), ModCustomEntityType.class))
                         .then(
                             Commands.argument(TYPE_ARG, StringArgumentType.word())
-                                .suggests(
-                                    (context, builder) -> {
-                                      for (ModCustomEntityType type :
-                                          ModCustomEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
-                                      }
-                                      return builder.buildFuture();
-                                    })
-                                .executes(
-                                    context -> {
-                                      String input =
-                                          StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase(Locale.ROOT);
-                                      ModCustomEntityType type;
-                                      try {
-                                        type = ModCustomEntityType.valueOf(input);
-                                      } catch (IllegalArgumentException e) {
-                                        throw new SimpleCommandExceptionType(
-                                                Component.literal("Unknown NPC type: " + input))
-                                            .create();
-                                      }
-                                      return spawnSingleEntity(context.getSource(), type);
-                                    }))));
+                                .suggests((context, builder) -> {
+                                  for (ModCustomEntityType type : ModCustomEntityType.values()) {
+                                    builder.suggest(type.name().toLowerCase(Locale.ROOT));
+                                  }
+                                  return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                  String input =
+                                      StringArgumentType.getString(context, TYPE_ARG)
+                                          .toUpperCase(Locale.ROOT);
+                                  ModCustomEntityType type;
+                                  try {
+                                    type = ModCustomEntityType.valueOf(input);
+                                  } catch (IllegalArgumentException e) {
+                                    throw new SimpleCommandExceptionType(
+                                            Component.literal("Unknown NPC type: " + input))
+                                        .create();
+                                  }
+                                  return spawnSingleEntity(context.getSource(), type);
+                                }))));
   }
 
   public static <T extends Enum<T> & ModEntityTypeProvider> int spawnAllEntities(

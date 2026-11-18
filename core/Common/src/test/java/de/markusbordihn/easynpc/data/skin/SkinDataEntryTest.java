@@ -124,4 +124,24 @@ class SkinDataEntryTest {
     assertEquals(PLAYER_NAME, skinDataEntry.name());
     assertEquals(SkinType.PLAYER_SKIN, skinDataEntry.type());
   }
+
+  @Test
+  @DisplayName("A skin with a malformed UUID tag reads back as the blank UUID")
+  void testMalformedUuidFallsBackToBlankUuid() {
+    CompoundTag stringUuidTag = new SkinDataEntry().createTag();
+    stringUuidTag.putString(SkinDataEntry.DATA_UUID_TAG, UUID.randomUUID().toString());
+    CompoundTag shortArrayUuidTag = new SkinDataEntry().createTag();
+    shortArrayUuidTag.putIntArray(SkinDataEntry.DATA_UUID_TAG, new int[] {1, 2});
+
+    assertEquals(Constants.BLANK_UUID, new SkinDataEntry(stringUuidTag).uuid());
+    assertEquals(Constants.BLANK_UUID, new SkinDataEntry(shortArrayUuidTag).uuid());
+  }
+
+  @Test
+  @DisplayName("A skin created without a UUID uses the blank UUID")
+  void testNullUuidFallsBackToBlankUuid() {
+    assertEquals(Constants.BLANK_UUID, SkinDataEntry.createPlayerSkin(PLAYER_NAME, null).uuid());
+    assertEquals(Constants.BLANK_UUID, SkinDataEntry.createCustomSkin(null, false).uuid());
+    assertEquals(Constants.BLANK_UUID, new SkinDataEntry().withUUID(null).uuid());
+  }
 }

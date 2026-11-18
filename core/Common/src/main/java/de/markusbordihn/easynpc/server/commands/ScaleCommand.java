@@ -26,43 +26,40 @@ public class ScaleCommand extends Command {
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
                     Commands.argument(MODEL_PART_ARG, StringArgumentType.word())
-                        .suggests(
-                            (context, builder) -> {
-                              EasyNPC<?> easyNPC =
-                                  EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
-                              if (easyNPC != null) {
-                                ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-                                builder.suggest(ModelPartType.ROOT.name().toLowerCase(Locale.ROOT));
-                                for (ModelPartType partType :
-                                    modelData.getModelType().getModelParts()) {
-                                  builder.suggest(partType.name().toLowerCase(Locale.ROOT));
-                                }
-                              }
-                              return builder.buildFuture();
-                            })
+                        .suggests((context, builder) -> {
+                          EasyNPC<?> easyNPC =
+                              EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
+                          if (easyNPC != null) {
+                            ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+                            builder.suggest(ModelPartType.ROOT.name().toLowerCase(Locale.ROOT));
+                            for (ModelPartType partType :
+                                modelData.getModelType().getModelParts()) {
+                              builder.suggest(partType.name().toLowerCase(Locale.ROOT));
+                            }
+                          }
+                          return builder.buildFuture();
+                        })
                         .then(
                             Commands.argument(SCALE_ARG, FloatArgumentType.floatArg(0.0F, 10.0F))
-                                .executes(
-                                    context -> {
-                                      String partString =
-                                          StringArgumentType.getString(context, MODEL_PART_ARG);
-                                      float scale = FloatArgumentType.getFloat(context, SCALE_ARG);
-                                      ModelPartType modelPartType = ModelPartType.get(partString);
-                                      if (modelPartType == ModelPartType.UNKNOWN) {
-                                        return sendFailureMessage(
-                                            context.getSource(),
-                                            "Invalid model part " + partString);
-                                      }
+                                .executes(context -> {
+                                  String partString =
+                                      StringArgumentType.getString(context, MODEL_PART_ARG);
+                                  float scale = FloatArgumentType.getFloat(context, SCALE_ARG);
+                                  ModelPartType modelPartType = ModelPartType.get(partString);
+                                  if (modelPartType == ModelPartType.UNKNOWN) {
+                                    return sendFailureMessage(
+                                        context.getSource(), "Invalid model part " + partString);
+                                  }
 
-                                      Collection<? extends EasyNPC<?>> easyNPCs =
-                                          EasyNPCArgument.getEntitiesWithAccess(
-                                              context, NPC_TARGETS_ARG);
-                                      return scaleModelPart(
-                                          context.getSource(),
-                                          easyNPCs,
-                                          modelPartType,
-                                          new CustomScale(scale, scale, scale));
-                                    }))
+                                  Collection<? extends EasyNPC<?>> easyNPCs =
+                                      EasyNPCArgument.getEntitiesWithAccess(
+                                          context, NPC_TARGETS_ARG);
+                                  return scaleModelPart(
+                                      context.getSource(),
+                                      easyNPCs,
+                                      modelPartType,
+                                      new CustomScale(scale, scale, scale));
+                                }))
                         .then(
                             Commands.argument(X_ARG, FloatArgumentType.floatArg(0.0F, 10.0F))
                                 .then(
@@ -71,38 +68,34 @@ public class ScaleCommand extends Command {
                                         .then(
                                             Commands.argument(
                                                     Z_ARG, FloatArgumentType.floatArg(0.0F, 10.0F))
-                                                .executes(
-                                                    context -> {
-                                                      String partString =
-                                                          StringArgumentType.getString(
-                                                              context, MODEL_PART_ARG);
-                                                      float x =
-                                                          FloatArgumentType.getFloat(
-                                                              context, X_ARG);
-                                                      float y =
-                                                          FloatArgumentType.getFloat(
-                                                              context, Y_ARG);
-                                                      float z =
-                                                          FloatArgumentType.getFloat(
-                                                              context, Z_ARG);
+                                                .executes(context -> {
+                                                  String partString =
+                                                      StringArgumentType.getString(
+                                                          context, MODEL_PART_ARG);
+                                                  float x =
+                                                      FloatArgumentType.getFloat(context, X_ARG);
+                                                  float y =
+                                                      FloatArgumentType.getFloat(context, Y_ARG);
+                                                  float z =
+                                                      FloatArgumentType.getFloat(context, Z_ARG);
 
-                                                      ModelPartType modelPartType =
-                                                          ModelPartType.get(partString);
-                                                      if (modelPartType == ModelPartType.UNKNOWN) {
-                                                        return sendFailureMessage(
-                                                            context.getSource(),
-                                                            "Invalid model part " + partString);
-                                                      }
+                                                  ModelPartType modelPartType =
+                                                      ModelPartType.get(partString);
+                                                  if (modelPartType == ModelPartType.UNKNOWN) {
+                                                    return sendFailureMessage(
+                                                        context.getSource(),
+                                                        "Invalid model part " + partString);
+                                                  }
 
-                                                      Collection<? extends EasyNPC<?>> easyNPCs =
-                                                          EasyNPCArgument.getEntitiesWithAccess(
-                                                              context, NPC_TARGETS_ARG);
-                                                      return scaleModelPart(
-                                                          context.getSource(),
-                                                          easyNPCs,
-                                                          modelPartType,
-                                                          new CustomScale(x, y, z));
-                                                    }))))));
+                                                  Collection<? extends EasyNPC<?>> easyNPCs =
+                                                      EasyNPCArgument.getEntitiesWithAccess(
+                                                          context, NPC_TARGETS_ARG);
+                                                  return scaleModelPart(
+                                                      context.getSource(),
+                                                      easyNPCs,
+                                                      modelPartType,
+                                                      new CustomScale(x, y, z));
+                                                }))))));
   }
 
   private static int scaleModelPart(

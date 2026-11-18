@@ -101,10 +101,9 @@ public class PresetCompactor {
     AttributeSupplier entityTypeDefaults = getEntityTypeDefaults(entityData);
     attributeList
         .get()
-        .removeIf(
-            attributeTag ->
-                attributeTag instanceof CompoundTag attributeCompoundTag
-                    && isEntityTypeDefault(entityTypeDefaults, attributeCompoundTag));
+        .removeIf(attributeTag ->
+            attributeTag instanceof CompoundTag attributeCompoundTag
+                && isEntityTypeDefault(entityTypeDefaults, attributeCompoundTag));
   }
 
   private static void removeEqualTags(

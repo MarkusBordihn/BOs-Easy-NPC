@@ -36,10 +36,9 @@ public class ModCodec {
             if (value instanceof ListTag list) {
               return DataResult.success(list.copy());
             }
-            return DataResult.error(
-                () ->
-                    "Expected ListTag but got "
-                        + (value == null ? "null" : value.getClass().getSimpleName()));
+            return DataResult.error(() ->
+                "Expected ListTag but got "
+                    + (value == null ? "null" : value.getClass().getSimpleName()));
           },
           listTag -> new Dynamic<>(NbtOps.INSTANCE, listTag.copy()));
 }

@@ -57,8 +57,7 @@ abstract class ClientTestBase {
   private static final int PLATFORM_Y = 100;
   static final int STAND_Y = PLATFORM_Y + 1;
   private static final String TEST_PLATFORM_FILE_NAME = "npc_platform.nbt";
-  private static final String TEST_PLATFORM_RESOURCE =
-      "/structures/" + TEST_PLATFORM_FILE_NAME;
+  private static final String TEST_PLATFORM_RESOURCE = "/structures/" + TEST_PLATFORM_FILE_NAME;
   private static final String TEST_PLATFORM_DIRECTORY_PREFIX = "easy_npc_scene";
 
   private static GameClientBuilder configureLaunch(GameClientBuilder builder) {

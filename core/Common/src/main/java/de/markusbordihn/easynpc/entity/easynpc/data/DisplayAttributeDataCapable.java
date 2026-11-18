@@ -250,10 +250,9 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   default void readAdditionalDisplayAttributeData(ValueInput valueInput) {
     valueInput
         .read(DATA_VISIBILITY_CONDITIONS_TAG, CompoundTag.CODEC)
-        .ifPresent(
-            visibilityConditionsTag ->
-                this.setVisibilityConditionSet(
-                    VisibilityConditionSet.fromTag(visibilityConditionsTag)));
+        .ifPresent(visibilityConditionsTag ->
+            this.setVisibilityConditionSet(
+                VisibilityConditionSet.fromTag(visibilityConditionsTag)));
 
     Optional<ListTag> listTagData =
         valueInput.read(DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC);

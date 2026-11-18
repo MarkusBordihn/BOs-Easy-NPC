@@ -291,6 +291,30 @@ public class ShoulderTestHelper {
     }
 
     assertStillOnLeftShoulder(helper, serverPlayer, entityUUID);
+    Optional<CompoundTag> unreleasedShoulderNPCData =
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            serverPlayer, ShoulderSide.LEFT, Optional.empty());
+    if (unreleasedShoulderNPCData.isEmpty()) {
+      helper.fail("Blocked shoulder release did not keep the data of NPC " + entityUUID);
+      return;
+    }
+
+    unreleasedShoulderNPCData =
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            serverPlayer, ShoulderSide.LEFT, unreleasedShoulderNPCData);
+    if (unreleasedShoulderNPCData.isEmpty()) {
+      helper.fail("Shoulder release after an interrupted one lost NPC " + entityUUID);
+      return;
+    }
+
+    if (EasyNPCShoulderHandler.restoreShoulderNPCData(
+            serverPlayer, ShoulderSide.LEFT, unreleasedShoulderNPCData)
+        .isPresent()) {
+      helper.fail("Kept data of NPC " + entityUUID + " was not put back on the free shoulder");
+      return;
+    }
+
+    assertStillOnLeftShoulder(helper, serverPlayer, entityUUID);
   }
 
   public static void assertDismountFallsBackToPlayerPosition(
@@ -319,7 +343,10 @@ public class ShoulderTestHelper {
     double dismountedY = dismountedNPC.getEntity().getY();
     if (Math.abs(dismountedY - serverPlayer.getY()) > POSITION_TOLERANCE) {
       helper.fail(
-          "NPC was put down at y=" + dismountedY + " instead of the player y=" + serverPlayer.getY());
+          "NPC was put down at y="
+              + dismountedY
+              + " instead of the player y="
+              + serverPlayer.getY());
     }
   }
 
@@ -623,8 +650,7 @@ public class ShoulderTestHelper {
         });
   }
 
-  public static void assertPlayerDeathPutsNPCDown(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertPlayerDeathPutsNPCDown(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = mockStoredNPC(helper, entityType);
     ServerPlayer serverPlayer = mockCenteredPlayer(helper, "shoulder-death-player");
     UUID entityUUID = easyNPC.getEntityUUID();
@@ -727,7 +753,9 @@ public class ShoulderTestHelper {
       return;
     }
 
-    if (!serverPlayer.getShoulderEntityLeft().contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
+    if (!serverPlayer
+        .getShoulderEntityLeft()
+        .contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
       helper.fail("Shoulder data on the server has no objective data to filter");
       return;
     }
@@ -750,7 +778,9 @@ public class ShoulderTestHelper {
       return;
     }
 
-    if (!serverPlayer.getShoulderEntityLeft().contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
+    if (!serverPlayer
+        .getShoulderEntityLeft()
+        .contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
       helper.fail("Sending the shoulder data removed the objective data on the server");
     }
   }
@@ -813,8 +843,7 @@ public class ShoulderTestHelper {
     }
 
     long dismountGameTime = helper.getLevel().getGameTime();
-    if (!EasyNPCShoulderHandler.dismount(
-        serverPlayer, ShoulderSide.LEFT, REMOUNT_COOLDOWN_TICKS)) {
+    if (!EasyNPCShoulderHandler.dismount(serverPlayer, ShoulderSide.LEFT, REMOUNT_COOLDOWN_TICKS)) {
       helper.fail("NPC " + entityUUID + " was not dismounted with a remount cooldown");
       return Optional.empty();
     }

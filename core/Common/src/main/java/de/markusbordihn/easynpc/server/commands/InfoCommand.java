@@ -36,16 +36,14 @@ public class InfoCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("info")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        showNPCInfo(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))));
+                .executes(context ->
+                    showNPCInfo(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))));
   }
 
   private static int showNPCInfo(CommandSourceStack context, EasyNPC<?> easyNPC) {

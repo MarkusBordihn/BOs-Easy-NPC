@@ -42,10 +42,9 @@ public class ModTabs {
             ResourceKey.create(
                 Registries.CREATIVE_MODE_TAB,
                 Identifier.fromNamespaceAndPath("easy_npc", "config_items")))
-        .register(
-            output -> {
-              output.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
-              output.accept(ModItems.PRESET_BROWSER.asItem().getDefaultInstance());
-            });
+        .register(output -> {
+          output.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
+          output.accept(ModItems.PRESET_BROWSER.asItem().getDefaultInstance());
+        });
   }
 }

@@ -333,8 +333,7 @@ public class NPCEntityManager {
     long startTime = System.currentTimeMillis();
     int savedCount =
         LivingEntityManager.getServerEasyNPCEntities()
-            .mapToInt(
-                easyNPC -> isSavableNPC(easyNPC) && saveChangedNPC(easyNPC) ? 1 : 0)
+            .mapToInt(easyNPC -> isSavableNPC(easyNPC) && saveChangedNPC(easyNPC) ? 1 : 0)
             .sum();
 
     if (savedCount > 0) {
