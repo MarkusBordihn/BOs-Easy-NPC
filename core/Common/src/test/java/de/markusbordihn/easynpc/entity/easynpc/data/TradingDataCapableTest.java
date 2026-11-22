@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TradingUtils;
+import io.netty.buffer.Unpooled;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.RegistryOps;
@@ -49,6 +51,7 @@ import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -161,6 +164,32 @@ class TradingDataCapableTest {
     assertTrue(reloadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
     assertFalse(reloadedOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
     assertEquals(questItem.getComponentsPatch(), reloadedOffer.getBaseCostA().getComponentsPatch());
+  }
+
+  @Test
+  @DisplayName("custom data of a sold modded item survives save, load and client sync")
+  void testSoldItemCustomDataSurvivesSaveLoadAndSync() {
+    CompoundTag gunData = new CompoundTag();
+    gunData.putString("GunId", "tacz:deagle");
+    gunData.putString("GunFireMode", "SEMI");
+    gunData.putInt("GunCurrentAmmoCount", 7);
+    ItemStack soldGun = new ItemStack(Items.CROSSBOW);
+    soldGun.set(DataComponents.CUSTOM_DATA, CustomData.of(gunData));
+    TestTradingData tradingData = new TestTradingData();
+    tradingData.getTradingDataSet().setType(TradingType.BASIC);
+    MerchantOffers offers = new MerchantOffers();
+    offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, 10), soldGun.copy(), 10, 0, 1.0F));
+    tradingData.setTradingOffers(offers);
+
+    CompoundTag savedTag = new CompoundTag();
+    tradingData.addAdditionalTradingData(savedTag, registries());
+    TestTradingData reloadedTradingData = new TestTradingData();
+    reloadedTradingData.readAdditionalTradingData(savedTag, registries());
+    RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registries());
+    MerchantOffers.STREAM_CODEC.encode(buffer, reloadedTradingData.getOffers());
+    MerchantOffers clientOffers = MerchantOffers.STREAM_CODEC.decode(buffer);
+
+    assertTrue(ItemStack.isSameItemSameComponents(soldGun, clientOffers.get(0).getResult()));
   }
 
   @Test

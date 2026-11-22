@@ -26,11 +26,12 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
 import de.markusbordihn.easynpc.Constants;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
@@ -50,7 +51,8 @@ public class TradingUtils {
   private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
   private static final String COMPONENTS_TAG = "components";
   private static final String CONTAINER_COMPONENT = "minecraft:container";
-  private static final String CUSTOM_DATA_COMPONENT = Constants.MOD_PREFIX_ID + "custom_data";
+  private static final String EASY_NPC_CUSTOM_DATA_COMPONENT =
+      Constants.MOD_PREFIX_ID + "custom_data";
   private static final String CUSTOM_MODEL_DATA_TAG = "CustomModelData";
   private static final String CUSTOM_NAME_COMPONENT = "minecraft:custom_name";
   private static final String DISPLAY_TAG = "display";
@@ -58,14 +60,15 @@ public class TradingUtils {
   private static final String ENCHANTMENT_GLINT_OVERRIDE_COMPONENT =
       "minecraft:enchantment_glint_override";
   private static final String HIDE_FLAGS_TAG = "HideFlags";
+  private static final String ITEM_ID_TAG = "id";
   private static final String ITEM_NAME_COMPONENT = "minecraft:item_name";
   private static final String ITEMS_TAG = "Items";
   private static final String LEGACY_COUNT_TAG = "Count";
-  private static final String LEGACY_CUSTOM_DATA_COMPONENT = "minecraft:custom_data";
   private static final String LEGACY_ITEM_TAG = "tag";
   private static final String LOC_NAME_TAG = "LocName";
   private static final String LORE_COMPONENT = "minecraft:lore";
   private static final String LORE_TAG = "Lore";
+  private static final String MINECRAFT_CUSTOM_DATA_COMPONENT = "minecraft:custom_data";
   private static final String MODERN_COUNT_TAG = "count";
   private static final String NAME_TAG = "Name";
   private static final String RECIPES_TAG = "Recipes";
@@ -73,6 +76,8 @@ public class TradingUtils {
   private static final String SLOT_TAG = "Slot";
   private static final String UNBREAKABLE_TAG = "Unbreakable";
   private static final String[] TRADE_ITEM_KEYS = {"buy", "buyB", "sell"};
+  private static final Set<String> itemIdsReportedForMinecraftCustomData =
+      ConcurrentHashMap.newKeySet();
 
   private TradingUtils() {}
 
@@ -116,8 +121,11 @@ public class TradingUtils {
       migrated.remove(LEGACY_COUNT_TAG);
     }
 
+    String itemId = migrated.getString(ITEM_ID_TAG);
+    String customDataComponent = getCustomDataComponent(itemId);
     if (!migrated.contains(LEGACY_ITEM_TAG, Tag.TAG_COMPOUND)) {
-      migrateLegacyCustomDataComponent(migrated);
+      moveCustomDataComponents(migrated, customDataComponent);
+      reportModdedItemWithMinecraftCustomData(itemId, migrated);
       return migrated;
     }
 
@@ -127,7 +135,7 @@ public class TradingUtils {
             ? migrated.getCompound(COMPONENTS_TAG).copy()
             : new CompoundTag();
 
-    migrateLegacyTagToComponents(legacyTag, components);
+    migrateLegacyTagToComponents(legacyTag, components, customDataComponent);
     migrated.remove(LEGACY_ITEM_TAG);
 
     if (components.isEmpty()) {
@@ -139,7 +147,8 @@ public class TradingUtils {
     return migrated;
   }
 
-  private static void migrateLegacyTagToComponents(CompoundTag legacyTag, CompoundTag components) {
+  private static void migrateLegacyTagToComponents(
+      CompoundTag legacyTag, CompoundTag components, String customDataComponent) {
     int hideFlags =
         legacyTag.contains(HIDE_FLAGS_TAG, Tag.TAG_ANY_NUMERIC)
             ? legacyTag.getInt(HIDE_FLAGS_TAG)
@@ -147,7 +156,8 @@ public class TradingUtils {
 
     moveIntTagToComponent(legacyTag, components, "Damage", "minecraft:damage", 0);
     moveIntTagToComponent(legacyTag, components, "RepairCost", "minecraft:repair_cost", 0);
-    moveCustomModelDataToComponent(legacyTag, components);
+    moveIntTagToComponent(
+        legacyTag, components, CUSTOM_MODEL_DATA_TAG, "minecraft:custom_model_data", 0);
     moveUnbreakableToComponent(legacyTag, components, hideFlags);
     moveEnchantmentsToComponent(
         legacyTag, components, "Enchantments", "minecraft:enchantments", (hideFlags & 1) != 0);
@@ -162,7 +172,7 @@ public class TradingUtils {
     legacyTag.remove(HIDE_FLAGS_TAG);
 
     if (!legacyTag.isEmpty()) {
-      mergeIntoCustomData(components, legacyTag);
+      mergeCustomDataComponents(components, customDataComponent, legacyTag.copy());
     }
   }
 
@@ -180,22 +190,6 @@ public class TradingUtils {
     if (value != defaultValue) {
       components.putInt(componentKey, value);
     }
-  }
-
-  private static void moveCustomModelDataToComponent(
-      CompoundTag legacyTag, CompoundTag components) {
-    if (!legacyTag.contains(CUSTOM_MODEL_DATA_TAG, Tag.TAG_ANY_NUMERIC)
-        || components.contains("minecraft:custom_model_data")) {
-      return;
-    }
-
-    int customModelData = legacyTag.getInt(CUSTOM_MODEL_DATA_TAG);
-    legacyTag.remove(CUSTOM_MODEL_DATA_TAG);
-    CompoundTag customModelDataComponent = new CompoundTag();
-    ListTag floats = new ListTag();
-    floats.add(FloatTag.valueOf((float) customModelData));
-    customModelDataComponent.put("floats", floats);
-    components.put("minecraft:custom_model_data", customModelDataComponent);
   }
 
   private static void moveUnbreakableToComponent(
@@ -353,32 +347,45 @@ public class TradingUtils {
     }
   }
 
-  private static void mergeIntoCustomData(CompoundTag components, CompoundTag legacyTag) {
-    CompoundTag mergedCustomData = legacyTag.copy();
-    mergeCustomDataComponent(components, LEGACY_CUSTOM_DATA_COMPONENT, mergedCustomData);
-    mergeCustomDataComponent(components, CUSTOM_DATA_COMPONENT, mergedCustomData);
-    components.put(CUSTOM_DATA_COMPONENT, mergedCustomData);
-    components.remove(LEGACY_CUSTOM_DATA_COMPONENT);
+  private static String getCustomDataComponent(String itemId) {
+    return itemId.startsWith(Constants.MOD_PREFIX_ID)
+        ? EASY_NPC_CUSTOM_DATA_COMPONENT
+        : MINECRAFT_CUSTOM_DATA_COMPONENT;
   }
 
-  private static void migrateLegacyCustomDataComponent(CompoundTag item) {
+  private static void moveCustomDataComponents(CompoundTag item, String customDataComponent) {
     if (!item.contains(COMPONENTS_TAG, Tag.TAG_COMPOUND)) {
       return;
     }
 
     CompoundTag components = item.getCompound(COMPONENTS_TAG).copy();
-    if (!components.contains(LEGACY_CUSTOM_DATA_COMPONENT, Tag.TAG_COMPOUND)) {
+    mergeCustomDataComponents(components, customDataComponent, new CompoundTag());
+    item.put(COMPONENTS_TAG, components);
+  }
+
+  private static void mergeCustomDataComponents(
+      CompoundTag components, String customDataComponent, CompoundTag mergedCustomData) {
+    mergeCustomDataComponent(components, MINECRAFT_CUSTOM_DATA_COMPONENT, mergedCustomData);
+    mergeCustomDataComponent(components, EASY_NPC_CUSTOM_DATA_COMPONENT, mergedCustomData);
+    components.remove(MINECRAFT_CUSTOM_DATA_COMPONENT);
+    components.remove(EASY_NPC_CUSTOM_DATA_COMPONENT);
+    if (!mergedCustomData.isEmpty()) {
+      components.put(customDataComponent, mergedCustomData);
+    }
+  }
+
+  private static void reportModdedItemWithMinecraftCustomData(String itemId, CompoundTag item) {
+    if (itemId.startsWith(Constants.MINECRAFT_RESOURCE_PREFIX)
+        || itemId.startsWith(Constants.MOD_PREFIX_ID)
+        || !item.getCompound(COMPONENTS_TAG).contains(MINECRAFT_CUSTOM_DATA_COMPONENT)
+        || !itemIdsReportedForMinecraftCustomData.add(itemId)) {
       return;
     }
 
-    CompoundTag mergedCustomData = new CompoundTag();
-    mergeCustomDataComponent(components, LEGACY_CUSTOM_DATA_COMPONENT, mergedCustomData);
-    mergeCustomDataComponent(components, CUSTOM_DATA_COMPONENT, mergedCustomData);
-    if (!mergedCustomData.isEmpty()) {
-      components.put(CUSTOM_DATA_COMPONENT, mergedCustomData);
-    }
-    components.remove(LEGACY_CUSTOM_DATA_COMPONENT);
-    item.put(COMPONENTS_TAG, components);
+    log.warn(
+        "Trade item {} keeps its mod data in minecraft:custom_data. Easy NPC keeps it as is, but"
+            + " the mod should register its own data component for it.",
+        itemId);
   }
 
   private static void mergeCustomDataComponent(

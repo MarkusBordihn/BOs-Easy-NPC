@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.inventory.NPCInventoryScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.logging.log4j.LogManager;
@@ -36,5 +37,6 @@ public class ClientScreens {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
 
     event.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
+    event.register(ModMenuTypes.NPC_INVENTORY_MENU.get(), NPCInventoryScreen::new);
   }
 }

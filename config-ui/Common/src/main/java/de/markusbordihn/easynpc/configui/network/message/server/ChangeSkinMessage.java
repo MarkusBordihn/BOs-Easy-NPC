@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -75,31 +76,38 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
       return;
     }
 
+    SkinDataEntry validatedSkinDataEntry = this.skinDataEntry;
     if (isRemoteSkin(this.skinDataEntry.type())) {
       if (!MessageSecurity.checkFeatureAccess(
           serverPlayer, easyNPC, NpcFeature.URL_RESOURCE, "URL skin change")) {
         return;
       }
 
-      if (this.skinDataEntry.type() == SkinType.INSECURE_REMOTE_URL) {
+      if (!UrlValidator.isValidUrl(this.skinDataEntry.url())) {
         log.warn(
-            "Applying unsafe remote skin URL {} for {} from {}",
+            "Rejected invalid remote skin URL {} for {} from {}",
             this.skinDataEntry.url(),
             easyNPC,
             serverPlayer);
-      } else if (!MessageSecurity.isKnownSecureRemoteUrl(this.skinDataEntry.url())) {
+        return;
+      }
+
+      validatedSkinDataEntry =
+          SkinDataEntry.createRemoteSkin(this.skinDataEntry.url())
+              .withDisableLayers(this.skinDataEntry.disableLayers());
+      if (validatedSkinDataEntry.type() == SkinType.INSECURE_REMOTE_URL) {
         log.warn(
-            "Applying remote skin URL outside known secure list {} for {} from {}",
-            this.skinDataEntry.url(),
+            "Applying unsafe remote skin URL {} for {} from {}",
+            validatedSkinDataEntry.url(),
             easyNPC,
             serverPlayer);
       }
     }
 
-    if (!SkinHandler.setSkin(easyNPC, this.skinDataEntry)) {
+    if (!SkinHandler.setSkin(easyNPC, validatedSkinDataEntry)) {
       log.error(
           "Failed changing skin data entry {} for {} from {}",
-          this.skinDataEntry,
+          validatedSkinDataEntry,
           easyNPC,
           serverPlayer);
     }

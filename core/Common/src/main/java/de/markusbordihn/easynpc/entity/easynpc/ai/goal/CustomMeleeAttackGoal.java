@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SmartAttackHandler;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -44,26 +44,23 @@ public class CustomMeleeAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal
 
   @Override
   public boolean canUse() {
-    return !this.isHoldingWeaponOfRangedAttack() && super.canUse();
+    return this.isMeleeAttackSelected() && super.canUse();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return !this.isHoldingWeaponOfRangedAttack() && super.canContinueToUse();
+    return this.isMeleeAttackSelected() && super.canContinueToUse();
+  }
+
+  private boolean isMeleeAttackSelected() {
+    return !this.isHoldingWeaponOfRangedAttack()
+        && SmartAttackHandler.isAttackTypeAllowed(this.easyNPC, ObjectiveType.MELEE_ATTACK);
   }
 
   private boolean isHoldingWeaponOfRangedAttack() {
     ObjectiveDataCapable<?> objectiveData = this.easyNPC.getEasyNPCObjectiveData();
-    if (objectiveData == null) {
-      return false;
-    }
-
-    return (objectiveData.hasObjective(ObjectiveType.BOW_ATTACK)
-            && AttackHandler.isHoldingBowWeapon(this.mob))
-        || (objectiveData.hasObjective(ObjectiveType.CROSSBOW_ATTACK)
-            && AttackHandler.isHoldingCrossbowWeapon(this.mob))
-        || (objectiveData.hasObjective(ObjectiveType.GUN_ATTACK)
-            && AttackHandler.isHoldingGunWeapon(this.mob));
+    return objectiveData != null
+        && SmartAttackHandler.isUsableRangedWeapon(objectiveData, this.mob.getMainHandItem());
   }
 
   @Override

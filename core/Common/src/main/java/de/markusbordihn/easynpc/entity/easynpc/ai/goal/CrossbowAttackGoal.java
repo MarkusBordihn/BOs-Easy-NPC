@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SmartAttackHandler;
 import java.util.EnumSet;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.TimeUtil;
@@ -37,6 +38,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
   private final double speedModifier;
   private final float attackRadiusSqr;
+  private final T easyNPC;
   private final PathfinderMob pathfinderMob;
   private final CrossbowAttackMob crossbowAttackMob;
   private int attackDelay;
@@ -45,6 +47,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   private int updatePathDelay;
 
   public CrossbowAttackGoal(T easyNPC, double speedModifier, float attackRange) {
+    this.easyNPC = easyNPC;
     this.pathfinderMob = easyNPC.getPathfinderMob();
     this.crossbowAttackMob = easyNPC.getCrossbowAttackMob();
     this.speedModifier = speedModifier;
@@ -74,7 +77,9 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   public void stop() {
     super.stop();
     this.pathfinderMob.setAggressive(false);
-    this.pathfinderMob.setTarget(null);
+    if (!SmartAttackHandler.isSmartAttackEnabled(this.easyNPC)) {
+      this.pathfinderMob.setTarget(null);
+    }
     this.seeTime = 0;
     if (this.pathfinderMob.isUsingItem()) {
       this.pathfinderMob.stopUsingItem();

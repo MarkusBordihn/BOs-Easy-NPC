@@ -43,7 +43,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -58,6 +60,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public class AttackHandler {
 
@@ -70,7 +73,15 @@ public class AttackHandler {
   }
 
   public static boolean isMeleeWeapon(ItemStack itemStack) {
-    return itemStack.getItem() instanceof TieredItem;
+    return itemStack.getItem() instanceof TieredItem
+        || (!itemStack.isEmpty()
+            && itemStack
+                .getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
+                .modifiers()
+                .stream()
+                .anyMatch(modifierEntry ->
+                    modifierEntry.attribute().equals(Attributes.ATTACK_DAMAGE)
+                        && modifierEntry.slot().test(EquipmentSlot.MAINHAND)));
   }
 
   public static boolean isBowWeapon(ItemStack itemStack) {

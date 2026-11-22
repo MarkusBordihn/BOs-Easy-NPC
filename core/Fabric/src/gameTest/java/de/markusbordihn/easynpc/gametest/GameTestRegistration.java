@@ -49,6 +49,7 @@ public class GameTestRegistration {
         AttributeCommandTest.class,
         ModelRootCommandTest.class,
         NameCommandTest.class,
+        SkinTest.class,
         NPCLifecycleCommandTest.class,
         MoveEasyNPCItemTest.class,
         VisibilityAttributeTest.class,
@@ -100,6 +101,8 @@ public class GameTestRegistration {
         ObjectiveApiTest.class,
         AssistOwnerTest.class,
         ProjectileTest.class,
+        SmartAttackTest.class,
+        EntityTypeTagTest.class,
         InteractionResultTest.class,
         EasyModelEntitiesTest.class);
   }

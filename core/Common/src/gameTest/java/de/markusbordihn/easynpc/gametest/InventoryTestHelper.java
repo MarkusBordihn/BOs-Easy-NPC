@@ -25,12 +25,17 @@ import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.menu.inventory.NPCInventoryMenu;
+import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -39,6 +44,8 @@ public class InventoryTestHelper {
 
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
   private static final Vec3 SECOND_NPC_POSITION = new Vec3(1, 2, 2);
+  private static final Vec3 PLAYER_POSITION = new Vec3(2, 2, 1);
+  private static final Vec3 DISTANT_PLAYER_POSITION = new Vec3(2, 2, 16);
   private static final int EMERALD_COUNT = 7;
 
   private InventoryTestHelper() {}
@@ -166,6 +173,139 @@ public class InventoryTestHelper {
         "The inventory settings are part of an exported preset",
         easyNPC.getEasyNPCInventoryData().getInventoryAttributes(),
         importedNPC.getEasyNPCInventoryData().getInventoryAttributes());
+  }
+
+  private static NPCInventoryMenu openInventoryMenu(
+      GameTestHelper helper, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+    UUID menuId = MenuManager.getMenuHandler().openNPCInventoryMenu(serverPlayer, easyNPC);
+    GameTestHelpers.assertNotNull(helper, "The inventory menu is registered", menuId);
+    MenuManager.openMenu(menuId, serverPlayer);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The NPC inventory menu opens",
+        serverPlayer.containerMenu instanceof NPCInventoryMenu);
+    return (NPCInventoryMenu) serverPlayer.containerMenu;
+  }
+
+  private static int findPlayerSlotWithEmeralds(NPCInventoryMenu inventoryMenu) {
+    for (int slotIndex = inventoryMenu.getPlayerSlotCount();
+        slotIndex < inventoryMenu.slots.size();
+        slotIndex++) {
+      if (inventoryMenu.getSlot(slotIndex).getItem().is(Items.EMERALD)) {
+        return slotIndex;
+      }
+    }
+    return -1;
+  }
+
+  public static void assertInventoryActionOpensPlayerSlots(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    AttributeHandler.setInventoryPlayerSlotCount(easyNPC, 18);
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
+
+    NPCInventoryMenu inventoryMenu = openInventoryMenu(helper, easyNPC, serverPlayer);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The menu shows the configured player slots",
+        18,
+        inventoryMenu.getPlayerSlotCount());
+    GameTestHelpers.assertEquals(
+        helper, "The menu adds the 36 player inventory slots", 18 + 36, inventoryMenu.slots.size());
+  }
+
+  public static void assertInventoryMenuMovesItemsOnlyIntoPlayerSlots(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    Container inventory = getInventory(easyNPC);
+    inventory.setItem(0, new ItemStack(Items.EMERALD, EMERALD_COUNT));
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
+    NPCInventoryMenu inventoryMenu = openInventoryMenu(helper, easyNPC, serverPlayer);
+
+    inventoryMenu.clicked(0, 0, ClickType.QUICK_MOVE, serverPlayer);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The player takes the items out of the NPC inventory",
+        EMERALD_COUNT,
+        serverPlayer.getInventory().countItem(Items.EMERALD));
+    GameTestHelpers.assertTrue(
+        helper, "Taken items leave the NPC inventory", inventory.getItem(0).isEmpty());
+
+    for (int slot = 0; slot < inventoryMenu.getPlayerSlotCount(); slot++) {
+      inventory.setItem(slot, new ItemStack(Items.STONE, 64));
+    }
+    inventoryMenu.clicked(
+        findPlayerSlotWithEmeralds(inventoryMenu), 0, ClickType.QUICK_MOVE, serverPlayer);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "Items are never moved into the NPC-owned slots",
+        0,
+        inventory.countItem(Items.EMERALD));
+    GameTestHelpers.assertEquals(
+        helper,
+        "Items stay with the player when the player slots are full",
+        EMERALD_COUNT,
+        serverPlayer.getInventory().countItem(Items.EMERALD));
+  }
+
+  public static void assertInventoryMenuClosesOutOfReachOrWithoutNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
+    NPCInventoryMenu inventoryMenu = openInventoryMenu(helper, easyNPC, serverPlayer);
+    GameTestHelpers.assertTrue(
+        helper, "The menu is valid next to the NPC", inventoryMenu.stillValid(serverPlayer));
+
+    serverPlayer.setPos(helper.absoluteVec(DISTANT_PLAYER_POSITION));
+    GameTestHelpers.assertTrue(
+        helper, "The menu closes out of reach", !inventoryMenu.stillValid(serverPlayer));
+
+    serverPlayer.setPos(helper.absoluteVec(PLAYER_POSITION));
+    easyNPC.getMob().discard();
+    GameTestHelpers.assertTrue(
+        helper, "The menu closes when the NPC is removed", !inventoryMenu.stillValid(serverPlayer));
+  }
+
+  public static void assertInventoryMenuDoesNotDuplicateItemsOnDeath(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    Mob mob = easyNPC.getMob();
+    AttributeHandler.setInventoryAttribute(easyNPC, InventoryAttributeType.DROP_ON_DEATH, true);
+    getInventory(easyNPC).setItem(0, new ItemStack(Items.EMERALD, EMERALD_COUNT));
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
+    NPCInventoryMenu inventoryMenu = openInventoryMenu(helper, easyNPC, serverPlayer);
+
+    mob.kill();
+    inventoryMenu.clicked(0, 0, ClickType.QUICK_MOVE, serverPlayer);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The inventory is dropped on death",
+        EMERALD_COUNT,
+        countDroppedEmeralds(helper, mob));
+    GameTestHelpers.assertEquals(
+        helper,
+        "The open menu cannot take the dropped items again",
+        0,
+        serverPlayer.getInventory().countItem(Items.EMERALD));
+    GameTestHelpers.assertTrue(
+        helper, "The menu closes when the NPC dies", !inventoryMenu.stillValid(serverPlayer));
+  }
+
+  public static void assertSpectatorCannotOpenInventory(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockSpectatorServerPlayer(
+            helper, PLAYER_POSITION, "inventory-spectator-player");
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "Spectators cannot open the NPC inventory",
+        MenuManager.getMenuHandler().openNPCInventoryMenu(serverPlayer, easyNPC) == null);
   }
 
   public static void assertPresetItemDropsInventoryContents(

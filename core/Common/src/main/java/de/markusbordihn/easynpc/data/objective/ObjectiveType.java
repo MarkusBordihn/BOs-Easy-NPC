@@ -78,6 +78,7 @@ public enum ObjectiveType {
   RANDOM_STROLL("stroll", 11),
   RANDOM_SWIMMING("swimming", 10),
   SIT_ON_OWNER_SHOULDER("owner_shoulder", 5),
+  SMART_ATTACK("smart", 1, false),
   WATER_AVOIDING_RANDOM_STROLL("avoid_water", 11),
   ZOMBIE_ATTACK("zombie", 2);
 

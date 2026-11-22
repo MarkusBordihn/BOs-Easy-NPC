@@ -24,10 +24,16 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.handler.SkinHandler;
+import de.markusbordihn.easynpc.io.ServerSkinIndex;
+import de.markusbordihn.easynpc.io.ServerSkinIndex.ServerSkin;
+import de.markusbordihn.easynpc.utils.SkinFileNameUtils;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
@@ -66,7 +72,34 @@ public class SkinCommand extends Command {
                                                 EasyNPCArgument.getEntityWithAccess(
                                                     context, NPC_TARGET_ARG),
                                                 StringArgumentType.getString(
-                                                    context, VARIANT_ARG)))))))
+                                                    context, VARIANT_ARG))))))
+                .then(
+                    Commands.literal("custom")
+                        .then(
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
+                                .then(
+                                    Commands.argument(NAME_ARG, StringArgumentType.greedyString())
+                                        .suggests((context, builder) -> {
+                                          EasyNPC<?> easyNPC =
+                                              EasyNPCArgument.getEntityWithAccess(
+                                                  context, NPC_TARGET_ARG);
+                                          if (easyNPC != null
+                                              && easyNPC.getEasyNPCSkinData() != null) {
+                                            for (ServerSkin serverSkin :
+                                                ServerSkinIndex.getSkins(
+                                                    easyNPC.getEasyNPCSkinData().getSkinModel())) {
+                                              builder.suggest(serverSkin.displayName());
+                                            }
+                                          }
+                                          return builder.buildFuture();
+                                        })
+                                        .executes(context ->
+                                            setCustomSkin(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                StringArgumentType.getString(
+                                                    context, NAME_ARG)))))))
         .then(
             Commands.literal("layer")
                 .requires(
@@ -106,6 +139,51 @@ public class SkinCommand extends Command {
 
     return sendSuccessMessage(
         context, "Successfully set skin variant " + variant + " for EasyNPC " + easyNPC);
+  }
+
+  private static int setCustomSkin(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String skinName) {
+    if (easyNPC == null || skinName == null || skinName.isBlank()) {
+      return sendFailureMessage(context, "Invalid EasyNPC target or skin name");
+    }
+
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      return sendFailureMessage(context, "Invalid EasyNPC skin data");
+    }
+
+    SkinModel skinModel = skinData.getSkinModel();
+    List<ServerSkin> serverSkins = ServerSkinIndex.findSkins(skinName);
+    UUID skinUUID =
+        serverSkins.isEmpty()
+            ? SkinFileNameUtils.getSkinUUID(SkinFileNameUtils.withPngExtension(skinName))
+            : serverSkins.stream()
+                .filter(serverSkin -> serverSkin.skinModel() == skinModel)
+                .map(ServerSkin::skinUUID)
+                .findFirst()
+                .orElse(null);
+    if (skinUUID == null) {
+      return sendFailureMessage(
+          context,
+          "Custom skin " + skinName + " is not available for skin model " + skinModel.getName());
+    }
+
+    if (!SkinHandler.setSkin(
+        easyNPC,
+        SkinDataEntry.createCustomSkin(skinUUID, skinData.getSkinDataEntry().disableLayers()))) {
+      return sendFailureMessage(context, "Failed to set custom skin " + skinName);
+    }
+
+    String entityName = easyNPC.getEntity().getDisplayName().getString();
+    return sendSuccessMessage(
+        context,
+        serverSkins.isEmpty()
+            ? "Set custom skin "
+                + skinName
+                + " for EasyNPC "
+                + entityName
+                + ", the server has no such skin, so players need the file locally."
+            : "Successfully set custom skin " + skinName + " for EasyNPC " + entityName);
   }
 
   private static int setLayers(CommandSourceStack context, EasyNPC<?> easyNPC, boolean enabled) {

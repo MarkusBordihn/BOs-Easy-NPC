@@ -209,11 +209,24 @@ class TradingUtilsTest {
     assertEquals(3, enchantments.getCompound("levels").getInt("minecraft:sharpness"));
     assertFalse(enchantments.getBoolean("show_in_tooltip"));
 
-    CompoundTag customModelData = components.getCompound("minecraft:custom_model_data");
-    assertEquals(123.0f, customModelData.getList("floats", Tag.TAG_FLOAT).getFloat(0));
+    assertEquals(123, components.getInt("minecraft:custom_model_data"));
 
-    CompoundTag customData = components.getCompound("easy_npc:custom_data");
+    CompoundTag customData = components.getCompound("minecraft:custom_data");
     assertEquals(1, customData.getByte("foo"));
+    assertFalse(components.contains("easy_npc:custom_data"));
+  }
+
+  @Test
+  @DisplayName("Legacy custom model data loads as the item's custom model data")
+  void testLegacyCustomModelDataLoadsIntoItemStack() throws CommandSyntaxException {
+    CompoundTag tradeEntry =
+        TagParser.parseTag("{sell:{Count:1b,id:\"minecraft:stick\",tag:{CustomModelData:123}}}");
+
+    CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
+    ItemStack sell =
+        ItemStack.CODEC.parse(registryOps(), migratedEntry.getCompound("sell")).getOrThrow();
+
+    assertEquals(123, sell.get(DataComponents.CUSTOM_MODEL_DATA).value());
   }
 
   @Test
@@ -241,14 +254,68 @@ class TradingUtilsTest {
     CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
     CompoundTag migratedSell = migratedEntry.getCompound("sell");
     CompoundTag components = migratedSell.getCompound("components");
-    CompoundTag customData = components.getCompound("easy_npc:custom_data");
+    CompoundTag customData = components.getCompound("minecraft:custom_data");
 
     assertEquals("{\"text\":\"Modern Name\"}", components.getString("minecraft:custom_name"));
-    assertFalse(components.contains("minecraft:custom_data"));
+    assertFalse(components.contains("easy_npc:custom_data"));
     assertEquals(1, customData.getByte("existing"));
     assertEquals(1, customData.getByte("foo"));
     assertTrue(customData.contains("display", Tag.TAG_COMPOUND));
     assertEquals("Legacy Name", customData.getCompound("display").getString("Name"));
+  }
+
+  @Test
+  @DisplayName("Should keep custom data of modded items and restore it from easy_npc:custom_data")
+  void testModdedItemCustomDataStaysInMinecraftCustomData() throws CommandSyntaxException {
+    CompoundTag tradeEntry =
+        TagParser.parseTag(
+            """
+            {
+              buy:{
+                id:"tacz:ammo",
+                count:1,
+                components:{"minecraft:custom_data":{AmmoId:"tacz:45acp"}}
+              },
+              sell:{
+                id:"tacz:modern_kinetic_gun",
+                count:1,
+                components:{"easy_npc:custom_data":{GunId:"tacz:deagle"}}
+              }
+            }\
+            """);
+
+    CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
+    CompoundTag buyComponents = migratedEntry.getCompound("buy").getCompound("components");
+    CompoundTag sellComponents = migratedEntry.getCompound("sell").getCompound("components");
+
+    assertEquals(
+        "tacz:45acp", buyComponents.getCompound("minecraft:custom_data").getString("AmmoId"));
+    assertEquals(
+        "tacz:deagle", sellComponents.getCompound("minecraft:custom_data").getString("GunId"));
+    assertFalse(buyComponents.contains("easy_npc:custom_data"));
+    assertFalse(sellComponents.contains("easy_npc:custom_data"));
+  }
+
+  @Test
+  @DisplayName("Should move custom data of Easy NPC items into easy_npc:custom_data")
+  void testEasyNPCItemCustomDataMovesToEasyNPCCustomData() throws CommandSyntaxException {
+    CompoundTag tradeEntry =
+        TagParser.parseTag(
+            """
+            {
+              sell:{
+                id:"easy_npc:custom_data_test",
+                count:1,
+                components:{"minecraft:custom_data":{foo:1b}}
+              }
+            }\
+            """);
+
+    CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
+    CompoundTag components = migratedEntry.getCompound("sell").getCompound("components");
+
+    assertEquals(1, components.getCompound("easy_npc:custom_data").getByte("foo"));
+    assertFalse(components.contains("minecraft:custom_data"));
   }
 
   @Test

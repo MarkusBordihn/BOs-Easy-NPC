@@ -41,6 +41,14 @@ class InteractionClientTest extends ClientTestBase {
       "DialogData:{Type:\"STANDARD\",DialogDataSet:[{Label:\"default\",Texts:[{Text:\"Hi\"}]}]}";
   private static final String INTERACTION_ACTION_DATA =
       "ActionData:{ActionEventSet:{ON_INTERACTION:[{Type:\"OPEN_DEFAULT_DIALOG\"}]}}";
+  private static final String NPC_INVENTORY_SCREEN_ID =
+      "de.markusbordihn.easynpc.client.screen.inventory.npcinventoryscreen";
+  private static final String INVENTORY_ACTION_DATA =
+      "ActionData:{ActionEventSet:{ON_INTERACTION:[{Type:\"OPEN_INVENTORY_SCREEN\"}]}}";
+  private static final String INVENTORY_DATA =
+      "EasyNPCInventory:{Items:[{Slot:0b,id:\"minecraft:emerald\",Count:7b},"
+          + "{Slot:12b,id:\"minecraft:diamond\",Count:1b}]}";
+  private static final long CLIENT_ENTITY_SYNC_TICKS = 20;
   private static final int BOW_SLOT = 0;
   private static final int ARROW_SLOT = 9;
   private static final long BOW_DRAW_TICKS = 25;
@@ -81,6 +89,21 @@ class InteractionClientTest extends ClientTestBase {
 
     client.await(Until.screen(DIALOG_SCREEN_ID));
     client.saveScreenshot("bow_opens_dialog");
+    client.closeScreen();
+    client.await(Until.noScreen());
+  }
+
+  @Test
+  @DisplayName("Right-click opens the NPC inventory with only the player slots")
+  void interactionOpensNpcInventory() {
+    client.clearInventory();
+    summonNpc(INVENTORY_ACTION_DATA + "," + INVENTORY_DATA);
+    client.await(Until.ticksElapsed(CLIENT_ENTITY_SYNC_TICKS));
+
+    rightMouseButton("click");
+
+    client.await(Until.screen(NPC_INVENTORY_SCREEN_ID));
+    client.saveScreenshot("npc_inventory");
     client.closeScreen();
     client.await(Until.noScreen());
   }

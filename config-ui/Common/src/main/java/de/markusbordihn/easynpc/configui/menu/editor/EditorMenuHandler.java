@@ -90,6 +90,9 @@ public class EditorMenuHandler {
       case ACTION_DATA, ACTION_DATA_ENTRY -> {
         AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
         AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
+        if (editorType == EditorType.ACTION_DATA_ENTRY) {
+          AdditionalScreenData.addServerSkins(additionalSyncData, easyNPC);
+        }
       }
       case CONDITION_DATA, CONDITION_DATA_ENTRY ->
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);

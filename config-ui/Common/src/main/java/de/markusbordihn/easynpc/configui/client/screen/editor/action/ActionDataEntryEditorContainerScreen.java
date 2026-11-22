@@ -41,10 +41,12 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.MoveA
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.NpcStateEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpacityActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenInventoryScreenEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.PoseActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SetSkinEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SimpleVisualActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SoundActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.WaitActionEntry;
@@ -198,6 +200,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         || actionDataType == ActionDataType.OPEN_NAMED_DIALOG
         || actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
         || actionDataType == ActionDataType.OPEN_TRADING_SCREEN
+        || actionDataType == ActionDataType.OPEN_INVENTORY_SCREEN
         || actionDataType == ActionDataType.SCOREBOARD;
   }
 
@@ -421,6 +424,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         this.actionEntryWidget =
             new OpenTradingScreenEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
+      case OPEN_INVENTORY_SCREEN:
+        this.actionEntryWidget =
+            new OpenInventoryScreenEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
       case SCOREBOARD:
         this.actionEntryWidget =
             new ScoreboardEntry(this.actionDataEntry, this.actionDataSet, this);
@@ -465,6 +472,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case SET_OPACITY:
         this.actionEntryWidget =
             new OpacityActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case SET_SKIN:
+        this.actionEntryWidget = new SetSkinEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case CUSTOM:
         this.actionEntryWidget =

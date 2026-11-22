@@ -93,6 +93,12 @@ public class AttributeMessageTest {
   }
 
   @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
+  public void testInventoryPlayerSlotCountChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertInventoryPlayerSlotCountChange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testShoulderOffsetChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertShoulderOffsetChange(helper, humanoid());
     helper.succeed();

@@ -37,8 +37,8 @@ public class InventoryConfigurationMenu extends ConfigurationMenu {
   public static final int PLAYER_INVENTORY_START_POSITION_X = 66;
   public static final int PLAYER_INVENTORY_START_POSITION_Y = 149;
   public static final int HOTBAR_START_POSITION_Y = 209;
-  protected static final int SLOT_SIZE = 18;
-  protected static final int COLUMNS = 9;
+  public static final int SLOT_SIZE = 18;
+  public static final int COLUMNS = 9;
 
   protected final Container npcInventory;
 

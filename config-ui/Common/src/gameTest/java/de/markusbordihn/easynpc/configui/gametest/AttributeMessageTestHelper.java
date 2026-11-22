@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBase
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryPlayerSlotCountMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
@@ -35,6 +36,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
@@ -191,6 +193,27 @@ public final class AttributeMessageTestHelper {
             new ChangeInventoryAttributeMessage(uuid, InventoryAttributeType.PICK_UP_ITEMS, true),
         ChangeInventoryAttributeMessage::create,
         easyNPC -> easyNPC.getEasyNPCInventoryData().getInventoryAttributes().pickUpItems(),
+        SurvivalOwnerAccess.GRANTED);
+  }
+
+  public static void assertInventoryPlayerSlotCountChange(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerMessageAssertions.assertAppliedOnlyWithAccess(
+        helper,
+        entityType,
+        uuid -> new ChangeInventoryPlayerSlotCountMessage(uuid, 18),
+        ChangeInventoryPlayerSlotCountMessage::create,
+        easyNPC ->
+            easyNPC.getEasyNPCInventoryData().getInventoryAttributes().playerSlotCount() == 18,
+        SurvivalOwnerAccess.GRANTED);
+    ServerMessageAssertions.assertAppliedOnlyWithAccess(
+        helper,
+        entityType,
+        uuid -> new ChangeInventoryPlayerSlotCountMessage(uuid, Integer.MAX_VALUE),
+        ChangeInventoryPlayerSlotCountMessage::create,
+        easyNPC ->
+            easyNPC.getEasyNPCInventoryData().getInventoryAttributes().playerSlotCount()
+                == InventoryAttributes.MAX_PLAYER_SLOT_COUNT,
         SurvivalOwnerAccess.GRANTED);
   }
 

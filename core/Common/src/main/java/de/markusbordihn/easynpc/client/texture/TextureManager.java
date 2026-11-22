@@ -48,22 +48,33 @@ public class TextureManager {
       return null;
     }
 
-    NativeImage nativeImage =
-        TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file);
+    return registerValidTexture(
+        textureModelKey,
+        TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file),
+        file);
+  }
+
+  public static ResourceLocation addServerTexture(
+      TextureModelKey textureModelKey, byte[] pngBytes) {
+    return registerValidTexture(
+        textureModelKey,
+        TextureImageLoader.getNativeImageForSkinModel(
+            textureModelKey.getSkinModel(), pngBytes, textureModelKey),
+        "server skin");
+  }
+
+  private static ResourceLocation registerValidTexture(
+      TextureModelKey textureModelKey, NativeImage nativeImage, Object textureSource) {
     if (nativeImage == null) {
-      log.error(
-          "{} Unable to load Texture file {} for {} because of I/O error",
-          LOG_PREFIX,
-          file,
-          textureModelKey);
+      log.error("{} Unable to load texture {} for {}", LOG_PREFIX, textureSource, textureModelKey);
       return null;
     }
 
     if (!ImageValidator.isValidImage(nativeImage)) {
       log.error(
-          "{} Unable to get any valid texture from file {} for {}!",
+          "{} Unable to get any valid texture from {} for {}!",
           LOG_PREFIX,
-          file,
+          textureSource,
           textureModelKey);
       nativeImage.close();
       return null;

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
+import de.markusbordihn.easynpc.menu.inventory.NPCInventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 
 public class MenuHandler implements MenuHandlerInterface {
@@ -27,5 +28,10 @@ public class MenuHandler implements MenuHandlerInterface {
   @Override
   public MenuType<? extends DialogMenu> getDialogMenuType() {
     return ModMenuTypes.DIALOG_MENU;
+  }
+
+  @Override
+  public MenuType<? extends NPCInventoryMenu> getNPCInventoryMenuType() {
+    return ModMenuTypes.NPC_INVENTORY_MENU;
   }
 }

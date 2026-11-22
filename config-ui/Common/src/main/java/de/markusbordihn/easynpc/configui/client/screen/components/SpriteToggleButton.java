@@ -20,33 +20,38 @@
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
-public class ItemToggleButton extends CustomButton {
+public class SpriteToggleButton extends CustomButton {
 
-  public static final int SIZE = 20;
+  public static final int SIZE = 18;
+  public static final int SPRITE_SIZE = 12;
+  private static final int SPRITE_INSET = (SIZE - SPRITE_SIZE) / 2;
   private static final int SELECTED_BORDER_COLOR = 0xFF55FF55;
   private static final int HOVERED_BORDER_COLOR = 0xFFFFFFFF;
-  private static final int UNSELECTED_OVERLAY_COLOR = 0x50000000;
-  private static final float OVERLAY_DEPTH = 200.0F;
 
-  private final ItemStack itemStack;
+  private final int spriteOffsetX;
+  private final int selectedSpriteOffsetY;
+  private final int unselectedSpriteOffsetY;
   private final Component narration;
-  private final ItemToggleButton.OnChange onChange;
+  private final SpriteToggleButton.OnChange onChange;
   private boolean selected;
 
-  public ItemToggleButton(
+  public SpriteToggleButton(
       int left,
       int top,
-      ItemStack itemStack,
+      int spriteOffsetX,
+      int selectedSpriteOffsetY,
       Component narration,
       boolean selected,
-      ItemToggleButton.OnChange onChange) {
+      SpriteToggleButton.OnChange onChange) {
     super(left, top, SIZE, SIZE, Component.empty(), unused -> {});
-    this.itemStack = itemStack;
+    this.spriteOffsetX = spriteOffsetX;
+    this.selectedSpriteOffsetY = selectedSpriteOffsetY;
+    this.unselectedSpriteOffsetY = selectedSpriteOffsetY + SPRITE_SIZE;
     this.narration = narration;
     this.selected = selected;
     this.onChange = onChange;
@@ -76,38 +81,25 @@ public class ItemToggleButton extends CustomButton {
   @Override
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     super.renderButton(guiGraphics, left, top, partialTicks);
-    guiGraphics.renderItem(this.itemStack, this.getX() + 2, this.getY() + 2);
-
-    if (this.selected) {
-      guiGraphics.renderOutline(
-          this.getX(), this.getY(), this.width, this.height, SELECTED_BORDER_COLOR);
-      guiGraphics.renderOutline(
-          this.getX() + 1,
-          this.getY() + 1,
-          this.width - 2,
-          this.height - 2,
-          this.isHoveredOrFocused() ? HOVERED_BORDER_COLOR : SELECTED_BORDER_COLOR);
-      return;
-    }
+    guiGraphics.blit(
+        Constants.TEXTURE_CONFIGURATION,
+        this.getX() + SPRITE_INSET,
+        this.getY() + SPRITE_INSET,
+        this.spriteOffsetX,
+        this.selected ? this.selectedSpriteOffsetY : this.unselectedSpriteOffsetY,
+        SPRITE_SIZE,
+        SPRITE_SIZE);
 
     if (this.isHoveredOrFocused()) {
       guiGraphics.renderOutline(
           this.getX(), this.getY(), this.width, this.height, HOVERED_BORDER_COLOR);
-      return;
+    } else if (this.selected) {
+      guiGraphics.renderOutline(
+          this.getX(), this.getY(), this.width, this.height, SELECTED_BORDER_COLOR);
     }
-
-    guiGraphics.pose().pushPose();
-    guiGraphics.pose().translate(0.0F, 0.0F, OVERLAY_DEPTH);
-    guiGraphics.fill(
-        this.getX() + 1,
-        this.getY() + 1,
-        this.getX() + this.width - 1,
-        this.getY() + this.height - 1,
-        UNSELECTED_OVERLAY_COLOR);
-    guiGraphics.pose().popPose();
   }
 
   public interface OnChange {
-    void onChange(ItemToggleButton itemToggleButton);
+    void onChange(SpriteToggleButton spriteToggleButton);
   }
 }

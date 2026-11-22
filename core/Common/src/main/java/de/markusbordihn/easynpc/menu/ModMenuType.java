@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 public enum ModMenuType {
   DIALOG,
   SPAWNER,
+  NPC_INVENTORY,
   ;
 
   private final String menuName = this.name().toLowerCase(Locale.ROOT);

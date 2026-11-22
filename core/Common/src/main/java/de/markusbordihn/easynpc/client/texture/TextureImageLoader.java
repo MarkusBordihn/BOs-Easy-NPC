@@ -22,9 +22,10 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.validator.PngFileValidator;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.nio.file.Files;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,27 +36,56 @@ public class TextureImageLoader {
 
   private TextureImageLoader() {}
 
-  public static NativeImage getNativeImage(File file) {
-    return getNativeImage(file, false);
-  }
-
-  public static NativeImage getNativePlayerImage(File file) {
-    return getNativeImage(file, true);
+  private static boolean usesPlayerSkinLayout(SkinModel skinModel) {
+    return skinModel == SkinModel.HUMANOID || skinModel == SkinModel.HUMANOID_SLIM;
   }
 
   static NativeImage getNativeImageForSkinModel(SkinModel skinModel, File file) {
-    return skinModel == SkinModel.HUMANOID || skinModel == SkinModel.HUMANOID_SLIM
-        ? getNativePlayerImage(file)
-        : getNativeImage(file);
+    return getNativeImage(file, usesPlayerSkinLayout(skinModel));
+  }
+
+  static NativeImage getNativeImageForSkinModel(
+      SkinModel skinModel, byte[] pngBytes, Object textureSource) {
+    return getNativeImage(pngBytes, usesPlayerSkinLayout(skinModel), textureSource);
   }
 
   public static NativeImage getNativeImage(File file, boolean legacySupport) {
-    NativeImage nativeImage;
-    try (InputStream inputStream = new FileInputStream(file)) {
-      nativeImage = NativeImage.read(inputStream);
+    if (file.length() > PngFileValidator.MAX_FILE_SIZE) {
+      log.error(
+          "{} Ignoring texture file {} larger than {} bytes",
+          LOG_PREFIX,
+          file,
+          PngFileValidator.MAX_FILE_SIZE);
+      return null;
+    }
+
+    try {
+      return getNativeImage(Files.readAllBytes(file.toPath()), legacySupport, file);
     } catch (Exception exception) {
       log.error(
           "{} Unable to get native image for file {} because of:", LOG_PREFIX, file, exception);
+      return null;
+    }
+  }
+
+  private static NativeImage getNativeImage(
+      byte[] pngBytes, boolean legacySupport, Object textureSource) {
+    PngFileValidator.Result validationResult = PngFileValidator.sanitize(pngBytes);
+    if (!validationResult.isValid()) {
+      log.error(
+          "{} Ignoring texture {}: {}",
+          LOG_PREFIX,
+          textureSource,
+          validationResult.rejectionReason());
+      return null;
+    }
+
+    NativeImage nativeImage;
+    try {
+      nativeImage = NativeImage.read(new ByteArrayInputStream(validationResult.pngBytes()));
+    } catch (Exception exception) {
+      log.error(
+          "{} Unable to get native image for {} because of:", LOG_PREFIX, textureSource, exception);
       return null;
     }
 
