@@ -93,7 +93,8 @@ class UrlValidatorTest {
       strings = {
         "https://example.com/skin.png",
         "https://cdn.example.com/resource.png",
-        "https://secure-site.com/data"
+        "https://secure-site.com/data",
+        "https://www.minecraftskins.com.evil/skin.png"
       })
   void testIsSecureRemoteUrl_nonWhitelistedHttps(String url) {
     assertFalse(UrlValidator.isSecureRemoteUrl(url));

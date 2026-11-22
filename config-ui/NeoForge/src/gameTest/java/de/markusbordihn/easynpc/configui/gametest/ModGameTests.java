@@ -320,6 +320,10 @@ public final class ModGameTests {
         AttributeMessageTest::testInteractionFlagChange,
         DEFAULT_STRUCTURE);
     register(
+        "inventory_player_slot_count_change",
+        AttributeMessageTest::testInventoryPlayerSlotCountChange,
+        DEFAULT_STRUCTURE);
+    register(
         "shoulder_offset_change",
         AttributeMessageTest::testShoulderOffsetChange,
         DEFAULT_STRUCTURE);

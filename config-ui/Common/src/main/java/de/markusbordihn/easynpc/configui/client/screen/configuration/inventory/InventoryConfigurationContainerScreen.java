@@ -19,7 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.inventory;
 
+import static de.markusbordihn.easynpc.configui.menu.configuration.inventory.InventoryConfigurationMenu.COLUMNS;
+import static de.markusbordihn.easynpc.configui.menu.configuration.inventory.InventoryConfigurationMenu.SLOT_SIZE;
+
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
@@ -31,6 +36,9 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InventoryAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.IntStream;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -39,7 +47,11 @@ import net.minecraft.world.entity.player.Inventory;
 public class InventoryConfigurationContainerScreen<T extends ConfigurationMenu>
     extends ConfigurationContainerScreen<T> {
 
+  private static final int PLAYER_SLOT_COUNT_LEFT = 236;
+  private static final int NPC_OWNED_SLOT_COLOR = 0x50FF8000;
+
   protected Button defaultInventoryButton;
+  private SpinButton<Integer> playerSlotCountButton;
 
   public InventoryConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -94,6 +106,40 @@ public class InventoryConfigurationContainerScreen<T extends ConfigurationMenu>
         this.contentTopPos + 28,
         InventoryAttributeType.DROP_ON_DEATH,
         inventoryAttributes.dropOnDeath());
+
+    Set<Integer> playerSlotCounts = new LinkedHashSet<>();
+    IntStream.rangeClosed(
+            InventoryAttributes.MIN_PLAYER_SLOT_COUNT, InventoryAttributes.MAX_PLAYER_SLOT_COUNT)
+        .forEach(playerSlotCounts::add);
+    this.playerSlotCountButton =
+        this.addRenderableWidget(
+            new SpinButton<>(
+                this.leftPos + PLAYER_SLOT_COUNT_LEFT,
+                this.topPos + InventoryConfigurationMenu.NPC_INVENTORY_START_POSITION_Y + 12,
+                56,
+                16,
+                playerSlotCounts,
+                inventoryAttributes.playerSlotCount(),
+                spinButton ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .inventoryPlayerSlotCountChange(this.getEasyNPCUUID(), spinButton.get())));
+    this.addRenderableWidget(
+        new HelpIcon(
+            this.leftPos + 296,
+            this.topPos + InventoryConfigurationMenu.NPC_INVENTORY_START_POSITION_Y + 12,
+            InventoryAttributeType.PLAYER_SLOT_COUNT.getAttributeName() + ".tooltip"));
+  }
+
+  @Override
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        InventoryAttributeType.PLAYER_SLOT_COUNT.getAttributeName(),
+        this.leftPos + PLAYER_SLOT_COUNT_LEFT,
+        this.topPos + InventoryConfigurationMenu.NPC_INVENTORY_START_POSITION_Y);
   }
 
   @Override
@@ -110,6 +156,19 @@ public class InventoryConfigurationContainerScreen<T extends ConfigurationMenu>
         83,
         162,
         54);
+    for (int slotIndex = this.playerSlotCountButton.get();
+        slotIndex < InventoryDataCapable.INVENTORY_SIZE;
+        slotIndex++) {
+      int slotLeft =
+          this.leftPos
+              + InventoryConfigurationMenu.NPC_INVENTORY_START_POSITION_X
+              + slotIndex % COLUMNS * SLOT_SIZE;
+      int slotTop =
+          this.topPos
+              + InventoryConfigurationMenu.NPC_INVENTORY_START_POSITION_Y
+              + slotIndex / COLUMNS * SLOT_SIZE;
+      guiGraphics.fill(slotLeft, slotTop, slotLeft + 16, slotTop + 16, NPC_OWNED_SLOT_COLOR);
+    }
 
     Graphics.blit(
         guiGraphics,

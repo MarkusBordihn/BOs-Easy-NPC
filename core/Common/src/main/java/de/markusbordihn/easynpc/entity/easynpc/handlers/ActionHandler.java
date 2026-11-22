@@ -51,9 +51,11 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MoveActi
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.OpacityActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.PoseActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SkinActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.StateActionExecutor;
 import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -138,7 +140,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     return actionDataType == ActionDataType.OPEN_DEFAULT_DIALOG
         || actionDataType == ActionDataType.OPEN_NAMED_DIALOG
         || actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
-        || actionDataType == ActionDataType.OPEN_TRADING_SCREEN;
+        || actionDataType == ActionDataType.OPEN_TRADING_SCREEN
+        || actionDataType == ActionDataType.OPEN_INVENTORY_SCREEN;
   }
 
   private static boolean containsScreenAction(List<ActionDataEntry> actionDataEntries) {
@@ -691,6 +694,10 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           || this.getEasyNPCDialogData().hasDialog(actionDataEntry.command());
     }
 
+    if (actionType == ActionDataType.OPEN_INVENTORY_SCREEN) {
+      return this.getEasyNPCInventoryData() != null;
+    }
+
     return this.getEasyNPCTradingData().hasTradingData();
   }
 
@@ -802,6 +809,13 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           log.debug("Skipping OPEN_TRADING_SCREEN action because no ServerPlayer is available");
         }
         break;
+      case OPEN_INVENTORY_SCREEN:
+        if (serverPlayer != null) {
+          MenuManager.getMenuHandler().openNPCInventoryMenu(serverPlayer, this);
+        } else {
+          log.debug("Skipping OPEN_INVENTORY_SCREEN action because no ServerPlayer is available");
+        }
+        break;
       case SCOREBOARD:
         if (serverPlayer != null) {
           ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer, this.getLivingEntity());
@@ -855,6 +869,11 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         if (!OpacityActionExecutor.setOpacity(actionDataEntry, this)) {
           log.warn(
               "Unable to set the opacity of {} for action {}", this.getEntity(), actionDataEntry);
+        }
+        break;
+      case SET_SKIN:
+        if (!SkinActionExecutor.setSkin(actionDataEntry, this)) {
+          log.warn("Unable to set the skin of {} for action {}", this.getEntity(), actionDataEntry);
         }
         break;
       case WAIT:

@@ -37,6 +37,7 @@ class EditorScreenClientTest extends ClientTestBase {
       "de.markusbordihn.easynpc.client.screen.components.TextField";
   private static final String NEW_FACTION_NAME = "clienttest";
   private static final String NEW_ACTION_COMMAND = "say clienttest";
+  private static final int BUTTON_STATE_UPDATE_TICKS = 5;
   private static final By TYPE_SPIN_BUTTON =
       By.className("de.markusbordihn.easynpc.client.screen.components.SpinButton").withIndex(0);
 
@@ -48,6 +49,7 @@ class EditorScreenClientTest extends ClientTestBase {
     Set<String> renderedTypes = new HashSet<>();
     String type = selectedType();
     while (renderedTypes.add(type)) {
+      client.await(Until.ticksElapsed(BUTTON_STATE_UPDATE_TICKS));
       client.saveScreenshot(screenshotPrefix + "-" + type.toLowerCase(Locale.ROOT));
       client.assertLayoutClean(List.of("rawTranslationKey"), List.of());
       client.click(TYPE_SPIN_BUTTON);

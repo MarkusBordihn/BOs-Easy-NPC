@@ -1400,6 +1400,26 @@ public final class ModGameTests {
         "preset_item_drops_inventory_contents",
         InventoryTest::testPresetItemDropsInventoryContents,
         DEFAULT_STRUCTURE);
+    register(
+        "inventory_action_opens_player_slots",
+        InventoryTest::testInventoryActionOpensPlayerSlots,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_menu_moves_items_only_into_player_slots",
+        InventoryTest::testInventoryMenuMovesItemsOnlyIntoPlayerSlots,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_menu_closes_out_of_reach_or_without_n_p_c",
+        InventoryTest::testInventoryMenuClosesOutOfReachOrWithoutNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_menu_does_not_duplicate_items_on_death",
+        InventoryTest::testInventoryMenuDoesNotDuplicateItemsOnDeath,
+        DEFAULT_STRUCTURE);
+    register(
+        "spectator_cannot_open_inventory",
+        InventoryTest::testSpectatorCannotOpenInventory,
+        DEFAULT_STRUCTURE);
 
     register(
         "owner_objective_without_owner_can_be_removed",
@@ -1904,6 +1924,51 @@ public final class ModGameTests {
     register(
         "melee_attack_yields_only_to_matching_ranged_weapon",
         ProjectileTest::testMeleeAttackYieldsOnlyToMatchingRangedWeapon,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "set_custom_skin_command_keeps_layers",
+        SkinTest::testSetCustomSkinCommandKeepsLayers,
+        DEFAULT_STRUCTURE);
+    register(
+        "set_skin_action_changes_skin", SkinTest::testSetSkinActionChangesSkin, DEFAULT_STRUCTURE);
+    register(
+        "server_skin_is_recompressed_and_selectable",
+        SkinTest::testServerSkinIsRecompressedAndSelectable,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "smart_attack_picks_weapon_for_target",
+        SmartAttackTest::testSmartAttackPicksWeaponForTarget,
+        DEFAULT_STRUCTURE);
+    register(
+        "smart_attack_combinations",
+        SmartAttackTest::testSmartAttackCombinations,
+        DEFAULT_STRUCTURE);
+    register(
+        "smart_attack_follows_flying_animal",
+        SmartAttackTest::testSmartAttackFollowsFlyingAnimal,
+        DEFAULT_STRUCTURE);
+    register(
+        "smart_attack_ignores_player_slots",
+        SmartAttackTest::testSmartAttackIgnoresPlayerSlots,
+        DEFAULT_STRUCTURE);
+    register(
+        "smart_attack_restores_main_hand_after_fight",
+        SmartAttackTest::testSmartAttackRestoresMainHandAfterFight,
+        DEFAULT_STRUCTURE);
+    register(
+        "attack_types_without_smart_attack_stay_unchanged",
+        SmartAttackTest::testAttackTypesWithoutSmartAttackStayUnchanged,
+        DEFAULT_STRUCTURE);
+    register(
+        "smart_attack_command_needs_attack_type",
+        SmartAttackTest::testSmartAttackCommandNeedsAttackType,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "entity_type_tags_contain_expected_entries",
+        EntityTypeTagTest::testEntityTypeTagsContainExpectedEntries,
         DEFAULT_STRUCTURE);
   }
 

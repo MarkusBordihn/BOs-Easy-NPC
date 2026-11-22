@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -29,6 +30,9 @@ public class AttackObjective extends Command {
   private static final String TARGET_ARGUMENT = "target";
   private static final String TYPE_ARGUMENT = "type";
   private static final String ATTACK_TYPE_PREFIX = "ATTACK_";
+  private static final Set<ObjectiveType> ATTACK_TYPE_OPTIONS =
+      Stream.concat(ObjectiveGroup.ATTACK_TYPE.stream(), ObjectiveGroup.ATTACK_MODIFIER.stream())
+          .collect(Collectors.toCollection(() -> EnumSet.noneOf(ObjectiveType.class)));
 
   private static final Map<ObjectiveType, ProtectionObjective> PROTECTION_OBJECTIVES =
       new LinkedHashMap<>();
@@ -43,11 +47,11 @@ public class AttackObjective extends Command {
   private static final SuggestionProvider<CommandSourceStack> SUGGEST_ATTACK_TYPES =
       (context, builder) ->
           SharedSuggestionProvider.suggest(
-              ObjectiveGroup.ATTACK_TYPE.stream().map(ObjectiveType::getFriendlyName), builder);
+              ATTACK_TYPE_OPTIONS.stream().map(ObjectiveType::getFriendlyName), builder);
   private static final SuggestionProvider<CommandSourceStack> SUGGEST_ATTACK_TYPE_LIST =
       (context, builder) ->
           SharedSuggestionProvider.suggest(
-              ObjectiveGroup.ATTACK_TYPE.stream().map(ObjectiveType::getFriendlyName),
+              ATTACK_TYPE_OPTIONS.stream().map(ObjectiveType::getFriendlyName),
               builder.createOffset(
                   builder.getStart() + builder.getRemaining().lastIndexOf(' ') + 1));
 
@@ -140,7 +144,7 @@ public class AttackObjective extends Command {
     boolean removedAny = false;
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
       if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)
-          || ObjectiveGroup.ATTACK_TYPE.contains(objectiveType)) {
+          || ATTACK_TYPE_OPTIONS.contains(objectiveType)) {
         if (EasyNPCObjectiveHandler.removeObjective(easyNPC, objectiveType)) {
           removedAny = true;
         }
@@ -181,7 +185,7 @@ public class AttackObjective extends Command {
     }
 
     String attackTypes =
-        ObjectiveGroup.ATTACK_TYPE.stream()
+        ATTACK_TYPE_OPTIONS.stream()
             .filter(objectiveData::hasObjective)
             .map(ObjectiveType::getFriendlyName)
             .collect(Collectors.joining(", "));
@@ -235,6 +239,14 @@ public class AttackObjective extends Command {
       attackTypes.add(attackType);
     }
 
+    if (ObjectiveGroup.ATTACK_MODIFIER.containsAll(attackTypes)) {
+      return sendFailureMessage(
+          context,
+          "Attack type "
+              + ObjectiveType.SMART_ATTACK.getFriendlyName()
+              + " needs at least one other attack type!");
+    }
+
     if (attackTypes.contains(ObjectiveType.MELEE_ATTACK)
         && attackTypes.contains(ObjectiveType.ZOMBIE_ATTACK)) {
       return sendFailureMessage(
@@ -250,7 +262,7 @@ public class AttackObjective extends Command {
       return Command.FAILURE;
     }
 
-    for (ObjectiveType otherAttackType : ObjectiveGroup.ATTACK_TYPE) {
+    for (ObjectiveType otherAttackType : ATTACK_TYPE_OPTIONS) {
       if (!attackTypes.contains(otherAttackType)) {
         EasyNPCObjectiveHandler.removeObjective(easyNPC, otherAttackType);
       }
@@ -381,7 +393,7 @@ public class AttackObjective extends Command {
   }
 
   private static ObjectiveType getAttackTypeFromName(String typeName) {
-    for (ObjectiveType attackType : ObjectiveGroup.ATTACK_TYPE) {
+    for (ObjectiveType attackType : ATTACK_TYPE_OPTIONS) {
       if (attackType.getFriendlyName().equalsIgnoreCase(typeName)) {
         return attackType;
       }

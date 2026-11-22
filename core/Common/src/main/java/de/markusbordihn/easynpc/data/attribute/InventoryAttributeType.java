@@ -24,7 +24,8 @@ import java.util.Locale;
 
 public enum InventoryAttributeType implements EntityAttributeTypeInterface {
   DROP_ON_DEATH,
-  PICK_UP_ITEMS;
+  PICK_UP_ITEMS,
+  PLAYER_SLOT_COUNT;
 
   private final String tagName = TextUtils.convertToPascalCase(this.name());
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);

@@ -146,6 +146,7 @@
   "text.easy_npc.preset.sanitize.position_removed": "Position data was removed.",
   "text.easy_npc.preset.sanitize.scoreboard_action_removed": "Scoreboard actions were removed.",
   "text.easy_npc.preset.sanitize.trading_action_removed": "Trading actions were removed.",
+  "text.easy_npc.preset.sanitize.inventory_action_removed": "Inventory actions were removed.",
   "text.easy_npc.preset.sanitize.trading_removed": "Trading was removed.",
   "text.easy_npc.preset.spawn_denied": "You are not allowed to spawn NPCs from presets.",
   "text.easy_npc.preset.spawn_rate_limited": "Spawn limit of %1$s NPCs per minute reached, please wait a moment.",

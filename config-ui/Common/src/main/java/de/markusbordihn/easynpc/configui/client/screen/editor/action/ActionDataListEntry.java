@@ -214,6 +214,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         || this.actionDataType == ActionDataType.MESSAGE
         || this.actionDataType == ActionDataType.CUSTOM
         || this.actionDataType == ActionDataType.SET_POSE
+        || this.actionDataType == ActionDataType.SET_SKIN
         || this.actionDataType == ActionDataType.PLAY_ANIMATION
         || this.actionDataType == ActionDataType.SOUND
         || this.actionDataType == ActionDataType.WAIT) {
