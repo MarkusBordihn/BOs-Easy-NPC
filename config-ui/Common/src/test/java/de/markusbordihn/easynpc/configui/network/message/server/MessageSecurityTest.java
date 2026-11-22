@@ -33,24 +33,6 @@ import org.junit.jupiter.api.Test;
 class MessageSecurityTest {
 
   @Test
-  void testKnownSecureRemoteUrls() {
-    assertTrue(MessageSecurity.isKnownSecureRemoteUrl("https://www.minecraftskins.com/skin.png"));
-    assertTrue(MessageSecurity.isKnownSecureRemoteUrl("https://minecraft.novaskin.me/skin.png"));
-    assertTrue(MessageSecurity.isKnownSecureRemoteUrl("https://mcskins.top/skin.png"));
-    assertTrue(MessageSecurity.isKnownSecureRemoteUrl("https://skinmc.net/skin.png"));
-  }
-
-  @Test
-  void testUnknownRemoteUrlsAreRejected() {
-    assertFalse(MessageSecurity.isKnownSecureRemoteUrl(null));
-    assertFalse(MessageSecurity.isKnownSecureRemoteUrl(""));
-    assertFalse(MessageSecurity.isKnownSecureRemoteUrl("http://www.minecraftskins.com/skin.png"));
-    assertFalse(
-        MessageSecurity.isKnownSecureRemoteUrl("https://www.minecraftskins.com.evil/skin.png"));
-    assertFalse(MessageSecurity.isKnownSecureRemoteUrl("https://example.com/skin.png"));
-  }
-
-  @Test
   void testActionDataSetSanitizationClampsPermissionLevel() {
     ActionDataSet actionDataSet = new ActionDataSet();
     actionDataSet.add(

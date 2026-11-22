@@ -78,7 +78,10 @@
       "de.markusbordihn.easynpc.gametest.OutOfCombatGoalTest",
       "de.markusbordihn.easynpc.gametest.ShoulderCommandTest",
       "de.markusbordihn.easynpc.gametest.SpearAttackTest",
-      "de.markusbordihn.easynpc.gametest.ProjectileTest"
+      "de.markusbordihn.easynpc.gametest.ProjectileTest",
+      "de.markusbordihn.easynpc.gametest.SkinTest",
+      "de.markusbordihn.easynpc.gametest.SmartAttackTest",
+      "de.markusbordihn.easynpc.gametest.EntityTypeTagTest"
     ]
   },
   "depends": {

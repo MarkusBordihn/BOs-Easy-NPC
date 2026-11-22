@@ -967,6 +967,20 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "preset_item_drops_inventory_contents",
         () -> InventoryTest::testPresetItemDropsInventoryContents);
+    TEST_FUNCTIONS.register(
+        "inventory_action_opens_player_slots",
+        () -> InventoryTest::testInventoryActionOpensPlayerSlots);
+    TEST_FUNCTIONS.register(
+        "inventory_menu_moves_items_only_into_player_slots",
+        () -> InventoryTest::testInventoryMenuMovesItemsOnlyIntoPlayerSlots);
+    TEST_FUNCTIONS.register(
+        "inventory_menu_closes_out_of_reach_or_without_n_p_c",
+        () -> InventoryTest::testInventoryMenuClosesOutOfReachOrWithoutNPC);
+    TEST_FUNCTIONS.register(
+        "inventory_menu_does_not_duplicate_items_on_death",
+        () -> InventoryTest::testInventoryMenuDoesNotDuplicateItemsOnDeath);
+    TEST_FUNCTIONS.register(
+        "spectator_cannot_open_inventory", () -> InventoryTest::testSpectatorCannotOpenInventory);
 
     TEST_FUNCTIONS.register(
         "owner_objective_without_owner_can_be_removed",
@@ -1315,6 +1329,40 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "melee_attack_yields_only_to_matching_ranged_weapon",
         () -> ProjectileTest::testMeleeAttackYieldsOnlyToMatchingRangedWeapon);
+
+    TEST_FUNCTIONS.register(
+        "set_custom_skin_command_keeps_layers",
+        () -> SkinTest::testSetCustomSkinCommandKeepsLayers);
+    TEST_FUNCTIONS.register(
+        "set_skin_action_changes_skin", () -> SkinTest::testSetSkinActionChangesSkin);
+    TEST_FUNCTIONS.register(
+        "server_skin_is_recompressed_and_selectable",
+        () -> SkinTest::testServerSkinIsRecompressedAndSelectable);
+
+    TEST_FUNCTIONS.register(
+        "smart_attack_picks_weapon_for_target",
+        () -> SmartAttackTest::testSmartAttackPicksWeaponForTarget);
+    TEST_FUNCTIONS.register(
+        "smart_attack_combinations", () -> SmartAttackTest::testSmartAttackCombinations);
+    TEST_FUNCTIONS.register(
+        "smart_attack_follows_flying_animal",
+        () -> SmartAttackTest::testSmartAttackFollowsFlyingAnimal);
+    TEST_FUNCTIONS.register(
+        "smart_attack_ignores_player_slots",
+        () -> SmartAttackTest::testSmartAttackIgnoresPlayerSlots);
+    TEST_FUNCTIONS.register(
+        "smart_attack_restores_main_hand_after_fight",
+        () -> SmartAttackTest::testSmartAttackRestoresMainHandAfterFight);
+    TEST_FUNCTIONS.register(
+        "attack_types_without_smart_attack_stay_unchanged",
+        () -> SmartAttackTest::testAttackTypesWithoutSmartAttackStayUnchanged);
+    TEST_FUNCTIONS.register(
+        "smart_attack_command_needs_attack_type",
+        () -> SmartAttackTest::testSmartAttackCommandNeedsAttackType);
+
+    TEST_FUNCTIONS.register(
+        "entity_type_tags_contain_expected_entries",
+        () -> EntityTypeTagTest::testEntityTypeTagsContainExpectedEntries);
   }
 
   public ModGameTests(FMLJavaModLoadingContext context) {

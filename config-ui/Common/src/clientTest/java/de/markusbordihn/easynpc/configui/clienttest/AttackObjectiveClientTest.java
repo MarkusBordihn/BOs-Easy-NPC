@@ -32,12 +32,16 @@ class AttackObjectiveClientTest extends ClientTestBase {
 
   private static final String ATTACK_OBJECTIVE_SCREEN = "AttackObjectiveConfigurationScreen";
   private static final String ATTACK_STYLE_BUTTON_CLASS =
-      "de.markusbordihn.easynpc.configui.client.screen.components.ItemToggleButton";
+      "de.markusbordihn.easynpc.configui.client.screen.components.SpriteToggleButton";
   private static final By MELEE_ATTACK_BUTTON =
       By.className(ATTACK_STYLE_BUTTON_CLASS).withIndex(0);
   private static final By ZOMBIE_ATTACK_BUTTON =
       By.className(ATTACK_STYLE_BUTTON_CLASS).withIndex(1);
   private static final By BOW_ATTACK_BUTTON = By.className(ATTACK_STYLE_BUTTON_CLASS).withIndex(2);
+  private static final By PROJECTILE_ATTACK_BUTTON =
+      By.className(ATTACK_STYLE_BUTTON_CLASS).withIndex(5);
+  private static final By SMART_ATTACK_CHECKBOX = configurationButton("smart_attack_auto");
+  private static final By ATTACK_PLAYER_CHECKBOX = configurationButton("attack_target_player");
   private static final By ATTACK_MOB_CHECKBOX = configurationButton("attack_target_mob");
   private static final By SPARE_CREEPER_CHECKBOX =
       configurationButton("attack_target_spare_creeper");
@@ -70,6 +74,34 @@ class AttackObjectiveClientTest extends ClientTestBase {
     awaitAttackListMessage(testNpc, ": bow, zombie");
     openAttackObjectives(testNpc);
     client.saveScreenshot("reopened");
+  }
+
+  @Test
+  @DisplayName("Auto enables smart attack together with the default attack styles")
+  void autoCheckboxEnablesSmartAttackWithDefaultStyles() {
+    UUID testNpc = spawnTestNpc();
+    openAttackObjectives(testNpc);
+
+    clickAndSettle(SMART_ATTACK_CHECKBOX);
+    client.saveScreenshot("auto_with_default_styles");
+
+    awaitAttackListMessage(testNpc, ": bow, crossbow, gun, melee, smart");
+  }
+
+  @Test
+  @DisplayName("Not attacked warning fits below the longest attack summary")
+  void playerTargetShowsNotAttackedWarning() {
+    UUID testNpc = spawnTestNpc();
+    openAttackObjectives(testNpc);
+
+    clickAndSettle(ATTACK_PLAYER_CHECKBOX);
+    clickAndSettle(ZOMBIE_ATTACK_BUTTON);
+    clickAndSettle(PROJECTILE_ATTACK_BUTTON);
+    client.hover(ATTACK_PLAYER_CHECKBOX);
+    client.await(Until.settled(5));
+    client.saveScreenshot("player_target_warning");
+
+    awaitAttackListMessage(testNpc, "> player");
   }
 
   @Test

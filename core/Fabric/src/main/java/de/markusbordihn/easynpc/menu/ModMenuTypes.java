@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.inventory.NPCInventoryMenu;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -35,6 +36,15 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           ModMenuType.DIALOG.getId(),
           new MenuType<>(DialogMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<NPCInventoryMenu> NPC_INVENTORY_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          ModMenuType.NPC_INVENTORY.getId(),
+          new MenuType<>(
+              (containerId, playerInventory) ->
+                  new NPCInventoryMenu(
+                      ModMenuTypes.NPC_INVENTORY_MENU, containerId, playerInventory),
+              FeatureFlagSet.of()));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModMenuTypes() {}

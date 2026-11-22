@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.inventory.NPCInventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,6 +35,13 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
       MENU_TYPES.register(
           ModMenuType.DIALOG.getName(), () -> IForgeMenuType.create(DialogMenuWrapper::new));
+  public static final RegistryObject<MenuType<NPCInventoryMenu>> NPC_INVENTORY_MENU =
+      MENU_TYPES.register(
+          ModMenuType.NPC_INVENTORY.getName(),
+          () ->
+              IForgeMenuType.create((containerId, playerInventory, buffer) ->
+                  new NPCInventoryMenu(
+                      ModMenuTypes.NPC_INVENTORY_MENU.get(), containerId, playerInventory)));
 
   private ModMenuTypes() {}
 }

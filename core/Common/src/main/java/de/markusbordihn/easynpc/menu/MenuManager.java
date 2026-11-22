@@ -54,10 +54,11 @@ public class MenuManager {
     return menuHandlerInterface;
   }
 
-  public static void openMenu(
+  public static UUID openMenu(
       UUID uuid, MenuProvider menuProvider, ServerPlayer serverPlayer, CompoundTag data) {
     UUID menuId = registerMenu(uuid, menuProvider, serverPlayer);
     NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
+    return menuId;
   }
 
   public static UUID registerMenu(UUID uuid, MenuProvider menuProvider, ServerPlayer serverPlayer) {

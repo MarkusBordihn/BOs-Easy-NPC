@@ -19,20 +19,25 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SmartAttackHandler;
 import net.minecraft.world.entity.LivingEntity;
 
 public class ProjectileAttackGoal<T extends EasyNPC<?>> extends StrafingRangedAttackGoal<T> {
 
+  private final T easyNPC;
+
   public ProjectileAttackGoal(
       T easyNPC, double speedModifier, int attackInterval, float attackRadius) {
     super(easyNPC, speedModifier, attackInterval, attackRadius);
+    this.easyNPC = easyNPC;
   }
 
   @Override
   protected boolean canAttack() {
-    return true;
+    return SmartAttackHandler.isAttackTypeAllowed(this.easyNPC, ObjectiveType.PROJECTILE_ATTACK);
   }
 
   @Override

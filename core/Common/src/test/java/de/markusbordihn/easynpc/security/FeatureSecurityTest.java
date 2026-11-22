@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,5 +33,13 @@ class FeatureSecurityTest {
   void intervalActionFeature() {
     assertEquals(
         NpcFeature.COMMAND_ACTION, FeatureSecurity.getFeature(ConfigurationType.INTERVAL_ACTION));
+  }
+
+  @Test
+  @DisplayName("The inventory action has its own security feature")
+  void inventoryActionFeature() {
+    assertEquals(
+        NpcFeature.OPEN_INVENTORY_ACTION,
+        FeatureSecurity.getFeature(ActionDataType.OPEN_INVENTORY_SCREEN));
   }
 }
