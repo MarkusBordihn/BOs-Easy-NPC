@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGo
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ProjectileAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.SmartAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -103,6 +104,10 @@ final class AttackObjectiveFactories {
                 objectiveDataEntry.getSpeedModifier(),
                 objectiveDataEntry.getAttackInterval(),
                 objectiveDataEntry.getAttackRadius())));
+
+    register(
+        ObjectiveType.SMART_ATTACK,
+        (objectiveDataEntry, easyNPC) -> new SmartAttackGoal<>(easyNPC));
   }
 
   private static void registerAttackTargets() {

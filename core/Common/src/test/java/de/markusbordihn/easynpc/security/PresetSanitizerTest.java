@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.security;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
@@ -54,6 +55,23 @@ class PresetSanitizerTest {
     presetData.put(ActionEventDataCapable.DATA_ACTION_DATA_TAG, actionDataTag);
 
     return presetData;
+  }
+
+  private static PresetSanitizationResult sanitizeAs(
+      CompoundTag presetData, NpcSecurityRole securityRole) {
+    return PresetSanitizer.sanitize(
+        presetData,
+        new PresetAuthority(
+            UUID.randomUUID(),
+            CommandPermissionLevel.ALL,
+            PresetTrustLevel.UNTRUSTED_PLAYER,
+            securityRole));
+  }
+
+  private static ListTag actionEntries(CompoundTag presetData) {
+    return presetData
+        .getCompoundOrEmpty(ActionEventDataCapable.DATA_ACTION_DATA_TAG)
+        .getListOrEmpty("Entries");
   }
 
   @Test
@@ -95,6 +113,27 @@ class PresetSanitizerTest {
   }
 
   @Test
+  @DisplayName("Inventory actions are removed only for players without the inventory feature")
+  void testInventoryActionSanitization() {
+    CompoundTag presetData = createPresetData(CommandPermissionLevel.ALL);
+    actionEntries(presetData)
+        .getCompoundOrEmpty(0)
+        .putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.OPEN_INVENTORY_SCREEN.name());
+
+    PresetSanitizationResult normalPlayerResult =
+        sanitizeAs(presetData, NpcSecurityRole.NORMAL_PLAYER);
+    PresetSanitizationResult creativePlayerResult =
+        sanitizeAs(presetData, NpcSecurityRole.CREATIVE_PLAYER);
+
+    assertTrue(
+        normalPlayerResult.notices().contains(PresetSanitizationNotice.INVENTORY_ACTION_REMOVED));
+    assertTrue(actionEntries(normalPlayerResult.sanitizedTag()).isEmpty());
+    assertFalse(
+        creativePlayerResult.notices().contains(PresetSanitizationNotice.INVENTORY_ACTION_REMOVED));
+    assertEquals(1, actionEntries(creativePlayerResult.sanitizedTag()).size());
+  }
+
+  @Test
   @DisplayName("Should remove authority from exported presets but keep action command requirements")
   void testExportSanitization() {
     CompoundTag presetData = createPresetData(CommandPermissionLevel.ADMINS);
@@ -130,24 +169,11 @@ class PresetSanitizerTest {
     presetData.put(
         AttackDataCapable.DATA_PROJECTILE_DATA_TAG,
         ProjectileData.DEFAULT.withEnabled(true).createTag());
-    UUID owner = UUID.randomUUID();
 
     PresetSanitizationResult normalPlayerResult =
-        PresetSanitizer.sanitize(
-            presetData,
-            new PresetAuthority(
-                owner,
-                CommandPermissionLevel.ALL,
-                PresetTrustLevel.UNTRUSTED_PLAYER,
-                NpcSecurityRole.NORMAL_PLAYER));
+        sanitizeAs(presetData, NpcSecurityRole.NORMAL_PLAYER);
     PresetSanitizationResult creativePlayerResult =
-        PresetSanitizer.sanitize(
-            presetData,
-            new PresetAuthority(
-                owner,
-                CommandPermissionLevel.ALL,
-                PresetTrustLevel.UNTRUSTED_PLAYER,
-                NpcSecurityRole.CREATIVE_PLAYER));
+        sanitizeAs(presetData, NpcSecurityRole.CREATIVE_PLAYER);
 
     assertFalse(
         normalPlayerResult.sanitizedTag().contains(AttackDataCapable.DATA_PROJECTILE_DATA_TAG));

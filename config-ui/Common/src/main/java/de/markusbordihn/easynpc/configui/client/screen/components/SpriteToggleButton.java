@@ -20,33 +20,41 @@
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
-public class ItemToggleButton extends CustomButton {
+public class SpriteToggleButton extends CustomButton {
 
-  public static final int SIZE = 20;
+  public static final int SIZE = 18;
+  public static final int SPRITE_SIZE = 12;
+  private static final int TEXTURE_SIZE = 256;
+  private static final int SPRITE_INSET = (SIZE - SPRITE_SIZE) / 2;
   private static final int SELECTED_BORDER_COLOR = 0xFF55FF55;
   private static final int HOVERED_BORDER_COLOR = 0xFFFFFFFF;
-  private static final int UNSELECTED_OVERLAY_COLOR = 0x50000000;
 
-  private final ItemStack itemStack;
+  private final int spriteOffsetX;
+  private final int selectedSpriteOffsetY;
+  private final int unselectedSpriteOffsetY;
   private final Component narration;
-  private final ItemToggleButton.OnChange onChange;
+  private final SpriteToggleButton.OnChange onChange;
   private boolean selected;
 
-  public ItemToggleButton(
+  public SpriteToggleButton(
       int left,
       int top,
-      ItemStack itemStack,
+      int spriteOffsetX,
+      int selectedSpriteOffsetY,
       Component narration,
       boolean selected,
-      ItemToggleButton.OnChange onChange) {
+      SpriteToggleButton.OnChange onChange) {
     super(left, top, SIZE, SIZE, Component.empty(), unused -> {});
-    this.itemStack = itemStack;
+    this.spriteOffsetX = spriteOffsetX;
+    this.selectedSpriteOffsetY = selectedSpriteOffsetY;
+    this.unselectedSpriteOffsetY = selectedSpriteOffsetY + SPRITE_SIZE;
     this.narration = narration;
     this.selected = selected;
     this.onChange = onChange;
@@ -77,34 +85,26 @@ public class ItemToggleButton extends CustomButton {
   public void renderButton(
       GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     super.renderButton(guiGraphics, left, top, partialTicks);
-    guiGraphics.item(this.itemStack, this.getX() + 2, this.getY() + 2);
-
-    if (this.selected) {
-      guiGraphics.outline(this.getX(), this.getY(), this.width, this.height, SELECTED_BORDER_COLOR);
-      guiGraphics.outline(
-          this.getX() + 1,
-          this.getY() + 1,
-          this.width - 2,
-          this.height - 2,
-          this.isHoveredOrFocused() ? HOVERED_BORDER_COLOR : SELECTED_BORDER_COLOR);
-      return;
-    }
+    guiGraphics.blit(
+        RenderPipelines.GUI_TEXTURED,
+        Constants.TEXTURE_CONFIGURATION,
+        this.getX() + SPRITE_INSET,
+        this.getY() + SPRITE_INSET,
+        this.spriteOffsetX,
+        this.selected ? this.selectedSpriteOffsetY : this.unselectedSpriteOffsetY,
+        SPRITE_SIZE,
+        SPRITE_SIZE,
+        TEXTURE_SIZE,
+        TEXTURE_SIZE);
 
     if (this.isHoveredOrFocused()) {
       guiGraphics.outline(this.getX(), this.getY(), this.width, this.height, HOVERED_BORDER_COLOR);
-      return;
+    } else if (this.selected) {
+      guiGraphics.outline(this.getX(), this.getY(), this.width, this.height, SELECTED_BORDER_COLOR);
     }
-
-    guiGraphics.nextStratum();
-    guiGraphics.fill(
-        this.getX() + 1,
-        this.getY() + 1,
-        this.getX() + this.width - 1,
-        this.getY() + this.height - 1,
-        UNSELECTED_OVERLAY_COLOR);
   }
 
   public interface OnChange {
-    void onChange(ItemToggleButton itemToggleButton);
+    void onChange(SpriteToggleButton spriteToggleButton);
   }
 }

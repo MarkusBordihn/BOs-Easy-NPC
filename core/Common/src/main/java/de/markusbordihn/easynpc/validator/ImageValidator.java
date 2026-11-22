@@ -36,15 +36,7 @@ public class ImageValidator {
       return false;
     }
 
-    // Accept some edge case for image size like 48x32
-    if (image.getWidth() == 48 && image.getHeight() == 32) {
-      return true;
-    }
-
-    if (image.getWidth() < 32
-        || image.getHeight() < 32
-        || image.getWidth() % 32 != 0
-        || image.getHeight() % 32 != 0) {
+    if (!PngFileValidator.isValidSkinSize(image.getWidth(), image.getHeight())) {
       log.error(
           "Unable to get any valid texture from native image, got {}x{}!",
           image.getWidth(),

@@ -41,12 +41,6 @@ import org.apache.logging.log4j.Logger;
 class MessageSecurity {
 
   private static final Logger log = LogManager.getLogger(MessageSecurity.class);
-  private static final String[] KNOWN_SECURE_REMOTE_URLS = {
-    "https://www.minecraftskins.com/",
-    "https://minecraft.novaskin.me/",
-    "https://mcskins.top/",
-    "https://skinmc.net/"
-  };
 
   private MessageSecurity() {}
 
@@ -170,20 +164,6 @@ class MessageSecurity {
       ServerPlayer serverPlayer, EasyNPC<?> easyNPC, PresetType presetType, String action) {
     NpcFeature feature = getPresetFeature(presetType);
     return feature == null || checkFeatureAccess(serverPlayer, easyNPC, feature, action);
-  }
-
-  static boolean isKnownSecureRemoteUrl(String url) {
-    if (url == null || !url.startsWith("https://")) {
-      return false;
-    }
-
-    for (String secureUrl : KNOWN_SECURE_REMOTE_URLS) {
-      if (url.startsWith(secureUrl)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   private static NpcFeature getPresetFeature(PresetType presetType) {

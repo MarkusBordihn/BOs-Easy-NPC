@@ -23,11 +23,12 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.configui.client.screen.components.ItemToggleButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SpriteToggleButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -43,11 +44,10 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.player.Player;
 
 public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     extends ObjectiveConfigurationScreen<T> {
@@ -60,6 +60,13 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
           ObjectiveType.CROSSBOW_ATTACK,
           ObjectiveType.GUN_ATTACK,
           ObjectiveType.PROJECTILE_ATTACK);
+  private static final List<ObjectiveType> SMART_ATTACK_DEFAULT_STYLES =
+      List.of(
+          ObjectiveType.MELEE_ATTACK,
+          ObjectiveType.BOW_ATTACK,
+          ObjectiveType.CROSSBOW_ATTACK,
+          ObjectiveType.GUN_ATTACK);
+  private static final int ATTACK_STYLE_SPRITE_OFFSET_X = 119;
   private static final double DEFAULT_SPEED_MODIFIER = 0.6D;
   private static final int CONTENT_WIDTH = 300;
   private static final int ROW_HEIGHT = 18;
@@ -67,8 +74,9 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   private static final int SUMMARY_COLOR = 0xFF404040;
   private static final int WARNING_COLOR = 0xFFAA0000;
 
-  private final Map<ObjectiveType, ItemToggleButton> attackStyleButtons =
+  private final Map<ObjectiveType, SpriteToggleButton> attackStyleButtons =
       new EnumMap<>(ObjectiveType.class);
+  protected Checkbox smartAttackCheckbox;
   protected Checkbox attackPlayerCheckbox;
   protected Checkbox spareOwnerCheckbox;
   protected Checkbox attackVillagerCheckbox;
@@ -90,14 +98,15 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
-  private static Item getAttackStyleIcon(ObjectiveType attackStyle) {
+  private static int getAttackStyleSpriteOffsetY(
+      ObjectiveType attackStyle, LivingEntity livingEntity) {
     return switch (attackStyle) {
-      case MELEE_ATTACK -> Items.IRON_SWORD;
-      case ZOMBIE_ATTACK -> Items.ZOMBIE_HEAD;
-      case BOW_ATTACK -> Items.BOW;
-      case CROSSBOW_ATTACK -> Items.CROSSBOW;
-      case GUN_ATTACK -> Items.SPYGLASS;
-      default -> Items.FIRE_CHARGE;
+      case MELEE_ATTACK -> AttackHandler.isHoldingMeleeWeapon(livingEntity) ? 28 : 4;
+      case ZOMBIE_ATTACK -> 54;
+      case BOW_ATTACK -> 80;
+      case CROSSBOW_ATTACK -> 104;
+      case GUN_ATTACK -> 129;
+      default -> 154;
     };
   }
 
@@ -127,17 +136,19 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
 
     this.howSectionTop = top;
     int attackStyleLeft = left;
+    LivingEntity livingEntity = this.getEasyNPC().getLivingEntity();
     for (ObjectiveType attackStyle : ATTACK_STYLES) {
-      ItemToggleButton attackStyleButton =
+      SpriteToggleButton attackStyleButton =
           this.addRenderableWidget(
-              new ItemToggleButton(
+              new SpriteToggleButton(
                   attackStyleLeft,
                   top + 11,
-                  new ItemStack(getAttackStyleIcon(attackStyle)),
+                  ATTACK_STYLE_SPRITE_OFFSET_X,
+                  getAttackStyleSpriteOffsetY(attackStyle, livingEntity),
                   TextComponent.getTranslatedConfigText(attackStyle.getObjectiveName()),
                   this.objectiveDataSet.hasObjective(attackStyle),
-                  itemToggleButton ->
-                      this.onAttackStyleChanged(attackStyle, itemToggleButton.selected())));
+                  spriteToggleButton ->
+                      this.onAttackStyleChanged(attackStyle, spriteToggleButton.selected())));
       attackStyleButton.setTooltip(
           Tooltip.create(
               TextComponent.getTranslatedConfigText(attackStyle.getObjectiveName())
@@ -146,21 +157,36 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
                       TextComponent.getTranslatedConfigText(
                           attackStyle.getObjectiveName() + ".tooltip"))));
       this.attackStyleButtons.put(attackStyle, attackStyleButton);
-      attackStyleLeft += ItemToggleButton.SIZE + 4;
+      attackStyleLeft += SpriteToggleButton.SIZE + 4;
     }
 
     this.addRenderableWidget(
         new TextButton(
             attackStyleLeft + 6,
-            top + 13,
-            110,
-            "projectile_settings",
+            top + 12,
+            70,
+            "projectiles",
             onPress ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .openConfiguration(
                         this.getEasyNPCUUID(), ConfigurationType.PROJECTILE_ATTRIBUTE)));
+    this.smartAttackCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                attackStyleLeft + 86,
+                top + 12,
+                "smart_attack_auto",
+                this.objectiveDataSet.hasObjective(ObjectiveType.SMART_ATTACK),
+                checkbox -> this.onSmartAttackChanged(checkbox.selected())));
+    this.smartAttackCheckbox.setTooltip(
+        Tooltip.create(
+            TextComponent.getTranslatedConfigText(ObjectiveType.SMART_ATTACK.getObjectiveName())
+                .append("\n")
+                .append(
+                    TextComponent.getTranslatedConfigText(
+                        ObjectiveType.SMART_ATTACK.getObjectiveName() + ".tooltip"))));
 
-    this.whoSectionTop = top + 60;
+    this.whoSectionTop = top + 90;
     int whoRowTop = this.whoSectionTop + 11;
     int spareColumn = left + 105;
     int thirdColumn = left + 205;
@@ -249,7 +275,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
         top,
         label,
         this.objectiveDataSet.hasObjective(objectiveType),
-        checkbox -> this.setObjective(objectiveType, checkbox.selected()));
+        checkbox -> this.setTargetObjective(objectiveType, checkbox.selected()));
   }
 
   private Checkbox getDefenseCheckbox(
@@ -260,7 +286,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
             top,
             "defend_when_" + objectiveType.getObjectiveName(),
             this.objectiveDataSet.hasObjective(objectiveType),
-            changedCheckbox -> this.setObjective(objectiveType, changedCheckbox.selected()));
+            changedCheckbox -> this.setTargetObjective(objectiveType, changedCheckbox.selected()));
     checkbox.active = requirementMet;
     checkbox.setTooltip(
         Tooltip.create(
@@ -271,15 +297,49 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
 
   private void onAttackStyleChanged(ObjectiveType attackStyle, boolean selected) {
     this.setObjective(attackStyle, selected);
-    if (selected) {
-      ObjectiveType exclusiveAttackStyle = this.getExclusiveAttackStyle(attackStyle);
-      ItemToggleButton exclusiveButton = this.attackStyleButtons.get(exclusiveAttackStyle);
-      if (exclusiveButton != null && exclusiveButton.selected()) {
-        exclusiveButton.setSelected(false);
-        this.setObjective(exclusiveAttackStyle, false);
-      }
+    ObjectiveType exclusiveAttackStyle = this.getExclusiveAttackStyle(attackStyle);
+    if (selected && exclusiveAttackStyle != ObjectiveType.NONE) {
+      this.setAttackStyle(exclusiveAttackStyle, false);
+    }
+
+    if (!selected && !this.hasAttackTypeSelected()) {
+      this.setSmartAttack(false);
     }
     this.updateAttackSummary();
+  }
+
+  private void onSmartAttackChanged(boolean selected) {
+    this.setObjective(ObjectiveType.SMART_ATTACK, selected);
+    if (selected && !this.hasAttackTypeSelected()) {
+      SMART_ATTACK_DEFAULT_STYLES.forEach(defaultStyle -> this.setAttackStyle(defaultStyle, true));
+    }
+    this.updateAttackSummary();
+  }
+
+  private void setSmartAttack(boolean selected) {
+    this.smartAttackCheckbox.setSelected(selected);
+    this.setObjective(ObjectiveType.SMART_ATTACK, selected);
+  }
+
+  private void setAttackStyle(ObjectiveType attackStyle, boolean selected) {
+    this.attackStyleButtons.get(attackStyle).setSelected(selected);
+    this.setObjective(attackStyle, selected);
+  }
+
+  private boolean hasAttackTypeSelected() {
+    return ObjectiveGroup.ATTACK_TYPE.stream().anyMatch(this.objectiveDataSet::hasObjective);
+  }
+
+  private void setTargetObjective(ObjectiveType objectiveType, boolean selected) {
+    this.setObjective(objectiveType, selected);
+    this.preselectSmartAttackForTarget(selected);
+  }
+
+  private void preselectSmartAttackForTarget(boolean targetSelected) {
+    if (targetSelected && !this.hasAttackTypeSelected()) {
+      this.smartAttackCheckbox.setSelected(true);
+      this.onSmartAttackChanged(true);
+    }
   }
 
   private ObjectiveType getExclusiveAttackStyle(ObjectiveType attackStyle) {
@@ -295,7 +355,9 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     boolean spareOwner = this.spareOwnerCheckbox.selected();
     this.setObjective(ObjectiveType.ATTACK_PLAYER, attackPlayer && !spareOwner);
     this.setObjective(ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER, attackPlayer && spareOwner);
+    this.preselectSmartAttackForTarget(attackPlayer);
     this.updateSpareCheckboxStates();
+    this.updateAttackSummary();
   }
 
   private void applyMobTarget() {
@@ -303,6 +365,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     boolean spareCreeper = this.spareCreeperCheckbox.selected();
     this.setObjective(ObjectiveType.ATTACK_MOB, attackMob && !spareCreeper);
     this.setObjective(ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, attackMob && spareCreeper);
+    this.preselectSmartAttackForTarget(attackMob);
     this.updateSpareCheckboxStates();
   }
 
@@ -347,6 +410,9 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.attackSummaryLines =
         this.font.split(this.getAttackSummary(selectedAttackStyles), CONTENT_WIDTH);
     Component attackWarning = this.getAttackWarning(selectedAttackStyles);
+    if (attackWarning == null) {
+      attackWarning = this.getPlayerTargetWarning();
+    }
     this.attackWarningLines =
         attackWarning == null
             ? Collections.emptyList()
@@ -375,6 +441,10 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private Component getAttackWarning(List<ObjectiveType> selectedAttackStyles) {
+    if (this.smartAttackCheckbox.selected()) {
+      return null;
+    }
+
     LivingEntity livingEntity = this.getEasyNPC().getLivingEntity();
     ObjectiveType firstWeaponAttackStyle = null;
     for (ObjectiveType attackStyle : selectedAttackStyles) {
@@ -397,6 +467,45 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
 
     return TextComponent.getTranslatedConfigText(
         firstWeaponAttackStyle.getObjectiveName() + ".missing_weapon");
+  }
+
+  private Component getPlayerTargetWarning() {
+    boolean sparesOwner =
+        this.objectiveDataSet.hasObjective(ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER);
+    if (!sparesOwner && !this.objectiveDataSet.hasObjective(ObjectiveType.ATTACK_PLAYER)) {
+      return null;
+    }
+
+    String reason = this.getPlayerNotAttackedReason(sparesOwner);
+    if (reason == null) {
+      return null;
+    }
+
+    return TextComponent.getTranslatedConfigText("attack_target_player." + reason);
+  }
+
+  private String getPlayerNotAttackedReason(boolean sparesOwner) {
+    LivingEntity livingEntity = this.getEasyNPC().getLivingEntity();
+    if (livingEntity.level().getDifficulty() == Difficulty.PEACEFUL) {
+      return "peaceful";
+    }
+
+    Player player = this.minecraft == null ? null : this.minecraft.player;
+    if (player == null) {
+      return null;
+    }
+
+    OwnerDataCapable<?> ownerData = this.getEasyNPC().getEasyNPCOwnerData();
+    if (sparesOwner && ownerData != null && ownerData.isNPCOwnedBy(player)) {
+      return "owner_spared";
+    }
+    if (!player.canBeSeenAsEnemy()) {
+      return "invulnerable";
+    }
+    if (livingEntity.isAlliedTo(player)) {
+      return "allied";
+    }
+    return null;
   }
 
   private boolean hasOwner() {
@@ -444,7 +553,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
         this.renderLines(
             guiGraphics,
             this.attackSummaryLines,
-            this.howSectionTop + 11 + ItemToggleButton.SIZE + 4,
+            this.howSectionTop + 11 + SpriteToggleButton.SIZE + 4,
             SUMMARY_COLOR);
     this.renderLines(guiGraphics, this.attackWarningLines, textTop, WARNING_COLOR);
     this.renderSectionTitle(guiGraphics, "attack_question_who", this.whoSectionTop);

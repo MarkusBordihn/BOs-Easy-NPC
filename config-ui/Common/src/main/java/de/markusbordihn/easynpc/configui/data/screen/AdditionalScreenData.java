@@ -43,7 +43,11 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
+import de.markusbordihn.easynpc.io.ServerSkinIndex;
+import de.markusbordihn.easynpc.io.ServerSkinIndex.ServerSkin;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -68,6 +72,9 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String BLOCKED_ACTION_TYPES_TAG = "BlockedActionTypes";
   private static final String FACTION_REGISTRY_TAG = "FactionRegistry";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
+  private static final String SERVER_SKINS_TAG = "ServerSkins";
+  private static final String SERVER_SKIN_NAME_TAG = "Name";
+  private static final String SERVER_SKIN_UUID_TAG = "UUID";
   private static final String SOUND_DATA_TAG = "SoundData";
   private static final String TRADING_OFFER_ACTION_DATA_TAG = "TradingOfferActionData";
   private static final String VISIBILITY_CONDITION_DATA_TAG = "VisibilityConditionData";
@@ -354,6 +361,42 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public static boolean hasFactionData(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(FACTION_REGISTRY_TAG);
+  }
+
+  public static void addServerSkins(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
+    if (compoundTag == null
+        || easyNPC == null
+        || easyNPC.getEasyNPCSkinData() == null
+        || easyNPC.getEasyNPCSkinData().getSkinModel() == null) {
+      return;
+    }
+
+    ListTag serverSkinsTag = new ListTag();
+    for (ServerSkin serverSkin :
+        ServerSkinIndex.getSkins(easyNPC.getEasyNPCSkinData().getSkinModel())) {
+      CompoundTag serverSkinTag = new CompoundTag();
+      CompoundTagUtils.writeUUID(serverSkinTag, SERVER_SKIN_UUID_TAG, serverSkin.skinUUID());
+      serverSkinTag.putString(SERVER_SKIN_NAME_TAG, serverSkin.displayName());
+      serverSkinsTag.add(serverSkinTag);
+    }
+    compoundTag.put(SERVER_SKINS_TAG, serverSkinsTag);
+  }
+
+  public static Map<UUID, String> getServerSkins(CompoundTag compoundTag) {
+    Map<UUID, String> serverSkins = new LinkedHashMap<>();
+    if (compoundTag == null || !compoundTag.contains(SERVER_SKINS_TAG)) {
+      return serverSkins;
+    }
+
+    ListTag serverSkinsTag = compoundTag.getListOrEmpty(SERVER_SKINS_TAG);
+    for (int i = 0; i < serverSkinsTag.size(); i++) {
+      CompoundTag serverSkinTag = serverSkinsTag.getCompoundOrEmpty(i);
+      UUID serverSkinUUID = CompoundTagUtils.readUUID(serverSkinTag, SERVER_SKIN_UUID_TAG);
+      if (serverSkinUUID != null) {
+        serverSkins.put(serverSkinUUID, serverSkinTag.getStringOr(SERVER_SKIN_NAME_TAG, ""));
+      }
+    }
+    return serverSkins;
   }
 
   public static void addBlockedConfigurations(

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBase
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryPlayerSlotCountMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProjectileDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenVisibilityConditionEditorMessage;
@@ -155,6 +156,13 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     if (uuid != null && attributeType != null && booleanValue != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeInventoryAttributeMessage(uuid, attributeType, booleanValue));
+    }
+  }
+
+  default void inventoryPlayerSlotCountChange(UUID uuid, int playerSlotCount) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeInventoryPlayerSlotCountMessage(uuid, playerSlotCount));
     }
   }
 

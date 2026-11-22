@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.utils.SkinFileNameUtils;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -36,7 +36,6 @@ public class TextureCacheManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Texture Cache Manager]";
-  private static final String FILE_EXTENSION_PNG = ".png";
   private static final String FILE_EXTENSION_SOURCE = ".source";
 
   private TextureCacheManager() {}
@@ -154,16 +153,11 @@ public class TextureCacheManager {
       return null;
     }
 
-    if (!fileName.endsWith(FILE_EXTENSION_PNG)) {
+    UUID skinUUID = SkinFileNameUtils.getSkinUUID(fileName);
+    if (skinUUID == null) {
       log.error("{} Unable to get UUID from invalid file name {}!", LOG_PREFIX, fileName);
-      return null;
     }
-
-    try {
-      return UUID.fromString(fileName.substring(0, fileName.indexOf('.')));
-    } catch (IllegalArgumentException e) {
-      return UUID.nameUUIDFromBytes(fileName.getBytes(StandardCharsets.UTF_8));
-    }
+    return skinUUID;
   }
 
   private static File getCachedTextureFile(TextureModelKey textureModelKey, Path targetDirectory) {

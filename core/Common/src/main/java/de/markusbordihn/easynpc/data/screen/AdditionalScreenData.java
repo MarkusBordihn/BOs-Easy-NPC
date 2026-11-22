@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.screen;
 
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributes;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
@@ -47,6 +48,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
   private static final String DIALOG_BUTTON_LOCK_DATA_TAG = "DialogButtonLockData";
   private static final String EXECUTION_LIMIT_DATA_TAG = "ExecutionLimitData";
+  private static final String PLAYER_SLOT_COUNT_TAG = "PlayerSlotCount";
   private static final Set<String> PROCESSED_DATA_TAGS =
       Set.of(
           ACTION_EVENT_DATA_TAG,
@@ -160,6 +162,19 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public static boolean hasScoreboardData(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(SCOREBOARD_DATA_TAG);
+  }
+
+  public static void addPlayerSlotCount(CompoundTag compoundTag, int playerSlotCount) {
+    if (compoundTag == null) {
+      return;
+    }
+
+    compoundTag.putInt(PLAYER_SLOT_COUNT_TAG, playerSlotCount);
+  }
+
+  public static int getPlayerSlotCount(CompoundTag compoundTag) {
+    return InventoryAttributes.clampPlayerSlotCount(
+        compoundTag == null ? 0 : compoundTag.getIntOr(PLAYER_SLOT_COUNT_TAG, 0));
   }
 
   public static void addDialogDataSet(

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen;
 
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.inventory.NPCInventoryScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 
@@ -29,5 +30,6 @@ public class ClientScreens {
 
   public static void registerScreens() {
     MenuScreens.register(ModMenuTypes.DIALOG_MENU, DialogScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.NPC_INVENTORY_MENU, NPCInventoryScreen::new);
   }
 }

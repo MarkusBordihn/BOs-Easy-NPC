@@ -42,6 +42,7 @@ public class GuiRendererMixin {
 
   @Unique
   private final List<GuiEntityRenderer> easyNPC$additionalEntityRenderers = new ArrayList<>();
+
   @Shadow @Final private GuiRenderState renderState;
   @Shadow @Final private FeatureRenderDispatcher featureRenderDispatcher;
   @Unique private int easyNPC$preparedEntityStates;

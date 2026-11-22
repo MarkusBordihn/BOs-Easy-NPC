@@ -57,6 +57,31 @@ public final class InventoryTest {
     helper.succeed();
   }
 
+  public static void testInventoryActionOpensPlayerSlots(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryActionOpensPlayerSlots(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testInventoryMenuMovesItemsOnlyIntoPlayerSlots(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuMovesItemsOnlyIntoPlayerSlots(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testInventoryMenuClosesOutOfReachOrWithoutNPC(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuClosesOutOfReachOrWithoutNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testInventoryMenuDoesNotDuplicateItemsOnDeath(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuDoesNotDuplicateItemsOnDeath(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testSpectatorCannotOpenInventory(GameTestHelper helper) {
+    InventoryTestHelper.assertSpectatorCannotOpenInventory(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testPresetItemDropsInventoryContents(GameTestHelper helper) {
     InventoryTestHelper.assertPresetItemDropsInventoryContents(helper, humanoid());
     helper.succeed();

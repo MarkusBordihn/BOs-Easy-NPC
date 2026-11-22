@@ -28,6 +28,7 @@ public enum NpcFeature {
   CUSTOM_ACTION("Custom actions"),
   INTERACT_BLOCK_ACTION("Block actions"),
   OPEN_TRADING_ACTION("Trading actions"),
+  OPEN_INVENTORY_ACTION("Inventory actions"),
   OBJECTIVE("Objectives"),
   FACTION_MANAGEMENT("Faction management"),
   MOVEMENT("Movement"),
