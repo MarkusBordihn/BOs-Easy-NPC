@@ -83,6 +83,12 @@ class ObjectiveGroupTest {
   }
 
   @Test
+  @DisplayName("Smart attack is an attack modifier and no attack type")
+  void testAttackModifiers() {
+    assertEquals(EnumSet.of(ObjectiveType.SMART_ATTACK), ObjectiveGroup.ATTACK_MODIFIER);
+  }
+
+  @Test
   @DisplayName("Follow types are the three entity based follow objectives")
   void testFollowTypes() {
     assertEquals(

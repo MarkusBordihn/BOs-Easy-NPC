@@ -362,7 +362,28 @@ public class AttributeHandler {
           entityAttributes.setInventoryAttributes(attributes.withDropOnDeath(value));
       case PICK_UP_ITEMS ->
           entityAttributes.setInventoryAttributes(attributes.withPickUpItems(value));
+      case PLAYER_SLOT_COUNT -> {
+        return false;
+      }
     }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setInventoryPlayerSlotCount(EasyNPC<?> easyNPC, int playerSlotCount) {
+    if (easyNPC == null) {
+      return false;
+    }
+
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    log.debug("Changing inventory player slot count to {} for {}", playerSlotCount, easyNPC);
+    entityAttributes.setInventoryAttributes(
+        entityAttributes.getInventoryAttributes().withPlayerSlotCount(playerSlotCount));
     attributeData.refreshEntityAttributes();
     return true;
   }

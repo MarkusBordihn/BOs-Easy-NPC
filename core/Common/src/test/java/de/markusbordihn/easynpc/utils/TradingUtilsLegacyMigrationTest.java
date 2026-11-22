@@ -26,6 +26,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentInitializers;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +52,10 @@ class TradingUtilsLegacyMigrationTest {
 
   private static RegistryAccess.Frozen registries() {
     return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+  }
+
+  private static String customDataString(ItemStack itemStack, String key) {
+    return itemStack.get(DataComponents.CUSTOM_DATA).copyTag().getStringOr(key, "");
   }
 
   @Test
@@ -83,5 +88,25 @@ class TradingUtilsLegacyMigrationTest {
     TextColor color = result.getHoverName().getStyle().getColor();
     assertNotNull(color, "Custom name color should be preserved during migration");
     assertEquals(TextColor.fromLegacyFormat(ChatFormatting.GOLD), color);
+  }
+
+  @Test
+  @DisplayName("Custom data of modded items stays in and is restored to minecraft:custom_data")
+  void testModdedItemCustomDataSurvivesLoading() throws Exception {
+    CompoundTag offersTag =
+        TagParser.parseCompoundFully(
+            "{Offers:[{"
+                + "buy:{id:\"minecraft:crossbow\",count:1,"
+                + "components:{\"minecraft:custom_data\":{AmmoId:\"tacz:45acp\"}}},"
+                + "sell:{id:\"minecraft:crossbow\",count:1,"
+                + "components:{\"easy_npc:custom_data\":{GunId:\"tacz:deagle\"}}},"
+                + "maxUses:64,priceMultiplier:1.0f,rewardExp:1b}]}");
+
+    MerchantOffers offers =
+        TradingUtils.parseMerchantOffers(offersTag, "Offers", registries(), "custom-data-test");
+
+    assertNotNull(offers, "Offers with modded custom data should load");
+    assertEquals("tacz:45acp", customDataString(offers.get(0).getBaseCostA(), "AmmoId"));
+    assertEquals("tacz:deagle", customDataString(offers.get(0).getResult(), "GunId"));
   }
 }

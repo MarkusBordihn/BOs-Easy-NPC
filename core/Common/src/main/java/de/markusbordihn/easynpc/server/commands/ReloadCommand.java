@@ -23,12 +23,15 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.ReloadHandler;
+import de.markusbordihn.easynpc.io.ServerSkinIndex;
 import java.util.Collection;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.permissions.Permissions;
 
 public class ReloadCommand extends Command {
 
@@ -37,11 +40,25 @@ public class ReloadCommand extends Command {
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("reload")
         .then(
+            Commands.literal("skins")
+                .requires(commandSourceStack ->
+                    commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .executes(context -> reloadServerSkins(context.getSource())))
+        .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .executes(context ->
                     reload(
                         context.getSource(),
                         EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
+  }
+
+  private static int reloadServerSkins(CommandSourceStack context) {
+    ServerSkinIndex.reload();
+    int skinCount = 0;
+    for (SkinModel skinModel : SkinModel.values()) {
+      skinCount += ServerSkinIndex.getSkins(skinModel).size();
+    }
+    return sendSuccessMessage(context, "Reloaded " + skinCount + " server skins!");
   }
 
   private static int reload(CommandSourceStack context, Collection<? extends EasyNPC<?>> easyNPCs) {

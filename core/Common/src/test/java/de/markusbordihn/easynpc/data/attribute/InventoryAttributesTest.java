@@ -29,6 +29,13 @@ import org.junit.jupiter.api.Test;
 
 class InventoryAttributesTest {
 
+  private static int decodePlayerSlotCount(int storedPlayerSlotCount) {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putInt(
+        InventoryAttributeType.PLAYER_SLOT_COUNT.getTagName(), storedPlayerSlotCount);
+    return InventoryAttributes.decode(compoundTag).playerSlotCount();
+  }
+
   @Test
   @DisplayName("Unchanged inventory attributes are not stored")
   void testDefaultsAreNotStored() {
@@ -47,12 +54,22 @@ class InventoryAttributesTest {
   @DisplayName("Changed inventory attributes survive a round trip")
   void testChangedAttributesSurviveRoundTrip() {
     InventoryAttributes inventoryAttributes =
-        InventoryAttributes.EMPTY.withDropOnDeath(true).withPickUpItems(true);
+        InventoryAttributes.EMPTY
+            .withDropOnDeath(true)
+            .withPickUpItems(true)
+            .withPlayerSlotCount(18);
 
     InventoryAttributes restored =
         InventoryAttributes.decode(inventoryAttributes.encode(new CompoundTag()));
 
     assertEquals(inventoryAttributes, restored);
+  }
+
+  @Test
+  @DisplayName("Stored player slot count is clamped to the inventory size")
+  void testPlayerSlotCountIsClamped() {
+    assertEquals(InventoryAttributes.MAX_PLAYER_SLOT_COUNT, decodePlayerSlotCount(1000));
+    assertEquals(InventoryAttributes.MIN_PLAYER_SLOT_COUNT, decodePlayerSlotCount(-5));
   }
 
   @Test

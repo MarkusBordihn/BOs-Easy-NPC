@@ -54,6 +54,7 @@ public class ClientEvents {
 
   public static void handleClientTickEvent() {
     TextureRegistrationQueue.getInstance().processPendingRegistrations();
+    CustomTextureManager.processServerSkinRequests();
     SpeechBubbleManager.tick();
     NPCHighlightManager.tick();
   }

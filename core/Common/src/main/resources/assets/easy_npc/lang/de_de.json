@@ -146,6 +146,7 @@
   "text.easy_npc.preset.sanitize.position_removed": "Positionsdaten wurden entfernt.",
   "text.easy_npc.preset.sanitize.scoreboard_action_removed": "Scoreboard-Aktionen wurden entfernt.",
   "text.easy_npc.preset.sanitize.trading_action_removed": "Handelsaktionen wurden entfernt.",
+  "text.easy_npc.preset.sanitize.inventory_action_removed": "Inventar-Aktionen wurden entfernt.",
   "text.easy_npc.preset.sanitize.trading_removed": "Der Handel wurde entfernt.",
   "text.easy_npc.preset.spawn_denied": "Du darfst keine NPCs aus Vorlagen erzeugen.",
   "text.easy_npc.preset.spawn_rate_limited": "Das Spawn-Limit von %1$s NPCs pro Minute ist erreicht, bitte warte einen Moment.",

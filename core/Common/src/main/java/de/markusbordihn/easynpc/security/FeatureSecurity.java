@@ -82,6 +82,7 @@ public class FeatureSecurity {
       case CUSTOM -> NpcFeature.CUSTOM_ACTION;
       case INTERACT_BLOCK -> NpcFeature.INTERACT_BLOCK_ACTION;
       case OPEN_TRADING_SCREEN -> NpcFeature.OPEN_TRADING_ACTION;
+      case OPEN_INVENTORY_SCREEN -> NpcFeature.OPEN_INVENTORY_ACTION;
       case CLOSE_DIALOG, OPEN_DEFAULT_DIALOG, OPEN_NAMED_DIALOG -> NpcFeature.DIALOG;
       default -> null;
     };

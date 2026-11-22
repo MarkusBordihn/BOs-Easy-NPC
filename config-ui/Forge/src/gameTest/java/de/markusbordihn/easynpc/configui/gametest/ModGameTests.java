@@ -231,6 +231,9 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "interaction_flag_change", () -> AttributeMessageTest::testInteractionFlagChange);
     TEST_FUNCTIONS.register(
+        "inventory_player_slot_count_change",
+        () -> AttributeMessageTest::testInventoryPlayerSlotCountChange);
+    TEST_FUNCTIONS.register(
         "shoulder_offset_change", () -> AttributeMessageTest::testShoulderOffsetChange);
     TEST_FUNCTIONS.register(
         "environmental_flag_change", () -> AttributeMessageTest::testEnvironmentalFlagChange);
