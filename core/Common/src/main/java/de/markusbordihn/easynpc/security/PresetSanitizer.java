@@ -390,6 +390,8 @@ public class PresetSanitizer {
           new PresetFeatureNotice(NpcFeature.INTERACT_BLOCK_ACTION, PresetFeatureStatus.BLOCKED);
       case TRADING_ACTION_REMOVED ->
           new PresetFeatureNotice(NpcFeature.OPEN_TRADING_ACTION, PresetFeatureStatus.BLOCKED);
+      case INVENTORY_ACTION_REMOVED ->
+          new PresetFeatureNotice(NpcFeature.OPEN_INVENTORY_ACTION, PresetFeatureStatus.BLOCKED);
       case OBJECTIVE_REMOVED ->
           new PresetFeatureNotice(NpcFeature.OBJECTIVE, PresetFeatureStatus.BLOCKED);
       case MOVEMENT_REMOVED ->
@@ -415,6 +417,7 @@ public class PresetSanitizer {
       case CUSTOM -> PresetSanitizationNotice.CUSTOM_ACTION_REMOVED;
       case INTERACT_BLOCK -> PresetSanitizationNotice.BLOCK_ACTION_REMOVED;
       case OPEN_TRADING_SCREEN -> PresetSanitizationNotice.TRADING_ACTION_REMOVED;
+      case OPEN_INVENTORY_SCREEN -> PresetSanitizationNotice.INVENTORY_ACTION_REMOVED;
       default -> null;
     };
   }

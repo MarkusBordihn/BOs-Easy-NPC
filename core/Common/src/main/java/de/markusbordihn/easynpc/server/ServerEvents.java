@@ -36,6 +36,7 @@ import de.markusbordihn.easynpc.handler.PlayerIdleTracker;
 import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
 import de.markusbordihn.easynpc.io.BackgroundFileWriter;
 import de.markusbordihn.easynpc.io.DataFileHandler;
+import de.markusbordihn.easynpc.io.ServerSkinIndex;
 import java.time.Duration;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -132,6 +133,7 @@ public class ServerEvents {
     NPCEntityManager.reset();
     BackupManager.reset();
     EasyNPCEntityTypes.reset();
+    ServerSkinIndex.clear();
   }
 
   private static void logStorageStatistics(NPCStorageStatistics statistics) {

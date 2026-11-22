@@ -154,11 +154,13 @@ mixin {
 }
 
 // MixinGradle writes the refmap, its jar copy and the mixin mappings into the temporary directory without
-// declaring them as outputs, so a build cache hit produced a jar without refmap (#843).
+// declaring them as outputs, so a build cache hit produced a jar without refmap (#843). A compile that
+// left no refmap behind also stayed up to date, and every later jar crashed Forge servers.
 tasks.named('compileJava') {
   outputs.file(new File(temporaryDir, 'compileJava-refmap.json'))
   outputs.file(new File(temporaryDir, 'easy_npc.refmap.json'))
   outputs.file(new File(temporaryDir, 'compileJava-mappings.tsrg'))
+  outputs.upToDateWhen { compileTask -> new File(compileTask.temporaryDir, 'easy_npc.refmap.json').isFile() }
 }
 
 // MixinGradle hands these mappings to reobfJar only if they exist when its configure task runs, but does not

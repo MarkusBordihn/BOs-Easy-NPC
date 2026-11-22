@@ -31,6 +31,7 @@ public enum ActionDataType {
   CLOSE_DIALOG(false),
   INTERACT_BLOCK,
   OPEN_TRADING_SCREEN(false),
+  OPEN_INVENTORY_SCREEN(false),
   OPEN_DEFAULT_DIALOG(false),
   OPEN_NAMED_DIALOG,
   OPEN_NAMED_DIALOG_CONDITIONAL,
@@ -47,7 +48,8 @@ public enum ActionDataType {
   CUSTOM,
   MOVE_TO,
   MOVE_TO_AND_WAIT,
-  SET_OPACITY;
+  SET_OPACITY,
+  SET_SKIN;
 
   private static final Set<ActionDataType> BLOCKING_ACTION_TYPES =
       Collections.unmodifiableSet(EnumSet.of(WAIT, MOVE_TO_AND_WAIT));

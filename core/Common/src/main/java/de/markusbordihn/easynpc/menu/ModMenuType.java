@@ -24,7 +24,8 @@ import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ModMenuType {
-  DIALOG;
+  DIALOG,
+  NPC_INVENTORY;
 
   private final String menuName = this.name().toLowerCase(Locale.ROOT);
   private final ResourceLocation id = new ResourceLocation(Constants.MOD_ID, this.menuName);

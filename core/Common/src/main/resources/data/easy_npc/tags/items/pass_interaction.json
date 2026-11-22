@@ -3,6 +3,7 @@
   "values": [
     "#easy_npc:ranged_weapon/bow",
     "#easy_npc:ranged_weapon/crossbow",
+    "#easy_npc:ranged_weapon/gun",
     "minecraft:trident",
     "minecraft:shield"
   ]

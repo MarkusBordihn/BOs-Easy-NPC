@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.inventory.NPCInventoryMenu;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +31,11 @@ public class ModMenuTypes {
 
   public static final MenuType<DialogMenuWrapper> DIALOG_MENU =
       ScreenHandlerRegistry.registerSimple(ModMenuType.DIALOG.getId(), DialogMenuWrapper::new);
+  public static final MenuType<NPCInventoryMenu> NPC_INVENTORY_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          ModMenuType.NPC_INVENTORY.getId(),
+          (containerId, playerInventory) ->
+              new NPCInventoryMenu(ModMenuTypes.NPC_INVENTORY_MENU, containerId, playerInventory));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModMenuTypes() {}

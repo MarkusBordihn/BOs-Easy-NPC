@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.inventory.NPCInventoryScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -36,7 +37,9 @@ public class ClientScreens {
   public static void registerScreens(final FMLClientSetupEvent event) {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
 
-    event.enqueueWork(
-        () -> MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new));
+    event.enqueueWork(() -> {
+      MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
+      MenuScreens.register(ModMenuTypes.NPC_INVENTORY_MENU.get(), NPCInventoryScreen::new);
+    });
   }
 }

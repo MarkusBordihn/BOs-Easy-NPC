@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.config.RemoteTextureConfig;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.texture.TextureFailureType;
 import de.markusbordihn.easynpc.validator.ImageValidator;
+import de.markusbordihn.easynpc.validator.PngFileValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,7 +50,7 @@ public class RemoteTextureLoader {
   private static final String LOG_PREFIX = "[Remote Texture Loader]";
   private static final int CONNECTION_TIMEOUT = 10000;
   private static final int READ_TIMEOUT = 30000;
-  private static final long MAX_DOWNLOAD_SIZE = 5 * 1024 * 1024;
+  private static final long MAX_DOWNLOAD_SIZE = PngFileValidator.MAX_FILE_SIZE;
   private static final int MAX_REDIRECTS = 5;
   private static final int HTTP_TEMPORARY_REDIRECT = 307;
   private static final int HTTP_PERMANENT_REDIRECT = 308;
@@ -160,7 +161,16 @@ public class RemoteTextureLoader {
       }
 
       try (InputStream inputStream = connection.getInputStream()) {
-        imageBytes = readLimited(inputStream, MAX_DOWNLOAD_SIZE);
+        PngFileValidator.Result validationResult =
+            PngFileValidator.sanitize(readLimited(inputStream, MAX_DOWNLOAD_SIZE));
+        if (!validationResult.isValid()) {
+          String error = "Invalid PNG file: " + validationResult.rejectionReason();
+          TextureErrorHandler.processingErrorMessage(textureModelKey, remoteUrl, error);
+          RemoteTextureManager.markPermanentFailure(
+              textureModelKey, TextureFailureType.DECODING_ERROR, error, remoteUrl);
+          return CompletableFuture.completedFuture(null);
+        }
+        imageBytes = validationResult.pngBytes();
         nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
       }
 

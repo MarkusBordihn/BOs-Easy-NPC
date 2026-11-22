@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.HighlightEasyNPCMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.ServerSkinDataMessage;
 import de.markusbordihn.easynpc.network.message.client.SpeechBubbleMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.network.message.client.UpdateEasyNPCVisibilityMessage;
@@ -30,6 +31,7 @@ import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage
 import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
+import de.markusbordihn.easynpc.network.message.server.RequestServerSkinMessage;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -112,6 +114,11 @@ public class NetworkHandlerManager {
         UpdateEasyNPCVisibilityMessage.MESSAGE_ID,
         UpdateEasyNPCVisibilityMessage.class,
         UpdateEasyNPCVisibilityMessage::create);
+
+    networkHandler.registerClientNetworkMessage(
+        ServerSkinDataMessage.MESSAGE_ID,
+        ServerSkinDataMessage.class,
+        ServerSkinDataMessage::create);
   }
 
   public static void registerServerNetworkHandler() {
@@ -138,5 +145,10 @@ public class NetworkHandlerManager {
         RequestDataSyncMessage.MESSAGE_ID,
         RequestDataSyncMessage.class,
         RequestDataSyncMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        RequestServerSkinMessage.MESSAGE_ID,
+        RequestServerSkinMessage.class,
+        RequestServerSkinMessage::create);
   }
 }

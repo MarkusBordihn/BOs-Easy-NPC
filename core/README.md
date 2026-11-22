@@ -31,6 +31,8 @@ Easy NPC is integrated.
 >
 >
 >
+>
+>
 > at: [https://www.curseforge.com/minecraft/mc-mods/easy-npc](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 
 ## ✅ Can Be Used Standalone

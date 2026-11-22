@@ -64,6 +64,36 @@ public class InventoryTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testInventoryActionOpensPlayerSlots(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryActionOpensPlayerSlots(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInventoryMenuMovesItemsOnlyIntoPlayerSlots(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuMovesItemsOnlyIntoPlayerSlots(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInventoryMenuClosesOutOfReachOrWithoutNPC(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuClosesOutOfReachOrWithoutNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInventoryMenuDoesNotDuplicateItemsOnDeath(GameTestHelper helper) {
+    InventoryTestHelper.assertInventoryMenuDoesNotDuplicateItemsOnDeath(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testSpectatorCannotOpenInventory(GameTestHelper helper) {
+    InventoryTestHelper.assertSpectatorCannotOpenInventory(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testPresetItemDropsInventoryContents(GameTestHelper helper) {
     InventoryTestHelper.assertPresetItemDropsInventoryContents(helper, humanoid());
     helper.succeed();

@@ -128,6 +128,9 @@ public class DataFileHandler {
     log.debug("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPresetDataFiles.registerCustomPresetData();
     WorldPresetDataFiles.registerWorldPresetData();
+
+    log.debug("{} Server skin data ...", Constants.LOG_REGISTER_PREFIX);
+    ServerSkinIndex.reload();
   }
 
   public static void registerClientDataFiles() {

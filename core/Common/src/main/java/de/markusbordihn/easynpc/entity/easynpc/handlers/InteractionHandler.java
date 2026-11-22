@@ -54,7 +54,7 @@ public class InteractionHandler {
 
     ItemStack handItemStack = player.getItemInHand(hand);
     Item handItem = handItemStack.getItem();
-    if (isEasyNPCToolItem(handItem)) {
+    if (!handItemStack.isEmpty() && isEasyNPCToolItem(handItem)) {
       return InteractionResult.PASS;
     }
 

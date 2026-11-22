@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRel
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeHomePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryPlayerSlotCountMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
@@ -475,5 +476,10 @@ public class NetworkHandlerManager {
         SaveVisibilityConditionsMessage.MESSAGE_ID,
         SaveVisibilityConditionsMessage.class,
         SaveVisibilityConditionsMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeInventoryPlayerSlotCountMessage.MESSAGE_ID,
+        ChangeInventoryPlayerSlotCountMessage.class,
+        ChangeInventoryPlayerSlotCountMessage::create);
   }
 }

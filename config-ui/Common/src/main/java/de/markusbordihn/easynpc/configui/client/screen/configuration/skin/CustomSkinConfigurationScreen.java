@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
 import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -40,7 +41,9 @@ import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,6 +62,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox disableLayersCheckbox = null;
   protected EditBox skinSearchField = null;
   private String searchFilter = null;
+  private Map<UUID, String> serverSkins = Map.of();
 
   public CustomSkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -73,13 +77,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     int skinPosition = 0;
     this.skinButtons = new ArrayList<>();
 
-    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
-    SkinModel skinModel = skinData.getSkinModel();
-    Set<UUID> textures =
-        CustomTextureManager.getCustomTextureCacheKeys(skinModel, this.searchFilter);
-    this.numOfSkins = textures.size();
-
-    Object[] textureKeys = textures.toArray();
+    List<UUID> textureKeys = this.getSkinUUIDs();
+    this.numOfSkins = textureKeys.size();
 
     if (this.lastNumOfSkins != this.numOfSkins) {
       this.checkSkinNavigationButtonState();
@@ -92,8 +91,9 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      UUID textureKey = (UUID) textureKeys[i];
+      UUID textureKey = textureKeys.get(i);
       this.renderSkinEntity(guiGraphics, left, top, textureKey);
+      String serverSkinName = this.serverSkins.get(textureKey);
 
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
@@ -105,10 +105,11 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.normalizeString(textureKey.toString()),
+          TextUtils.normalizeString(
+              serverSkinName != null ? serverSkinName : textureKey.toString()),
           leftNamePos,
           topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN,
+          serverSkinName != null ? Constants.FONT_COLOR_DEFAULT : Constants.FONT_COLOR_DARK_GREEN,
           11,
           scaledMouseX,
           scaledMouseY);
@@ -116,6 +117,25 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
       skinPosition++;
     }
+  }
+
+  private List<UUID> getSkinUUIDs() {
+    SkinModel skinModel = this.getEasyNPC().getEasyNPCSkinData().getSkinModel();
+    List<UUID> skinUUIDs = new ArrayList<>();
+    for (UUID skinUUID :
+        CustomTextureManager.getCustomTextureCacheKeys(skinModel, this.searchFilter)) {
+      if (!this.serverSkins.containsKey(skinUUID)) {
+        skinUUIDs.add(skinUUID);
+      }
+    }
+    String skinSearchName =
+        this.searchFilter != null ? this.searchFilter.toLowerCase(Locale.ROOT) : "";
+    this.serverSkins.forEach((skinUUID, skinName) -> {
+      if (skinName.toLowerCase(Locale.ROOT).contains(skinSearchName)) {
+        skinUUIDs.add(skinUUID);
+      }
+    });
+    return skinUUIDs;
   }
 
   private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, UUID textureUUID) {
@@ -161,7 +181,9 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     CustomTextureManager.ensureTextureCacheLoaded(skinModel);
-    this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
+    this.serverSkins =
+        AdditionalScreenData.getServerSkins(this.getAdditionalScreenData().getData());
+    this.numOfSkins = this.getSkinUUIDs().size();
 
     this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
 

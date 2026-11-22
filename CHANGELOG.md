@@ -8,6 +8,21 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.21.0
+
+- Fixed right-click actions not running with an empty hand without Config UI.
+- Fixed a client crash from oversized remote skin images.
+- Fixed modified clients sending unchecked skin URLs to other players.
+- Fixed long attack summaries overlapping "Who does it attack?".
+- Changed right-clicking an NPC without actions while holding a gun to fire the gun.
+- Added Iron's Arms 'n Artifice guns to "Gun Attack" to fix #864.
+- Added `/easy_npc skin set custom` and a "SET_SKIN" action to fix #869.
+- Added sending the server's custom skins to players who do not have them.
+- Added an "OPEN_INVENTORY_SCREEN" action to fix #868.
+- Added "Auto" to the attack screen to pick the best attack for each target to fix #867.
+- Added a warning on the attack screen when players are not attacked, e.g. on Peaceful.
+- Improved skin file checks and removed hidden metadata from skin files.
+
 ### 7.20.0
 
 - Fixed a crash on NPCs with a missing skin ID, thanks to `voidsipp` for the fix in #866.
