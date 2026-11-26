@@ -196,13 +196,13 @@ public class RemoteTextureManager {
       return null;
     }
 
-    SkinModel skinModel = skinData.getSkinModel();
-    Path textureDataFolder = RemoteSkinDataFiles.getRemoteSkinDataFolder(skinModel);
-    if (textureDataFolder == null) {
+    if (AsyncTextureLoader.shouldSkipDiskLookup(textureModelKey)) {
       return null;
     }
 
-    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+    SkinModel skinModel = skinData.getSkinModel();
+    Path textureDataFolder = RemoteSkinDataFiles.getRemoteSkinDataFolder(skinModel);
+    if (textureDataFolder == null) {
       return null;
     }
 
@@ -248,6 +248,7 @@ public class RemoteTextureManager {
   }
 
   public static void clearTextureCache() {
+    AsyncTextureLoader.clearDiskLookups();
     TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
     textureCache.clear();

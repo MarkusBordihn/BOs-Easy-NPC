@@ -30,10 +30,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class HuskBase extends HuskRaw implements BaseEasyNPC<HuskRaw> {
 
@@ -99,16 +97,5 @@ public class HuskBase extends HuskRaw implements BaseEasyNPC<HuskRaw> {
   @Override
   protected boolean isSunSensitive() {
     return false;
-  }
-
-  @Override
-  public void travel(Vec3 vec3) {
-    this.handleNavigationTravelEvent(vec3);
-
-    if (this.hasTravelTargetObjectives()) {
-      super.travel(vec3);
-    } else {
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
-    }
   }
 }

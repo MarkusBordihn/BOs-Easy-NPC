@@ -62,6 +62,8 @@ public class AsyncTextureLoader {
   private static final Queue<TextureLoadRequest> downloadQueue = new ConcurrentLinkedQueue<>();
   private static final Map<TextureModelKey, CompletableFuture<ResourceLocation>> pendingLoads =
       new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, Long> lastDiskLookups = new ConcurrentHashMap<>();
+  private static final long DISK_LOOKUP_INTERVAL_MILLISECONDS = 1000;
   private static volatile long lastDownloadTime = 0;
 
   static {
@@ -113,6 +115,30 @@ public class AsyncTextureLoader {
 
   static boolean hasPendingLoad(TextureModelKey key) {
     return pendingLoads.containsKey(key);
+  }
+
+  static boolean shouldSkipDiskLookup(TextureModelKey key) {
+    if (hasPendingLoad(key)) {
+      return true;
+    }
+
+    long currentTime = System.currentTimeMillis();
+    Long lastDiskLookup = lastDiskLookups.get(key);
+    if (lastDiskLookup != null
+        && currentTime - lastDiskLookup < DISK_LOOKUP_INTERVAL_MILLISECONDS) {
+      return true;
+    }
+
+    lastDiskLookups.put(key, currentTime);
+    return false;
+  }
+
+  static void clearDiskLookup(TextureModelKey key) {
+    lastDiskLookups.remove(key);
+  }
+
+  static void clearDiskLookups() {
+    lastDiskLookups.clear();
   }
 
   public static CompletableFuture<ResourceLocation> loadPlayerTextureAsync(

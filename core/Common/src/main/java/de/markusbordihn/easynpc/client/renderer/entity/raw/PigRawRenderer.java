@@ -22,9 +22,10 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomModelRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.PigCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.PigSkinVariant;
+import net.minecraft.client.model.PigModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PigRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +60,11 @@ public class PigRawRenderer extends PigRenderer implements EasyNPCEntityRenderer
     this.customConfig = customConfig != null ? customConfig : CustomModelConfig.NONE;
 
     if (this.customConfig.hasCustomModel()) {
-      this.addLayer(new PigCustomModelLayer(this, context.getModelSet(), this.customConfig));
+      this.addLayer(
+          new CustomModelRenderLayer<>(
+              this,
+              new PigModel<>(context.getModelSet().bakeLayer(this.customConfig.getModelLayer())),
+              this.customConfig));
     }
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }

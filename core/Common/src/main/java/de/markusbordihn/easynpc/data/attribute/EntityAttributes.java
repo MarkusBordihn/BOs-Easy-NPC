@@ -74,20 +74,12 @@ public class EntityAttributes {
     this.attributeMap.put(entityAttributeType, attribute);
   }
 
-  public boolean hasCombatAttributes() {
-    return this.hasAttribute(EntityAttributeType.COMBAT);
-  }
-
   public CombatAttributes getCombatAttributes() {
     return (CombatAttributes) this.getAttribute(EntityAttributeType.COMBAT);
   }
 
   public void setCombatAttributes(CombatAttributes combatAttributes) {
     this.setAttribute(EntityAttributeType.COMBAT, combatAttributes);
-  }
-
-  public boolean hasEnvironmentalAttributes() {
-    return this.hasAttribute(EntityAttributeType.ENVIRONMENTAL);
   }
 
   public EnvironmentalAttributes getEnvironmentalAttributes() {
@@ -98,20 +90,12 @@ public class EntityAttributes {
     this.setAttribute(EntityAttributeType.ENVIRONMENTAL, environmentalAttributes);
   }
 
-  public boolean hasInteractionAttributes() {
-    return this.hasAttribute(EntityAttributeType.INTERACTION);
-  }
-
   public InteractionAttributes getInteractionAttributes() {
     return (InteractionAttributes) this.getAttribute(EntityAttributeType.INTERACTION);
   }
 
   public void setInteractionAttributes(InteractionAttributes interactionAttributes) {
     this.setAttribute(EntityAttributeType.INTERACTION, interactionAttributes);
-  }
-
-  public boolean hasInventoryAttributes() {
-    return this.hasAttribute(EntityAttributeType.INVENTORY);
   }
 
   public InventoryAttributes getInventoryAttributes() {

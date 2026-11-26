@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -130,10 +129,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth - 4,
                 "local",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_IMPORT)));
+                button -> this.openConfiguration(ConfigurationType.LOCAL_PRESET_IMPORT)));
 
     this.defaultImportPresetButton =
         this.addRenderableWidget(
@@ -142,10 +138,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth - 4,
                 "default",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_PRESET_IMPORT)));
+                button -> this.openConfiguration(ConfigurationType.DEFAULT_PRESET_IMPORT)));
     this.blockButtonWithoutPermission(
         this.defaultImportPresetButton, ConfigurationType.DEFAULT_PRESET_IMPORT);
 
@@ -156,10 +149,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth - 6,
                 "world_preset",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_IMPORT)));
+                button -> this.openConfiguration(ConfigurationType.WORLD_PRESET_IMPORT)));
     this.blockButtonWithoutPermission(
         this.worldImportPresetButton, ConfigurationType.WORLD_PRESET_IMPORT);
 
@@ -170,10 +160,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth + 15,
                 "custom",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_IMPORT)));
+                button -> this.openConfiguration(ConfigurationType.CUSTOM_PRESET_IMPORT)));
     this.blockButtonWithoutPermission(
         this.customImportPresetButton, ConfigurationType.CUSTOM_PRESET_IMPORT);
 

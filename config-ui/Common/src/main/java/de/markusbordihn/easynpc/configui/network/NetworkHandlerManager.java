@@ -89,6 +89,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessag
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogSetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveVisibilityConditionsMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SpawnPresetMessage;
+import de.markusbordihn.easynpc.network.NetworkHandlerInterface;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import net.minecraft.server.level.ServerPlayer;

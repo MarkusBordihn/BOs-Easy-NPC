@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public record ChangeMovementAttributeMessage(
     Double doubleValue,
     Integer integerValue,
     NavigationType navigationType)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_movement_attribute");
@@ -83,12 +84,7 @@ public record ChangeMovementAttributeMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.MOVEMENT, "movement attribute change")) {
       return;

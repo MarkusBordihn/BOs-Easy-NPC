@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public record ChangeCombatAttributeMessage(
     ValueType valueType,
     boolean booleanValue,
     double doubleValue)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_combat_attribute");
@@ -76,12 +77,7 @@ public record ChangeCombatAttributeMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.attributeType == null || this.valueType == null) {
       log.error("Invalid combat attribute for {} from {}", easyNPC, serverPlayer);
       return;

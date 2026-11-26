@@ -174,61 +174,19 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                           this.getEasyNPCUUID(), DisplayAttributeType.VISIBLE, checkbox.selected());
                 }));
 
-    int checkboxTopPos = this.buttonTopPos + 65;
-    int gamemodeCheckboxTopPos = checkboxTopPos;
-    checkboxTopPos += 15;
-    gamemodeCheckboxTopPos += 15;
-
-    for (DisplayAttributeType displayAttributeType : TIME_VISIBILITY_ATTRIBUTES) {
-      Checkbox visibilityCheckbox =
-          new Checkbox(
-              firstButtonRow,
-              checkboxTopPos,
-              displayAttributeType.getAttributeName(),
-              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
-              checkbox ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .changeDisplayAttribute(
-                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
-      visibilityCheckbox.active = isVisibleCheckbox.selected();
-      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
-      checkboxTopPos += 20;
-    }
-
-    for (DisplayAttributeType displayAttributeType : GAMEMODE_VISIBILITY_ATTRIBUTES) {
-      Checkbox visibilityCheckbox =
-          new Checkbox(
-              secondButtonRow,
-              gamemodeCheckboxTopPos,
-              displayAttributeType.getAttributeName(),
-              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
-              checkbox ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .changeDisplayAttribute(
-                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
-      visibilityCheckbox.active = isVisibleCheckbox.selected();
-      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
-      gamemodeCheckboxTopPos += 20;
-    }
-
-    int specialSectionY = Math.max(checkboxTopPos, gamemodeCheckboxTopPos) + 5;
-    checkboxTopPos = specialSectionY + 15;
-
-    for (DisplayAttributeType displayAttributeType : SPECIAL_VISIBILITY_ATTRIBUTES) {
-      Checkbox visibilityCheckbox =
-          new Checkbox(
-              firstButtonRow,
-              checkboxTopPos,
-              displayAttributeType.getAttributeName(),
-              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
-              checkbox ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .changeDisplayAttribute(
-                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
-      visibilityCheckbox.active = isVisibleCheckbox.selected();
-      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
-      checkboxTopPos += 20;
-    }
+    boolean isVisible = isVisibleCheckbox.selected();
+    int timeCheckboxesBottom =
+        this.addVisibilityCheckboxes(
+            TIME_VISIBILITY_ATTRIBUTES, firstButtonRow, this.buttonTopPos + 80, isVisible);
+    int gamemodeCheckboxesBottom =
+        this.addVisibilityCheckboxes(
+            GAMEMODE_VISIBILITY_ATTRIBUTES, secondButtonRow, this.buttonTopPos + 80, isVisible);
+    int checkboxTopPos =
+        this.addVisibilityCheckboxes(
+            SPECIAL_VISIBILITY_ATTRIBUTES,
+            firstButtonRow,
+            Math.max(timeCheckboxesBottom, gamemodeCheckboxesBottom) + 20,
+            isVisible);
 
     // Interaction behavior, independent of the master visibility toggle.
     this.addRenderableWidget(
@@ -261,10 +219,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkboxTopPos + 18,
             116,
             "boss_bar_settings",
-            onPress ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .openConfiguration(
-                        this.getEasyNPCUUID(), ConfigurationType.BOSS_BAR_ATTRIBUTE)));
+            onPress -> this.openConfiguration(ConfigurationType.BOSS_BAR_ATTRIBUTE)));
 
     // Preview to verify the configured visibility without changing the world time.
     this.addRenderableWidget(
@@ -276,6 +231,29 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
             new LinkedHashSet<>(List.of(PreviewTime.values())),
             this.previewTime,
             spinButton -> this.previewTime = spinButton.get()));
+  }
+
+  private int addVisibilityCheckboxes(
+      List<DisplayAttributeType> displayAttributeTypes, int left, int top, boolean active) {
+    DisplayAttributeDataCapable<?> displayAttributeData =
+        this.getEasyNPC().getEasyNPCDisplayAttributeData();
+    int checkboxTopPos = top;
+    for (DisplayAttributeType displayAttributeType : displayAttributeTypes) {
+      Checkbox visibilityCheckbox =
+          new Checkbox(
+              left,
+              checkboxTopPos,
+              displayAttributeType.getAttributeName(),
+              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
+              checkbox ->
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeDisplayAttribute(
+                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
+      visibilityCheckbox.active = active;
+      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
+      checkboxTopPos += 20;
+    }
+    return checkboxTopPos;
   }
 
   private boolean isVisibleInPreview() {

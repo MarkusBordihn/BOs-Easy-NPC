@@ -20,10 +20,14 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.message.ServerAttributeNetworkMessageHandlerInterface;
+import de.markusbordihn.easynpc.data.attribute.EntityAttributeTypeInterface;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,6 +45,26 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
+  protected <A extends EntityAttributeTypeInterface> Checkbox addAttributeCheckbox(
+      int left,
+      int top,
+      A attributeType,
+      boolean selected,
+      AttributeChangeMessage<A> attributeChangeMessage) {
+    return this.addRenderableWidget(
+        new Checkbox(
+            left,
+            top,
+            attributeType.getAttributeName(),
+            selected,
+            checkbox ->
+                attributeChangeMessage.send(
+                    NetworkMessageHandlerManager.getServerHandler(),
+                    this.getEasyNPCUUID(),
+                    attributeType,
+                    checkbox.selected())));
+  }
+
   @Override
   public void init() {
     super.init();
@@ -52,10 +76,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 72,
                 "abilities",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ABILITIES_ATTRIBUTE)));
+                onPress -> this.openConfiguration(ConfigurationType.ABILITIES_ATTRIBUTE)));
 
     this.baseAttributeButton =
         this.addRenderableWidget(
@@ -64,10 +85,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "base",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.BASE_ATTRIBUTE)));
+                onPress -> this.openConfiguration(ConfigurationType.BASE_ATTRIBUTE)));
     this.blockButtonWithoutPermission(this.baseAttributeButton, ConfigurationType.BASE_ATTRIBUTE);
 
     this.combatAttributeButton =
@@ -77,10 +95,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 60,
                 "combat",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.COMBAT_ATTRIBUTE)));
+                onPress -> this.openConfiguration(ConfigurationType.COMBAT_ATTRIBUTE)));
     this.blockButtonWithoutPermission(
         this.combatAttributeButton, ConfigurationType.COMBAT_ATTRIBUTE);
 
@@ -91,10 +106,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 60,
                 "display",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DISPLAY_ATTRIBUTE)));
+                onPress -> this.openConfiguration(ConfigurationType.DISPLAY_ATTRIBUTE)));
 
     this.miscAttributeButton =
         this.addRenderableWidget(
@@ -103,9 +115,14 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "misc",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.MISC_ATTRIBUTE)));
+                onPress -> this.openConfiguration(ConfigurationType.MISC_ATTRIBUTE)));
+  }
+
+  protected interface AttributeChangeMessage<A> {
+    void send(
+        ServerAttributeNetworkMessageHandlerInterface serverHandler,
+        UUID uuid,
+        A attributeType,
+        Boolean selected);
   }
 }

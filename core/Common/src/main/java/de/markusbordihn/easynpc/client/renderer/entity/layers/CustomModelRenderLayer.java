@@ -33,14 +33,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
-public abstract class CustomModelRenderLayer<T extends LivingEntity, M extends EntityModel<T>>
+public class CustomModelRenderLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
   protected final M customModel;
   protected final CustomModelConfig config;
   protected final RenderLayerParent<T, M> renderer;
 
-  protected CustomModelRenderLayer(
+  public CustomModelRenderLayer(
       RenderLayerParent<T, M> renderer, M customModel, CustomModelConfig config) {
     super(renderer);
     this.renderer = renderer;

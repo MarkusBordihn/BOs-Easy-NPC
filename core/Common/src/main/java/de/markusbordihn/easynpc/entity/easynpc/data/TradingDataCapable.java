@@ -238,7 +238,7 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       this.playDefaultSoundIfAvailable(SoundType.TRADE);
     }
 
-    this.rewardTradeXp(merchantOffer);
+    this.rewardMerchantTradeXp(merchantOffer);
     // merchantTradingOffers is a copy of the synced data; sync back so NBT save captures the
     // updated uses.
     MerchantOffers updatedOffers = this.getMerchantTradingOffers();

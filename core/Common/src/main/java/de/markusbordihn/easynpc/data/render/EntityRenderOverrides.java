@@ -151,23 +151,6 @@ public record EntityRenderOverrides(
         this.profession);
   }
 
-  public EntityRenderOverrides withInvisible(boolean invisible) {
-    return new EntityRenderOverrides(
-        this.rootRotation,
-        this.rootScale,
-        this.modelPose,
-        this.entityPose,
-        invisible,
-        this.hideNameTag,
-        this.renderType,
-        this.renderEntityType,
-        this.skinType,
-        this.skinUUID,
-        this.skinTexture,
-        this.variant,
-        this.profession);
-  }
-
   public EntityRenderOverrides withHideNameTag(boolean hide) {
     return new EntityRenderOverrides(
         this.rootRotation,

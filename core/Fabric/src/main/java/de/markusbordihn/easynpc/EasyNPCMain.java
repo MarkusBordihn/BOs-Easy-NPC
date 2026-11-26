@@ -120,7 +120,11 @@ public class EasyNPCMain implements ModInitializer {
     ModMenuTypes.register();
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandlerManager.registerHandler(new NetworkHandler());
+    NetworkHandlerManager.registerHandler(
+        new NetworkHandler(
+            Constants.MOD_ID,
+            NetworkHandlerManager::isClientNetworkHandler,
+            NetworkHandlerManager::isServerNetworkHandler));
     NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 

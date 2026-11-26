@@ -24,7 +24,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.LogLevelCommand;
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.configui.debug.DebugManager;
+import de.markusbordihn.easynpc.debug.DebugManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -70,7 +70,7 @@ public class DebugCommand extends Command {
           "> Please check the latest.log and/or debug.log for the full output.",
           ChatFormatting.WHITE);
     }
-    DebugManager.enableDebugLevel(enable);
+    DebugManager.enableDebugLevel(Constants.LOG_NAME, enable);
     return Command.SINGLE_SUCCESS;
   }
 }

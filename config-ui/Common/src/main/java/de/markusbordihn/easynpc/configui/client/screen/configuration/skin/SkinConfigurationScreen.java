@@ -169,9 +169,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 64,
                 "default",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_SKIN)));
+                onPress -> this.openConfiguration(ConfigurationType.DEFAULT_SKIN)));
     this.playerSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -179,9 +177,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 62,
                 "player_skin",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.PLAYER_SKIN)));
+                onPress -> this.openConfiguration(ConfigurationType.PLAYER_SKIN)));
     this.urlSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -189,9 +185,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 40,
                 "url_skin",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.URL_SKIN)));
+                onPress -> this.openConfiguration(ConfigurationType.URL_SKIN)));
     this.customSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -199,9 +193,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 80,
                 "custom",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_SKIN)));
+                onPress -> this.openConfiguration(ConfigurationType.CUSTOM_SKIN)));
     this.advancedSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -209,10 +201,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 56,
                 "advanced_skin",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_SKIN)));
+                onPress -> this.openConfiguration(ConfigurationType.ADVANCED_SKIN)));
 
     TextureManager.clearLastErrorMessage();
 

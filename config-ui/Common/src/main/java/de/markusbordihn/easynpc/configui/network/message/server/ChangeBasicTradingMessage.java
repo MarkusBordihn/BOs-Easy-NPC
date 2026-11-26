@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
@@ -33,7 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeBasicTradingMessage(
     UUID uuid, TradingValueType tradingValueType, int tradingValue)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_basic_trading");
@@ -58,12 +59,7 @@ public record ChangeBasicTradingMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.TRADING, "trading change")) {
       return;

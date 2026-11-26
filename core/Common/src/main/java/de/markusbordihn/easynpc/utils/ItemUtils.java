@@ -109,17 +109,4 @@ public class ItemUtils {
     }
     return cachedEasyNpcPresetItem;
   }
-
-  public static boolean isPlayerHoldingMoveEasyNPC(Player player) {
-    if (player == null) {
-      return false;
-    }
-
-    Item moveEasyNpcItem = getMoveEasyNPCItem();
-    if (moveEasyNpcItem == null || moveEasyNpcItem == Items.AIR) {
-      return false;
-    }
-
-    return isPlayerHoldingItem(player, moveEasyNpcItem);
-  }
 }

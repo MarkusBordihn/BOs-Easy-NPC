@@ -221,23 +221,20 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getDialogButtonUUID());
     } else {
       log.error("No valid navigation found!");
-      NetworkMessageHandlerManager.getServerHandler()
-          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+      this.openConfiguration(ConfigurationType.MAIN);
     }
   }
 
   private void handleBackNavigation() {
     if (this.configurationType != null && this.configurationType != ConfigurationType.NONE) {
-      NetworkMessageHandlerManager.getServerHandler()
-          .openConfiguration(this.getEasyNPCUUID(), this.configurationType);
+      this.openConfiguration(this.configurationType);
     } else if (this.isDialogButtonContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openDialogButtonEditor(
               this.getEasyNPCUUID(), this.getDialogUUID(), this.getDialogButtonUUID());
     } else {
       log.error("No valid back navigation found!");
-      NetworkMessageHandlerManager.getServerHandler()
-          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+      this.openConfiguration(ConfigurationType.MAIN);
     }
   }
 

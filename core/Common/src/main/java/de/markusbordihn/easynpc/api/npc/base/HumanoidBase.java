@@ -88,6 +88,11 @@ public class HumanoidBase extends PathfinderMobRaw implements BaseEasyNPC<Pathfi
   }
 
   @Override
+  public boolean skipsTravelWithoutTravelObjectives() {
+    return false;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PLAYER_HURT);

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.RenderHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public record ChangeRendererMessage(
     Optional<RenderType> renderType,
     Optional<EntityType<?>> renderEntityType,
     Optional<String> renderEntityModel)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_renderer");
@@ -66,12 +67,7 @@ public record ChangeRendererMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     this.renderType.ifPresent(type -> RenderHandler.setRenderType(easyNPC, type));
     this.renderEntityType.ifPresent(
         entityType -> RenderHandler.setRenderEntity(easyNPC, entityType));

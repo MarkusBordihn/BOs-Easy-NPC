@@ -189,6 +189,9 @@ public class EasyNPCModelManager {
     }
 
     EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    EnumMap<ModelPartType, CustomPosition> positionMap = modelData.getModelPartPosition();
+    EnumMap<ModelPartType, CustomRotation> rotationMap = modelData.getModelPartRotation();
+    EnumMap<ModelPartType, CustomScale> scaleMap = modelData.getModelPartScale();
     boolean hasChangedModelPart = false;
 
     for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
@@ -205,15 +208,15 @@ public class EasyNPCModelManager {
         continue;
       }
 
-      boolean positionChanged = this.applyCustomPosition(modelPart, partType, modelData);
-      boolean rotationChanged = this.applyCustomRotation(modelPart, partType, modelData);
-      boolean scaleChanged = this.applyCustomScale(modelPart, partType, modelData);
+      boolean positionChanged = this.applyCustomPosition(modelPart, positionMap.get(partType));
+      boolean rotationChanged = this.applyCustomRotation(modelPart, rotationMap.get(partType));
+      boolean scaleChanged = this.applyCustomScale(modelPart, partType, scaleMap.get(partType));
       if (positionChanged || rotationChanged || scaleChanged) {
         hasChangedModelPart = true;
       }
     }
 
-    this.syncModelParts(modelData);
+    this.syncOuterLayers(modelData, visibilityMap);
 
     return hasChangedModelPart;
   }
@@ -223,7 +226,11 @@ public class EasyNPCModelManager {
       return;
     }
 
-    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    this.syncOuterLayers(modelData, modelData.getModelPartVisibility());
+  }
+
+  private void syncOuterLayers(
+      final ModelDataCapable<?> modelData, final EnumMap<ModelPartType, Boolean> visibilityMap) {
     this.syncOuterLayer(modelData, visibilityMap, ModelPartType.HAT, ModelPartType.HEAD);
     this.syncOuterLayer(modelData, visibilityMap, ModelPartType.BODY_JACKET, ModelPartType.BODY);
     this.syncOuterLayer(
@@ -278,6 +285,9 @@ public class EasyNPCModelManager {
         break;
     }
 
+    EnumMap<ModelPartType, CustomPosition> positionMap = modelData.getModelPartPosition();
+    EnumMap<ModelPartType, CustomRotation> rotationMap = modelData.getModelPartRotation();
+    EnumMap<ModelPartType, CustomScale> scaleMap = modelData.getModelPartScale();
     int modifiedCriticalParts = 0;
     int totalCriticalParts = 0;
     for (ModelPartType partType : this.modelPartMap.keySet()) {
@@ -287,9 +297,9 @@ public class EasyNPCModelManager {
 
       totalCriticalParts++;
 
-      CustomRotation rotation = modelData.getModelPartRotation(partType);
-      CustomPosition position = modelData.getModelPartPosition(partType);
-      CustomScale scale = modelData.getModelPartScale(partType);
+      CustomRotation rotation = rotationMap.get(partType);
+      CustomPosition position = positionMap.get(partType);
+      CustomScale scale = scaleMap.get(partType);
       boolean rotationChanged = rotation != null && rotation.hasChanged();
       boolean positionChanged =
           partType != ModelPartType.HEAD && position != null && position.hasChanged();
@@ -342,10 +352,7 @@ public class EasyNPCModelManager {
   }
 
   private boolean applyCustomPosition(
-      final ModelPart modelPart,
-      final ModelPartType partType,
-      final ModelDataCapable<?> modelData) {
-    CustomPosition customPosition = modelData.getModelPartPosition(partType);
+      final ModelPart modelPart, final CustomPosition customPosition) {
     if (customPosition == null || !customPosition.hasChanged()) {
       return false;
     }
@@ -357,10 +364,7 @@ public class EasyNPCModelManager {
   }
 
   private boolean applyCustomRotation(
-      final ModelPart modelPart,
-      final ModelPartType partType,
-      final ModelDataCapable<?> modelData) {
-    CustomRotation customRotation = modelData.getModelPartRotation(partType);
+      final ModelPart modelPart, final CustomRotation customRotation) {
     if (customRotation == null || !customRotation.hasChanged()) {
       return false;
     }
@@ -372,10 +376,7 @@ public class EasyNPCModelManager {
   }
 
   private boolean applyCustomScale(
-      final ModelPart modelPart,
-      final ModelPartType partType,
-      final ModelDataCapable<?> modelData) {
-    CustomScale customScale = modelData.getModelPartScale(partType);
+      final ModelPart modelPart, final ModelPartType partType, final CustomScale customScale) {
     if (customScale == null || !customScale.hasChanged()) {
       return false;
     }
@@ -398,6 +399,9 @@ public class EasyNPCModelManager {
       return;
     }
 
+    EnumMap<ModelPartType, CustomPosition> positionMap = modelData.getModelPartPosition();
+    EnumMap<ModelPartType, CustomRotation> rotationMap = modelData.getModelPartRotation();
+    EnumMap<ModelPartType, CustomScale> scaleMap = modelData.getModelPartScale();
     for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
@@ -406,9 +410,9 @@ public class EasyNPCModelManager {
         continue;
       }
 
-      this.applyCustomScale(modelPart, partType, modelData);
-      this.applyCustomRotation(modelPart, partType, modelData);
-      this.applyCustomPosition(modelPart, partType, modelData);
+      this.applyCustomScale(modelPart, partType, scaleMap.get(partType));
+      this.applyCustomRotation(modelPart, rotationMap.get(partType));
+      this.applyCustomPosition(modelPart, positionMap.get(partType));
     }
 
     this.syncModelParts(modelData);
@@ -461,22 +465,31 @@ public class EasyNPCModelManager {
     }
 
     EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    EnumMap<ModelPartType, CustomPosition> positionMap = modelData.getModelPartPosition();
+    EnumMap<ModelPartType, CustomRotation> rotationMap = modelData.getModelPartRotation();
+    EnumMap<ModelPartType, CustomScale> scaleMap = modelData.getModelPartScale();
     for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
       if (this.isOuterLayerPart(partType)
-          || this.applyModelPartVisibility(modelPart, partType, visibilityMap)
-          || !this.hasCustomTransform(partType, modelData)) {
+          || this.applyModelPartVisibility(modelPart, partType, visibilityMap)) {
+        continue;
+      }
+
+      CustomPosition customPosition = positionMap.get(partType);
+      CustomRotation customRotation = rotationMap.get(partType);
+      CustomScale customScale = scaleMap.get(partType);
+      if (!this.hasCustomTransform(customPosition, customRotation, customScale)) {
         continue;
       }
 
       this.resetModelPartTransform(partType, modelPart);
-      this.applyCustomPosition(modelPart, partType, modelData);
-      this.applyCustomRotation(modelPart, partType, modelData);
-      this.applyCustomScale(modelPart, partType, modelData);
+      this.applyCustomPosition(modelPart, customPosition);
+      this.applyCustomRotation(modelPart, customRotation);
+      this.applyCustomScale(modelPart, partType, customScale);
     }
 
-    this.syncModelParts(modelData);
+    this.syncOuterLayers(modelData, visibilityMap);
   }
 
   public void applyHiddenModelParts(final ModelDataCapable<?> modelData) {
@@ -499,10 +512,9 @@ public class EasyNPCModelManager {
   }
 
   private boolean hasCustomTransform(
-      final ModelPartType partType, final ModelDataCapable<?> modelData) {
-    CustomPosition customPosition = modelData.getModelPartPosition(partType);
-    CustomRotation customRotation = modelData.getModelPartRotation(partType);
-    CustomScale customScale = modelData.getModelPartScale(partType);
+      final CustomPosition customPosition,
+      final CustomRotation customRotation,
+      final CustomScale customScale) {
     return (customPosition != null && customPosition.hasChanged())
         || (customRotation != null && customRotation.hasChanged())
         || (customScale != null && customScale.hasChanged());

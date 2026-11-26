@@ -20,15 +20,15 @@
 package de.markusbordihn.easynpc.configui;
 
 import de.markusbordihn.easynpc.configui.commands.manager.CommandManager;
-import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
-import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -75,7 +75,11 @@ public class ConfigUIMain implements ModInitializer {
     });
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandlerManager.registerHandler(new NetworkHandler());
+    NetworkHandlerManager.registerHandler(
+        new NetworkHandler(
+            Constants.MOD_ID,
+            NetworkHandlerManager::isClientNetworkHandler,
+            NetworkHandlerManager::isServerNetworkHandler));
     NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
   }

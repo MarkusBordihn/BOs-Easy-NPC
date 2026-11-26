@@ -20,16 +20,14 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.message.ServerAttributeNetworkMessageHandlerInterface;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -51,99 +49,51 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
     AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 25,
-            CombatAttributeType.IS_INVULNERABLE.getAttributeName(),
-            entityAttributes.getCombatAttributes().isInvulnerable(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_INVULNERABLE,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 45,
-            CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS.getAttributeName(),
-            entityAttributes.getCombatAttributes().isAttackableByPlayers(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 65,
-            CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS.getAttributeName(),
-            entityAttributes.getCombatAttributes().isAttackableByMonsters(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 85,
-            CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS.getAttributeName(),
-            entityAttributes.getCombatAttributes().isAttackableByFactions(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS,
-                        checkbox.selected())));
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 25,
+        CombatAttributeType.IS_INVULNERABLE,
+        entityAttributes.getCombatAttributes().isInvulnerable(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 45,
+        CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS,
+        entityAttributes.getCombatAttributes().isAttackableByPlayers(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 65,
+        CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS,
+        entityAttributes.getCombatAttributes().isAttackableByMonsters(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 85,
+        CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS,
+        entityAttributes.getCombatAttributes().isAttackableByFactions(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
     this.addRenderableWidget(
         new HelpIcon(
             this.leftPos + 230, this.buttonTopPos + 87, "is_attackable_by_factions.tooltip"));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 105,
-            InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE.getAttributeName(),
-            entityAttributes.getInteractionAttributes().canBeHitByProjectile(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 125,
-            CombatAttributeType.IS_KNOCKBACK_RESISTANT.getAttributeName(),
-            entityAttributes.getCombatAttributes().isKnockbackResistant(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_KNOCKBACK_RESISTANT,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 145,
-            CombatAttributeType.IS_EXPLOSION_RESISTANT.getAttributeName(),
-            entityAttributes.getCombatAttributes().isExplosionResistant(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_EXPLOSION_RESISTANT,
-                        checkbox.selected())));
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 105,
+        InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE,
+        entityAttributes.getInteractionAttributes().canBeHitByProjectile(),
+        ServerAttributeNetworkMessageHandlerInterface::interactionAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 125,
+        CombatAttributeType.IS_KNOCKBACK_RESISTANT,
+        entityAttributes.getCombatAttributes().isKnockbackResistant(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 145,
+        CombatAttributeType.IS_EXPLOSION_RESISTANT,
+        entityAttributes.getCombatAttributes().isExplosionResistant(),
+        ServerAttributeNetworkMessageHandlerInterface::combatAttributeChange);
 
     this.addRenderableWidget(
         new TextButton(
@@ -151,14 +101,6 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
             this.buttonTopPos + 175,
             140,
             "projectile_settings",
-            onPress ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .openConfiguration(
-                        this.getEasyNPCUUID(), ConfigurationType.PROJECTILE_ATTRIBUTE)));
-  }
-
-  @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+            onPress -> this.openConfiguration(ConfigurationType.PROJECTILE_ATTRIBUTE)));
   }
 }

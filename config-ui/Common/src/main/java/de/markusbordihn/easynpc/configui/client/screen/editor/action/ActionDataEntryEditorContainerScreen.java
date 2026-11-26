@@ -31,7 +31,6 @@ import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButto
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ActionEntryWidget;
-import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CloseDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CommandActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CustomActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.InteractBlockEntry;
@@ -40,10 +39,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.Model
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.MoveActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.NpcStateEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpacityActionEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenInventoryScreenEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.PoseActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SetSkinEntry;
@@ -400,8 +396,14 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     switch (this.actionDataType) {
       case CLOSE_DIALOG:
+      case OPEN_DEFAULT_DIALOG:
+      case OPEN_TRADING_SCREEN:
+      case OPEN_INVENTORY_SCREEN:
+      case RESET_POSE:
+      case RESTART_ANIMATION:
         this.actionEntryWidget =
-            new CloseDialogEntry(this.actionDataEntry, this.actionDataSet, this);
+            new SimpleVisualActionEntry(
+                this.actionDataEntry, this.actionDataSet, this, this.actionDataType);
         break;
       case COMMAND:
         this.actionEntryWidget =
@@ -411,22 +413,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         this.actionEntryWidget =
             new InteractBlockEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
-      case OPEN_DEFAULT_DIALOG:
-        this.actionEntryWidget =
-            new OpenDefaultDialogEntry(this.actionDataEntry, this.actionDataSet, this);
-        break;
       case OPEN_NAMED_DIALOG:
       case OPEN_NAMED_DIALOG_CONDITIONAL:
         this.actionEntryWidget =
             new OpenNamedDialogEntry(this.actionDataEntry, this.actionDataSet, this);
-        break;
-      case OPEN_TRADING_SCREEN:
-        this.actionEntryWidget =
-            new OpenTradingScreenEntry(this.actionDataEntry, this.actionDataSet, this);
-        break;
-      case OPEN_INVENTORY_SCREEN:
-        this.actionEntryWidget =
-            new OpenInventoryScreenEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case SCOREBOARD:
         this.actionEntryWidget =
@@ -438,12 +428,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case SET_POSE:
         this.actionEntryWidget =
             new PoseActionEntry(this.actionDataEntry, this.actionDataSet, this);
-        break;
-      case RESET_POSE:
-      case RESTART_ANIMATION:
-        this.actionEntryWidget =
-            new SimpleVisualActionEntry(
-                this.actionDataEntry, this.actionDataSet, this, this.actionDataType);
         break;
       case PLAY_ANIMATION:
       case STOP_ANIMATION:

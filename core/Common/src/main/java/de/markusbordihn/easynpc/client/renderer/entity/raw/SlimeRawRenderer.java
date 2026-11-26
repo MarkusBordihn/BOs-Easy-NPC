@@ -22,9 +22,10 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomModelRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.SlimeCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.SlimeSkinVariant;
+import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +61,11 @@ public class SlimeRawRenderer extends SlimeRenderer implements EasyNPCEntityRend
     this.customConfig = customConfig != null ? customConfig : CustomModelConfig.NONE;
 
     if (this.customConfig.hasCustomModel()) {
-      this.addLayer(new SlimeCustomModelLayer(this, context.getModelSet(), this.customConfig));
+      this.addLayer(
+          new CustomModelRenderLayer<>(
+              this,
+              new SlimeModel<>(context.getModelSet().bakeLayer(this.customConfig.getModelLayer())),
+              this.customConfig));
     }
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }

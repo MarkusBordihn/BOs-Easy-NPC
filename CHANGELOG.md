@@ -8,6 +8,14 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.22.2
+
+- Fixed trades using up two uses instead of one for some NPC types on Forge.
+- Fixed a possible crash of the custom skin screen when the skin folder is missing.
+- Fixed new "Reset Pose" and "Restart Animation" actions not being savable.
+- Improved client performance for NPCs whose skin file is missing.
+- Refactored Config UI and the shared loader code, which makes Config UI about 9 % smaller.
+
 ### 7.21.0
 
 - Fixed right-click actions not running with an empty hand without Config UI.

@@ -79,8 +79,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   }
 
   private void openPreviousScreen() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG);
+    this.openConfiguration(ConfigurationType.DIALOG);
   }
 
   private void deleteDialog() {
@@ -95,8 +94,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               if (confirmed && this.getEasyNPCUUID() != null) {
                 NetworkMessageHandlerManager.getServerHandler()
                     .removeDialog(this.getEasyNPCUUID(), this.getDialogUUID());
-                NetworkMessageHandlerManager.getServerHandler()
-                    .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG);
+                this.openConfiguration(ConfigurationType.DIALOG);
               } else {
                 minecraft.setScreen(this);
               }

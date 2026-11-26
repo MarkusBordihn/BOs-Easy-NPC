@@ -47,33 +47,6 @@ public class SpriteButton extends CustomButton {
       int left,
       int top,
       int width,
-      ResourceLocation sprite,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        sprite,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
       int height,
       ResourceLocation sprite,
       int spriteX,
@@ -92,33 +65,6 @@ public class SpriteButton extends CustomButton {
         sprite,
         spriteX,
         spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
-      ResourceLocation sprite,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        "",
-        sprite,
-        0,
-        0,
         spriteOffsetX,
         spriteOffsetY,
         spriteWidth,

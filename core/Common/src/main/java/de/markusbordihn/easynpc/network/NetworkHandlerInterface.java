@@ -36,6 +36,10 @@ public interface NetworkHandlerInterface {
   String LOG_PREFIX = "[NetworkHandler]";
   int PROTOCOL_VERSION = 34;
 
+  boolean isClientNetworkHandler();
+
+  boolean isServerNetworkHandler();
+
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final ResourceLocation messageID,
       final Class<M> networkMessage,
@@ -179,7 +183,7 @@ public interface NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    if (NetworkHandlerManager.isServerNetworkHandler()) {
+    if (this.isServerNetworkHandler()) {
       if (this.hasRegisteredServerMessage(messageID)) {
         log.error(
             "{} Server network message id {} already registered with {}",
@@ -218,7 +222,7 @@ public interface NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    if (NetworkHandlerManager.isClientNetworkHandler()) {
+    if (this.isClientNetworkHandler()) {
       if (this.hasRegisteredClientMessage(messageID)) {
         log.error(
             "{} Client network message id {} already registered with {}",

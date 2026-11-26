@@ -47,4 +47,25 @@ public class TradingActionTest {
         helper, ModEntityType.getEntityType(ModNPCEntityType.WANDERING_TRADER));
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testMenuTradeCountsOnceForHumanoid(GameTestHelper helper) {
+    TradingActionTestHelper.assertMenuTradeCountsOnceAndRewardsXp(
+        helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID));
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testMenuTradeCountsOnceForVillager(GameTestHelper helper) {
+    TradingActionTestHelper.assertMenuTradeCountsOnceAndRewardsXp(
+        helper, ModEntityType.getEntityType(ModNPCEntityType.VILLAGER));
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testMenuTradeCountsOnceForWanderingTrader(GameTestHelper helper) {
+    TradingActionTestHelper.assertMenuTradeCountsOnceAndRewardsXp(
+        helper, ModEntityType.getEntityType(ModNPCEntityType.WANDERING_TRADER));
+    helper.succeed();
+  }
 }

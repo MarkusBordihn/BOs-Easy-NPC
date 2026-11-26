@@ -22,13 +22,13 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.RespawnHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
+public record RespawnNPCMessage(UUID uuid) implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "respawn_npc");
@@ -48,12 +48,7 @@ public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!RespawnHandler.respawnNPC(easyNPC, serverPlayer.serverLevel())) {
       log.error("Unable to respawn Easy NPC {} for {}", easyNPC, serverPlayer);
     }

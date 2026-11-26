@@ -23,6 +23,8 @@ Each of the three top-level folders is its own Gradle build with subprojects per
 
 - core/
   - Common/ - shared sources and assets
+  - Shared/ - loader-identical mixins and mod compat sources, compiled by each loader (no
+    subproject)
   - Fabric/ - Fabric-specific sources and Loom configuration
   - Forge/ - Forge-specific sources and tasks
   - NeoForge/ - available starting with 1.21.x
@@ -259,6 +261,33 @@ This keeps loader-specific plugins isolated and avoids multi-project configurati
   - Declares core + config-ui as dependencies (no jar-in-jar embedding)
   - Exists because many users prefer one file instead of managing dependencies via
     CurseForge/Modrinth launchers (NeoForge bundles available ≥ 1.21.x)
+
+### Common, Shared, or loader folder?
+
+`core/Common` is compiled once against vanilla Minecraft; the loader subprojects only consume its
+output. `core/Shared` is not a subproject but a plain source folder that the Fabric and Forge builds
+each add to their own `main` source set
+(`main.java.srcDir rootProject.file('Shared/src/main/java')`),
+so the same file is compiled twice, once per loader.
+
+| Put code in         | When                                                                                |
+|---------------------|-------------------------------------------------------------------------------------|
+| `Common/`           | Needs neither a mixin nor a loader or mod API. This is the default.                 |
+| `Shared/`           | Mixins and mod compat code (e.g. Cobblemon) that are identical on Fabric and Forge. |
+| `Fabric/`, `Forge/` | Code that really differs per loader.                                                |
+
+Why mixins and compat code cannot live in `Common/`:
+
+- Mixins need refmap entries, and the mixin annotation processor only writes them for classes
+  compiled in the loader's own compile task. A mixin in `Common/` works in the dev environment but
+  misses its targets in production jars, where Forge uses SRG and Fabric intermediary names (compare
+  #843, a Forge jar without refmap).
+- Mod dependencies such as Cobblemon are only declared in the loader builds (`modCompileOnly` on
+  Fabric, `fg.deobf` on Forge), so `Common/` cannot compile against them.
+
+A `Shared/` mixin still has to be listed in both `easy_npc.fabric.mixins.json` and
+`easy_npc.forge.mixins.json`. Once a shared class needs a loader-specific difference, move it back
+into the two loader folders instead of adding loader checks.
 
 Benefits of the split:
 
