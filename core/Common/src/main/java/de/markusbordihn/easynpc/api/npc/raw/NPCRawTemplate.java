@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.api.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelType;
@@ -848,6 +849,14 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public void travel(Vec3 vec3) {
+    if (this instanceof BaseEasyNPC<?> baseEasyNPC
+        && baseEasyNPC.skipsTravelWithoutTravelObjectives()
+        && !this.hasTravelTargetObjectives()) {
+      this.handleNavigationTravelEvent(vec3);
+      this.calculateEntityAnimation(false);
+      return;
+    }
+
     if (this.anchorImmovablePosition()) {
       return;
     }

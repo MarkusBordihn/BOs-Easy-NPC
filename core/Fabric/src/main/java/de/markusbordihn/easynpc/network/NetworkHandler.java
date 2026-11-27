@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -44,9 +45,30 @@ public class NetworkHandler implements NetworkHandlerInterface {
       registeredClientMessages = new LinkedHashMap<>();
   private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       registeredServerMessages = new LinkedHashMap<>();
+  private final BooleanSupplier clientNetworkHandler;
+  private final BooleanSupplier serverNetworkHandler;
 
-  public NetworkHandler() {
-    log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
+  public NetworkHandler(
+      final String modId,
+      final BooleanSupplier clientNetworkHandler,
+      final BooleanSupplier serverNetworkHandler) {
+    this.clientNetworkHandler = clientNetworkHandler;
+    this.serverNetworkHandler = serverNetworkHandler;
+    log.info(
+        "{} NetworkHandler for {} with version {}",
+        Constants.LOG_REGISTER_PREFIX,
+        modId,
+        PROTOCOL_VERSION);
+  }
+
+  @Override
+  public boolean isClientNetworkHandler() {
+    return this.clientNetworkHandler.getAsBoolean();
+  }
+
+  @Override
+  public boolean isServerNetworkHandler() {
+    return this.serverNetworkHandler.getAsBoolean();
   }
 
   @Override

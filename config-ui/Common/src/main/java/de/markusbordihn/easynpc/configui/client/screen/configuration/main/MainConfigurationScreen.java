@@ -308,11 +308,6 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         0xffaaaaaa);
   }
 
-  private void openConfiguration(ConfigurationType configurationType) {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getEasyNPCUUID(), configurationType);
-  }
-
   private void defineImportExportButtons() {
     Button importButton =
         this.addRenderableWidget(

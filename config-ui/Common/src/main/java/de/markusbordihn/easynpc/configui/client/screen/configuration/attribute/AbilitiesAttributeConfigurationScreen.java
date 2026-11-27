@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.message.ServerAttributeNetworkMessageHandlerInterface;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
@@ -104,163 +105,92 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 25,
-            EnvironmentalAttributeType.CAN_FLOAT.getAttributeName(),
-            entityAttributes.getEnvironmentalAttributes().canFloat(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .environmentalAttributeChange(
-                        this.getEasyNPCUUID(),
-                        EnvironmentalAttributeType.CAN_FLOAT,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 25,
-            EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER.getAttributeName(),
-            entityAttributes.getEnvironmentalAttributes().canBreatheUnderwater(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .environmentalAttributeChange(
-                        this.getEasyNPCUUID(),
-                        EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER,
-                        checkbox.selected())));
-
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 25,
+        EnvironmentalAttributeType.CAN_FLOAT,
+        entityAttributes.getEnvironmentalAttributes().canFloat(),
+        ServerAttributeNetworkMessageHandlerInterface::environmentalAttributeChange);
+    this.addAttributeCheckbox(
+        secondButtonRow,
+        this.buttonTopPos + 25,
+        EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER,
+        entityAttributes.getEnvironmentalAttributes().canBreatheUnderwater(),
+        ServerAttributeNetworkMessageHandlerInterface::environmentalAttributeChange);
     this.openDoorCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                firstButtonRow,
-                this.buttonTopPos + 45,
-                MovementAttributeType.CAN_OPEN_DOOR.getAttributeName(),
-                entityAttributes.getMovementAttributes().canOpenDoor(),
-                checkbox -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .movementAttributeChange(
-                          this.getEasyNPCUUID(),
-                          MovementAttributeType.CAN_OPEN_DOOR,
-                          checkbox.selected());
-                  this.refreshPassDoorCheckbox();
-                }));
-
+        this.addAttributeCheckbox(
+            firstButtonRow,
+            this.buttonTopPos + 45,
+            MovementAttributeType.CAN_OPEN_DOOR,
+            entityAttributes.getMovementAttributes().canOpenDoor(),
+            (serverHandler, uuid, attributeType, selected) -> {
+              serverHandler.movementAttributeChange(uuid, attributeType, selected);
+              this.refreshPassDoorCheckbox();
+            });
     this.closeDoorCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                secondButtonRow,
-                this.buttonTopPos + 45,
-                MovementAttributeType.CAN_CLOSE_DOOR.getAttributeName(),
-                entityAttributes.getMovementAttributes().canCloseDoor(),
-                checkbox -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .movementAttributeChange(
-                          this.getEasyNPCUUID(),
-                          MovementAttributeType.CAN_CLOSE_DOOR,
-                          checkbox.selected());
-                  this.refreshPassDoorCheckbox();
-                }));
-
+        this.addAttributeCheckbox(
+            secondButtonRow,
+            this.buttonTopPos + 45,
+            MovementAttributeType.CAN_CLOSE_DOOR,
+            entityAttributes.getMovementAttributes().canCloseDoor(),
+            (serverHandler, uuid, attributeType, selected) -> {
+              serverHandler.movementAttributeChange(uuid, attributeType, selected);
+              this.refreshPassDoorCheckbox();
+            });
     this.passDoorValue = entityAttributes.getMovementAttributes().canPassDoor();
     this.passDoorCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                thirdButtonRow,
-                this.buttonTopPos + 45,
-                MovementAttributeType.CAN_PASS_DOOR.getAttributeName(),
-                this.passDoorValue,
-                checkbox -> {
-                  this.passDoorValue = checkbox.selected();
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .movementAttributeChange(
-                          this.getEasyNPCUUID(),
-                          MovementAttributeType.CAN_PASS_DOOR,
-                          checkbox.selected());
-                }));
+        this.addAttributeCheckbox(
+            thirdButtonRow,
+            this.buttonTopPos + 45,
+            MovementAttributeType.CAN_PASS_DOOR,
+            this.passDoorValue,
+            (serverHandler, uuid, attributeType, selected) -> {
+              this.passDoorValue = selected;
+              serverHandler.movementAttributeChange(uuid, attributeType, selected);
+            });
     this.refreshPassDoorCheckbox();
     this.addRenderableWidget(
         new HelpIcon(this.leftPos + 296, this.buttonTopPos + 47, "door_behavior.tooltip"));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 65,
-            InteractionAttributeType.IS_PUSHABLE.getAttributeName(),
-            entityAttributes.getInteractionAttributes().isPushable(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.IS_PUSHABLE,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 65,
-            InteractionAttributeType.PUSH_ENTITIES.getAttributeName(),
-            entityAttributes.getInteractionAttributes().pushEntities(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.PUSH_ENTITIES,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 85,
-            InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
-            entityAttributes.getInteractionAttributes().canBeLeashed(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.CAN_BE_LEASHED,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 85,
-            InteractionAttributeType.BLOCK_VEHICLE_MOUNTING.getAttributeName(),
-            entityAttributes.getInteractionAttributes().blockVehicleMounting(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.BLOCK_VEHICLE_MOUNTING,
-                        checkbox.selected())));
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 65,
+        InteractionAttributeType.IS_PUSHABLE,
+        entityAttributes.getInteractionAttributes().isPushable(),
+        ServerAttributeNetworkMessageHandlerInterface::interactionAttributeChange);
+    this.addAttributeCheckbox(
+        secondButtonRow,
+        this.buttonTopPos + 65,
+        InteractionAttributeType.PUSH_ENTITIES,
+        entityAttributes.getInteractionAttributes().pushEntities(),
+        ServerAttributeNetworkMessageHandlerInterface::interactionAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 85,
+        InteractionAttributeType.CAN_BE_LEASHED,
+        entityAttributes.getInteractionAttributes().canBeLeashed(),
+        ServerAttributeNetworkMessageHandlerInterface::interactionAttributeChange);
+    this.addAttributeCheckbox(
+        secondButtonRow,
+        this.buttonTopPos + 85,
+        InteractionAttributeType.BLOCK_VEHICLE_MOUNTING,
+        entityAttributes.getInteractionAttributes().blockVehicleMounting(),
+        ServerAttributeNetworkMessageHandlerInterface::interactionAttributeChange);
     this.addRenderableWidget(
         new HelpIcon(this.leftPos + 296, this.buttonTopPos + 87, "block_vehicle_mounting.tooltip"));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 105,
-            MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
-            entityAttributes.getMovementAttributes().canUseNetherPortal(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.CAN_USE_NETHER_PORTAL,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 105,
-            MovementAttributeType.IS_IMMOVABLE.getAttributeName(),
-            entityAttributes.getMovementAttributes().isImmovable(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.IS_IMMOVABLE,
-                        checkbox.selected())));
+    this.addAttributeCheckbox(
+        secondButtonRow,
+        this.buttonTopPos + 105,
+        MovementAttributeType.CAN_USE_NETHER_PORTAL,
+        entityAttributes.getMovementAttributes().canUseNetherPortal(),
+        ServerAttributeNetworkMessageHandlerInterface::movementAttributeChange);
+    this.addAttributeCheckbox(
+        firstButtonRow,
+        this.buttonTopPos + 105,
+        MovementAttributeType.IS_IMMOVABLE,
+        entityAttributes.getMovementAttributes().isImmovable(),
+        ServerAttributeNetworkMessageHandlerInterface::movementAttributeChange);
 
     this.addRenderableWidget(
         new Checkbox(
@@ -273,18 +203,12 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                     .entityAttributeChange(
                         this.getEasyNPCUUID(), EntityAttribute.SILENT, checkbox.selected())));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 125,
-            MovementAttributeType.CAN_JUMP.getAttributeName(),
-            entityAttributes.getMovementAttributes().canJump(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.CAN_JUMP,
-                        checkbox.selected())));
+    this.addAttributeCheckbox(
+        secondButtonRow,
+        this.buttonTopPos + 125,
+        MovementAttributeType.CAN_JUMP,
+        entityAttributes.getMovementAttributes().canJump(),
+        ServerAttributeNetworkMessageHandlerInterface::movementAttributeChange);
     this.addRenderableWidget(
         new HelpIcon(this.leftPos + 296, this.buttonTopPos + 127, "can_jump.tooltip"));
 

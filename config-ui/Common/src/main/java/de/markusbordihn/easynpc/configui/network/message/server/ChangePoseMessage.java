@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.EnumMap;
 import java.util.UUID;
@@ -35,7 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageRecord {
+public record ChangePoseMessage(UUID uuid, Pose pose) implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_pose");
@@ -65,12 +66,7 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.pose == null) {
       log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
       return;

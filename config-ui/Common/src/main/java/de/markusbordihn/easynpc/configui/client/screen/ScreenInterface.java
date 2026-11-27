@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.ClientConfigUIMenuManager;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
@@ -42,6 +44,11 @@ public interface ScreenInterface
 
   default ObjectiveDataSet getObjectiveDataSet() {
     return this.getAdditionalScreenData().getObjectiveDataSet();
+  }
+
+  default void openConfiguration(ConfigurationType configurationType) {
+    NetworkMessageHandlerManager.getServerHandler()
+        .openConfiguration(this.getEasyNPCUUID(), configurationType);
   }
 
   @Override

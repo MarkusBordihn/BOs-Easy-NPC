@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +36,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
 public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartType, boolean visible)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_model_visibility");
@@ -70,12 +71,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.modelPartType == null) {
       log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;

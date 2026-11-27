@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ExperimentalButton extends SpriteButton {
@@ -43,23 +42,6 @@ public class ExperimentalButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        TEXTURE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public ExperimentalButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        component,
         TEXTURE,
         SPRITE_X,
         SPRITE_Y,

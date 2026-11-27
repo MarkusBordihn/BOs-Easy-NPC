@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.trading;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -51,9 +50,7 @@ public class TradingConfigurationContainerScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 64,
                 "disable_trading",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_TRADING)));
+                onPress -> this.openConfiguration(ConfigurationType.NONE_TRADING)));
     this.basicTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -61,10 +58,7 @@ public class TradingConfigurationContainerScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 64,
                 "basic",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.BASIC_TRADING)));
+                onPress -> this.openConfiguration(ConfigurationType.BASIC_TRADING)));
     this.advancedTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -74,10 +68,7 @@ public class TradingConfigurationContainerScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 70,
                 "advanced",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_TRADING)));
+                onPress -> this.openConfiguration(ConfigurationType.ADVANCED_TRADING)));
     this.customTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -88,9 +79,6 @@ public class TradingConfigurationContainerScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 100,
                 "custom",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.CUSTOM_TRADING)));
+                onPress -> this.openConfiguration(ConfigurationType.CUSTOM_TRADING)));
   }
 }

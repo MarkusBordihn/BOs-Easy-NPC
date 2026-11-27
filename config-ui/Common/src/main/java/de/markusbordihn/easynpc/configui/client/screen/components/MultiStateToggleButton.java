@@ -50,23 +50,6 @@ public class MultiStateToggleButton extends CustomButton {
   private boolean renderBackground = true;
 
   public MultiStateToggleButton(
-      int left, int top, ToggleState[] states, int initialStateIndex, OnStateChange onStateChange) {
-    this(
-        left,
-        top,
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        DEFAULT_SPRITE,
-        DEFAULT_SPRITE_X,
-        DEFAULT_SPRITE_Y,
-        DEFAULT_SPRITE_WIDTH,
-        DEFAULT_SPRITE_HEIGHT,
-        states,
-        initialStateIndex,
-        onStateChange);
-  }
-
-  public MultiStateToggleButton(
       int left,
       int top,
       int width,

@@ -166,10 +166,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
             top + 12,
             70,
             "projectiles",
-            onPress ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .openConfiguration(
-                        this.getEasyNPCUUID(), ConfigurationType.PROJECTILE_ATTRIBUTE)));
+            onPress -> this.openConfiguration(ConfigurationType.PROJECTILE_ATTRIBUTE)));
     this.smartAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(

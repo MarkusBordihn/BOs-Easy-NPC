@@ -343,20 +343,6 @@ public record PresetMetadata(
         this.access);
   }
 
-  public PresetMetadata withAuthor(String newAuthor) {
-    return new PresetMetadata(
-        this.name,
-        this.category,
-        this.version,
-        newAuthor,
-        this.created,
-        System.currentTimeMillis(),
-        this.description,
-        this.entityTypeId,
-        this.variantType,
-        this.access);
-  }
-
   public PresetMetadata withDescription(String newDescription) {
     return new PresetMetadata(
         this.name,
@@ -369,20 +355,6 @@ public record PresetMetadata(
         this.entityTypeId,
         this.variantType,
         this.access);
-  }
-
-  public PresetMetadata withAccess(PresetAccess newAccess) {
-    return new PresetMetadata(
-        this.name,
-        this.category,
-        this.version,
-        this.author,
-        this.created,
-        System.currentTimeMillis(),
-        this.description,
-        this.entityTypeId,
-        this.variantType,
-        newAccess);
   }
 
   public PresetMetadata withPreviewData(String newEntityTypeId, String newVariantType) {

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -40,12 +41,9 @@ import net.minecraftforge.network.SimpleChannel;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
-  public static final SimpleChannel INSTANCE =
-      ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "network"))
-          .networkProtocolVersion(PROTOCOL_VERSION)
-          .simpleChannel();
-
-  private static int id = 0;
+  private final SimpleChannel channel;
+  private final BooleanSupplier clientNetworkHandler;
+  private final BooleanSupplier serverNetworkHandler;
   private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
       new LinkedHashMap<>();
   private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
@@ -54,26 +52,46 @@ public class NetworkHandler implements NetworkHandlerInterface {
       registeredClientMessages = new LinkedHashMap<>();
   private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       registeredServerMessages = new LinkedHashMap<>();
+  private int id = 0;
 
-  public NetworkHandler() {
+  public NetworkHandler(
+      final String modId,
+      final BooleanSupplier clientNetworkHandler,
+      final BooleanSupplier serverNetworkHandler) {
+    this.channel =
+        ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(modId, "network"))
+            .networkProtocolVersion(PROTOCOL_VERSION)
+            .simpleChannel();
+    this.clientNetworkHandler = clientNetworkHandler;
+    this.serverNetworkHandler = serverNetworkHandler;
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
-        INSTANCE,
+        this.channel,
         PROTOCOL_VERSION);
+  }
+
+  @Override
+  public boolean isClientNetworkHandler() {
+    return this.clientNetworkHandler.getAsBoolean();
+  }
+
+  @Override
+  public boolean isServerNetworkHandler() {
+    return this.serverNetworkHandler.getAsBoolean();
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,
-        () -> () -> INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg()));
+        () -> () -> this.channel.send(networkMessageRecord, PacketDistributor.SERVER.noArg()));
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer) {
-    INSTANCE.send(networkMessageRecord, PacketDistributor.PLAYER.with(serverPlayer));
+    this.channel.send(networkMessageRecord, PacketDistributor.PLAYER.with(serverPlayer));
   }
 
   @Override
@@ -82,9 +100,9 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    int registrationID = id++;
+    int registrationID = this.id++;
     this.logRegisterClientNetworkMessageHandler(type, networkMessage, registrationID);
-    INSTANCE
+    this.channel
         .messageBuilder(networkMessage, registrationID, NetworkDirection.PLAY_TO_CLIENT)
         .encoder(M::write)
         .decoder(creator::apply)
@@ -111,9 +129,9 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    int registrationID = id++;
+    int registrationID = this.id++;
     this.logRegisterServerNetworkMessageHandler(type, networkMessage, registrationID);
-    INSTANCE
+    this.channel
         .messageBuilder(networkMessage, registrationID, NetworkDirection.PLAY_TO_SERVER)
         .encoder(M::write)
         .decoder(creator::apply)

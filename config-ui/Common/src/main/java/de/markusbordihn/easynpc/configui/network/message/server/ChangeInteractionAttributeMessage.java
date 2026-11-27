@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeInteractionAttributeMessage(
     UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue, Double doubleValue)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_interaction_attribute");
@@ -82,12 +83,7 @@ public record ChangeInteractionAttributeMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_X
         || this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_Y
         || this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_Z) {

@@ -81,9 +81,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                 10,
                 16,
                 "<",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.DIALOG)));
 
     this.dialogButton =
         this.addRenderableWidget(
@@ -162,9 +160,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                 this.bottomPos - 35,
                 85,
                 "cancel",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.DIALOG)));
   }
 
   protected void renderEditLabels(GuiGraphics guiGraphics) {

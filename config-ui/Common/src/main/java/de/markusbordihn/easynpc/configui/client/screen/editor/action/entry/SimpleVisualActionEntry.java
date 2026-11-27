@@ -42,10 +42,18 @@ public class SimpleVisualActionEntry extends ActionEntryWidget {
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+    String labelKey =
+        switch (this.actionDataType) {
+          case CLOSE_DIALOG -> "action.close_dialog";
+          case OPEN_DEFAULT_DIALOG -> "action.open_default_dialog";
+          case OPEN_TRADING_SCREEN -> "action.open_trading_screen";
+          case OPEN_INVENTORY_SCREEN -> "action.open_inventory_screen";
+          default -> this.actionDataType.getId();
+        };
     Text.drawConfigString(
         guiGraphics,
         this.font,
-        this.actionDataType.getId(),
+        labelKey,
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);
@@ -54,5 +62,10 @@ public class SimpleVisualActionEntry extends ActionEntryWidget {
   @Override
   public ActionDataEntry getActionDataEntry() {
     return new ActionDataEntry(this.actionDataType);
+  }
+
+  @Override
+  public boolean hasChanged() {
+    return !this.hasActionData(this.actionDataType);
   }
 }

@@ -19,53 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 
-import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
-import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
-import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
-import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.data.render.RenderDataEntry;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
+import java.util.Objects;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
-    extends ModelConfigurationScreen<T> {
-
-  private static final float SKIN_NAME_SCALING = 0.7f;
-  private static final int MAX_SKINS_PER_PAGE = 5;
-  private static final int SKIN_PREVIEW_WIDTH = 60;
-
-  private Button skinNextButton = null;
-  private Button skinNextPageButton = null;
-  private Button skinPreviousButton = null;
-  private Button skinPreviousPageButton = null;
-
-  private int lastNumOfSkins = 0;
-  private int numOfSpecies = 0;
-  private int skinStartIndex = 0;
-  private String searchFilter = null;
-
-  private List<Button> speciesButtons = new ArrayList<>();
-  private List<String> speciesList = List.of();
-  private List<FormattedCharSequence> noteTextComponents = Collections.emptyList();
+    extends ModelSelectionConfigurationScreen<T> {
 
   public CobblemonModelConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -77,277 +41,15 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
 
     this.defaultModelButton.active = false;
     this.customModelButton.active = false;
-
     this.setDescriptionText("cobblemon_model.text");
-    this.noteTextComponents =
-        this.font.split(
-            TextComponent.getTranslatedConfigText("cobblemon_model.note"), this.imageWidth - 20);
-
-    this.speciesList = IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID);
-    this.numOfSpecies = this.speciesList.size();
-
-    this.defineSkinNavigationButtons(
-        this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
-
-    EditBox searchField =
-        this.addRenderableWidget(
-            new SearchField(
-                this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
-    searchField.setResponder(this::onSearchFieldChanged);
+    this.setNoteText("cobblemon_model.note");
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
-
-    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
-
-    if (!this.noteTextComponents.isEmpty()) {
-      int noteTop = this.contentTopPos + 35;
-      for (int i = 0; i < this.noteTextComponents.size(); i++) {
-        Text.drawString(
-            guiGraphics,
-            this.font,
-            this.noteTextComponents.get(i),
-            this.contentLeftPos + 5,
-            noteTop + (i * (this.font.lineHeight + 2)));
-      }
-    }
-
-    if (!this.speciesButtons.isEmpty()) {
-      for (Button button : this.speciesButtons) {
-        button.render(guiGraphics, x, y, partialTicks);
-      }
-    }
-
-    this.renderSpeciesList(guiGraphics, x, y);
-  }
-
-  @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (!this.speciesButtons.isEmpty()) {
-      for (Button skinButton : this.speciesButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
-      }
-    }
-    return super.mouseClicked(mouseX, mouseY, button);
-  }
-
-  @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-    this.renderSkinSelectionBackground(guiGraphics);
-  }
-
-  private void defineSkinNavigationButtons(
-      int skinButtonTop, int skinButtonLeft, int skinButtonRight) {
-    this.skinPreviousPageButton =
-        this.addRenderableWidget(
-            new TextButton(
-                skinButtonLeft,
-                skinButtonTop,
-                20,
-                "<<",
-                onPress -> {
-                  this.skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
-                  this.checkSkinNavigationButtonState();
-                }));
-    this.skinPreviousButton =
-        this.addRenderableWidget(
-            new TextButton(
-                skinButtonLeft + 20,
-                skinButtonTop,
-                20,
-                "<",
-                onPress -> {
-                  if (this.skinStartIndex > 0) {
-                    this.skinStartIndex--;
-                  }
-                  this.checkSkinNavigationButtonState();
-                }));
-    this.skinNextPageButton =
-        this.addRenderableWidget(
-            new TextButton(
-                skinButtonRight,
-                skinButtonTop,
-                20,
-                ">>",
-                onPress -> {
-                  if (this.skinStartIndex >= 0
-                      && this.skinStartIndex + MAX_SKINS_PER_PAGE < this.numOfSpecies) {
-                    this.skinStartIndex = this.skinStartIndex + MAX_SKINS_PER_PAGE;
-                  } else if (this.numOfSpecies > MAX_SKINS_PER_PAGE) {
-                    this.skinStartIndex = this.numOfSpecies - MAX_SKINS_PER_PAGE;
-                  } else {
-                    this.skinStartIndex = this.numOfSpecies;
-                  }
-                  this.checkSkinNavigationButtonState();
-                }));
-    this.skinNextButton =
-        this.addRenderableWidget(
-            new TextButton(
-                skinButtonRight - 20,
-                skinButtonTop,
-                20,
-                ">",
-                onPress -> {
-                  if (this.skinStartIndex >= 0
-                      && this.skinStartIndex < this.numOfSpecies - MAX_SKINS_PER_PAGE) {
-                    this.skinStartIndex++;
-                  }
-                  this.checkSkinNavigationButtonState();
-                }));
-    this.checkSkinNavigationButtonState();
-  }
-
-  private void checkSkinNavigationButtonState() {
-    if (this.skinPreviousButton != null) {
-      this.skinPreviousButton.active = this.skinStartIndex > 0;
-    }
-    if (this.skinNextButton != null) {
-      this.skinNextButton.active = this.skinStartIndex + MAX_SKINS_PER_PAGE < this.numOfSpecies;
-    }
-    if (this.skinPreviousPageButton != null) {
-      this.skinPreviousPageButton.active = this.skinStartIndex - MAX_SKINS_PER_PAGE > 0;
-    }
-    if (this.skinNextPageButton != null) {
-      this.skinNextPageButton.active =
-          this.skinStartIndex + 1 + MAX_SKINS_PER_PAGE < this.numOfSpecies;
-    }
-  }
-
-  private void renderSpeciesList(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-    if (this.getEasyNPC() == null || this.speciesList.isEmpty()) {
-      return;
-    }
-
-    int positionTop = 144;
-    int skinPosition = 0;
-    this.speciesButtons = new ArrayList<>();
-
-    List<String> filteredSpecies = this.speciesList;
-    if (this.searchFilter != null && !this.searchFilter.isEmpty()) {
-      filteredSpecies =
-          this.speciesList.stream()
-              .filter(species ->
-                  species
-                      .toLowerCase(Locale.ROOT)
-                      .contains(this.searchFilter.toLowerCase(Locale.ROOT)))
-              .toList();
-    }
-    this.numOfSpecies = filteredSpecies.size();
-
-    if (this.lastNumOfSkins != this.numOfSpecies) {
-      this.checkSkinNavigationButtonState();
-      this.lastNumOfSkins = this.numOfSpecies;
-    }
-
-    RenderDataCapable<?> renderData = this.getEasyNPC().getEasyNPCRenderData();
-    RenderDataEntry currentEntry = renderData.getRenderDataEntry();
-    String currentModel = currentEntry.getRenderEntityModel();
-
-    for (int index = this.skinStartIndex;
-        index < this.numOfSpecies && index < this.skinStartIndex + MAX_SKINS_PER_PAGE;
-        index++) {
-      String speciesId = filteredSpecies.get(index);
-      int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
-      int top = this.topPos + 65 + positionTop;
-
-      this.renderSpeciesEntity(
-          guiGraphics, left, top, speciesId, currentModel, renderData, currentEntry);
-
-      ResourceLocation speciesLocation = ResourceLocation.tryParse(speciesId);
-      String namespace = speciesLocation != null ? speciesLocation.getNamespace() : speciesId;
-      String path = speciesLocation != null ? speciesLocation.getPath() : "";
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
-      int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
-      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
-      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
-      guiGraphics.pose().pushPose();
-      guiGraphics.pose().translate(0, 0, 100);
-      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      Text.drawLimitedHoverString(
-          guiGraphics,
-          this.font,
-          TextUtils.normalizeString(namespace),
-          leftNamePos,
-          topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN,
-          14,
-          scaledMouseX,
-          scaledMouseY);
-      Text.drawLimitedHoverString(
-          guiGraphics,
-          this.font,
-          TextUtils.normalizeString(path),
-          leftNamePos,
-          topNamePos + 10,
-          Constants.FONT_COLOR_DARK_GREEN,
-          14,
-          scaledMouseX,
-          scaledMouseY);
-      guiGraphics.pose().popPose();
-
-      skinPosition++;
-    }
-  }
-
-  private void renderSpeciesEntity(
-      GuiGraphics guiGraphics,
-      int x,
-      int y,
-      String speciesId,
-      String currentModel,
-      RenderDataCapable<?> renderData,
-      RenderDataEntry originalEntry) {
-    String speciesKey = speciesId;
-    Button speciesButton =
-        new SkinSelectionButton(
-            x - 24,
-            y - 81,
-            button ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .setRenderEntityModel(this.getEasyNPCUUID(), speciesKey));
-    speciesButton.active = !speciesKey.equals(currentModel);
-
-    renderData.setRenderData(originalEntry.withRenderEntityModel(speciesKey));
-    IntegrationRegistry.setGuiPreviewMode(true);
-    guiGraphics.enableScissor(x - 24, y - 81, x + 36, y + 3);
-    EntityConfigScreenRenderer.renderEntity(
-        guiGraphics,
-        this.getEasyNPC(),
-        EntityRenderConfig.guiScaled(x + 4, y - 30, 28, x - this.xMouse, y - 40 - this.yMouse),
-        this.xMouse,
-        this.yMouse);
-    guiGraphics.disableScissor();
-    IntegrationRegistry.setGuiPreviewMode(false);
-    renderData.setRenderData(originalEntry);
-
-    this.speciesButtons.add(speciesButton);
-  }
-
-  private void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
-    guiGraphics.fill(
-        this.contentLeftPos,
-        this.contentTopPos + 104,
-        this.contentLeftPos + 302,
-        this.contentTopPos + 190,
-        0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 105,
-        this.contentLeftPos + 301,
-        this.contentTopPos + 189,
-        0xffaaaaaa);
-  }
-
-  private void onSearchFieldChanged(String searchText) {
-    if (searchText != null && !searchText.isEmpty()) {
-      this.searchFilter = searchText;
-      this.skinStartIndex = 0;
-      this.checkSkinNavigationButtonState();
-    } else {
-      this.searchFilter = "";
-    }
+  protected List<ResourceLocation> loadEntries() {
+    return IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID).stream()
+        .map(ResourceLocation::tryParse)
+        .filter(Objects::nonNull)
+        .toList();
   }
 }

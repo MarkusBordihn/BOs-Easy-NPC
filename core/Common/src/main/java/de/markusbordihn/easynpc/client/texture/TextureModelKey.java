@@ -55,13 +55,12 @@ public record TextureModelKey(UUID uuid, SkinModel skinModel, String resourceNam
       return false;
     }
 
-    return Objects.equals(this.uuid, other.uuid)
-        && Objects.equals(this.getSubType(), other.getSubType());
+    return Objects.equals(this.uuid, other.uuid) && this.skinModel == other.skinModel;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.uuid, this.getSubType());
+    return 31 * Objects.hashCode(this.uuid) + Objects.hashCode(this.skinModel);
   }
 
   @Override

@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.dialog;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -50,9 +49,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 60,
                 "disable_dialog",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.NONE_DIALOG)));
     this.basicDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -60,9 +57,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 70,
                 "basic",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.BASIC_DIALOG)));
     this.yesNoDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -72,10 +67,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 70,
                 "yes_no_dialog",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.YES_NO_DIALOG)));
     this.advancedDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -86,9 +78,6 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 70,
                 "advanced",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.ADVANCED_DIALOG)));
   }
 }

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetFeedback;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.handler.PresetImportResult;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.UUID;
@@ -38,7 +39,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ImportPresetMessage(
     UUID uuid, PresetType presetType, CompoundTag compoundTag, ResourceLocation resourceLocation)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "import_preset");
@@ -77,12 +78,7 @@ public record ImportPresetMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkPresetFeatureAccess(
         serverPlayer, easyNPC, this.presetType, "preset import " + this.presetType)) {
       return;

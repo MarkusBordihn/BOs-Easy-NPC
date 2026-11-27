@@ -33,18 +33,15 @@ import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.AdvancementConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ChanceConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ConditionEntryWidget;
-import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.EntityHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExecutionLimitConditionEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExperienceLevelConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.GamemodeConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.HasItemConditionEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcStateConditionEntry;
-import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerIdleConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.RelationshipConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ValueComparisonConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.WeatherConditionEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
@@ -289,20 +286,12 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
             new AdvancementConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
       case EXPERIENCE_LEVEL:
-        this.conditionEntryWidget =
-            new ExperienceLevelConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
-        break;
       case PLAYER_HEALTH:
-        this.conditionEntryWidget =
-            new PlayerHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
-        break;
       case NPC_HEALTH:
-        this.conditionEntryWidget =
-            new NpcHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
-        break;
       case ENTITY_HEALTH:
         this.conditionEntryWidget =
-            new EntityHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+            new ValueComparisonConditionEntry(
+                this.conditionDataEntry, this.conditionDataSet, this, this.conditionType);
         break;
       case PLAYER_TAG:
         this.conditionEntryWidget =

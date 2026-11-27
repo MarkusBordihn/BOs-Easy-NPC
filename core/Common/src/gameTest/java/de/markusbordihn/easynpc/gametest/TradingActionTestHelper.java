@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.state.StateIdentifier;
+import de.markusbordihn.easynpc.data.trading.SafeMerchantData;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
@@ -32,11 +33,15 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class TradingActionTestHelper {
@@ -84,6 +89,44 @@ public class TradingActionTestHelper {
         "The action of the traded offer must run once after a completed trade",
         1,
         easyNPC.getEasyNPCStateData().getStateNumber(OFFER_ACTION_STATE));
+  }
+
+  public static void assertMenuTradeCountsOnceAndRewardsXp(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
+    GameTestHelpers.assertNotNull(helper, "NPC must support trading", tradingData);
+
+    MerchantOffers merchantOffers = new MerchantOffers();
+    merchantOffers.add(
+        new MerchantOffer(new ItemCost(Items.DIAMOND), new ItemStack(Items.EMERALD), 10, 5, 1.0f));
+    tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
+    tradingData.setTradingOffers(merchantOffers);
+
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
+    Merchant merchant = new SafeMerchantData<>(tradingData);
+    merchant.setTradingPlayer(serverPlayer);
+    MerchantMenu merchantMenu = new MerchantMenu(0, serverPlayer.getInventory(), merchant);
+    merchantMenu.getSlot(0).set(new ItemStack(Items.DIAMOND));
+    AABB experienceOrbArea = tradingData.getLivingEntity().getBoundingBox().inflate(2);
+
+    merchantMenu.quickMoveStack(serverPlayer, 2);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "A trade through the merchant menu must count exactly one use",
+        1,
+        tradingData.getTradingOffers().get(0).getUses());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The traded item must end up in the player inventory",
+        1,
+        serverPlayer.getInventory().countItem(Items.EMERALD));
+    GameTestHelpers.assertEquals(
+        helper,
+        "A trade with offer XP must spawn one experience orb",
+        1,
+        helper.getLevel().getEntitiesOfClass(ExperienceOrb.class, experienceOrbArea).size());
   }
 
   private static ActionDataSet stateAction(String command) {

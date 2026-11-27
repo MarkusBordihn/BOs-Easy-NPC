@@ -22,9 +22,10 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomModelRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.GhastCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.GhastSkinVariant;
+import net.minecraft.client.model.GhastModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.GhastRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +61,11 @@ public class GhastRawRenderer extends GhastRenderer implements EasyNPCEntityRend
     this.customConfig = customConfig != null ? customConfig : CustomModelConfig.NONE;
 
     if (this.customConfig.hasCustomModel()) {
-      this.addLayer(new GhastCustomModelLayer(this, context.getModelSet(), this.customConfig));
+      this.addLayer(
+          new CustomModelRenderLayer<>(
+              this,
+              new GhastModel<>(context.getModelSet().bakeLayer(this.customConfig.getModelLayer())),
+              this.customConfig));
     }
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }

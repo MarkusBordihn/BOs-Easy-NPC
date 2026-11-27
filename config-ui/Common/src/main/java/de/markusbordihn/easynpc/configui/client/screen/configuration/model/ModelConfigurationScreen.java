@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -48,10 +47,7 @@ public class ModelConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 44,
                 "default",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL)));
+                onPress -> this.openConfiguration(ConfigurationType.DEFAULT_MODEL)));
     this.customModelButton =
         this.addRenderableWidget(
             new TextButton(
@@ -59,8 +55,6 @@ public class ModelConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 64,
                 "custom",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL)));
+                onPress -> this.openConfiguration(ConfigurationType.CUSTOM_MODEL)));
   }
 }

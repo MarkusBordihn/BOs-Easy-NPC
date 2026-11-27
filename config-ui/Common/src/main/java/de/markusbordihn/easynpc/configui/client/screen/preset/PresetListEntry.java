@@ -58,6 +58,9 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   private final PresetMetadata metadata;
   private final PresetType presetType;
   private final PresetBrowserScreen screen;
+  private final String displayName;
+  private final String typeAndCategoryLine;
+  private final String versionLine;
   private PresetData presetData;
   private PresetFeaturePreview securityPreview;
   private EasyNPC<?> previewNPC;
@@ -76,6 +79,20 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     this.screen = screen;
     this.loadPresetData();
     this.loadStoredIdentity();
+    this.displayName = LocalPresetDataFiles.getPresetDisplayName(preset, metadata);
+    this.typeAndCategoryLine = presetType.name() + " - " + metadata.category();
+    this.versionLine = this.createVersionLine();
+  }
+
+  private String createVersionLine() {
+    String versionLine = this.metadata.version();
+    if (!OWN_NAMESPACE.equals(this.preset.getNamespace())) {
+      versionLine = versionLine + "  @" + this.preset.getNamespace();
+    }
+    if (this.storedEntityUUID != null) {
+      versionLine = versionLine + "  #" + UUIDUtils.shortId(this.storedEntityUUID);
+    }
+    return versionLine;
   }
 
   private void loadStoredIdentity() {
@@ -274,33 +291,20 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     int lineHeight = (int) (10 / TEXT_SCALE);
 
     Text.drawString(
-        guiGraphics,
-        this.screen.getFont(),
-        LocalPresetDataFiles.getPresetDisplayName(this.preset, this.metadata),
-        scaledX,
-        scaledY,
-        0x000000);
+        guiGraphics, this.screen.getFont(), this.displayName, scaledX, scaledY, 0x000000);
 
     Text.drawString(
         guiGraphics,
         this.screen.getFont(),
-        this.presetType.name() + " - " + this.metadata.category(),
+        this.typeAndCategoryLine,
         scaledX,
         scaledY + lineHeight,
         0x3F3F3F);
 
-    String versionLine = this.metadata.version();
-    if (!OWN_NAMESPACE.equals(this.preset.getNamespace())) {
-      versionLine = versionLine + "  @" + this.preset.getNamespace();
-    }
-    if (this.storedEntityUUID != null) {
-      versionLine = versionLine + "  #" + UUIDUtils.shortId(this.storedEntityUUID);
-    }
-
     Text.drawString(
         guiGraphics,
         this.screen.getFont(),
-        versionLine,
+        this.versionLine,
         scaledX,
         scaledY + lineHeight * 2,
         0x3F3F3F);
@@ -310,7 +314,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
   @Override
   public Component getNarration() {
-    return Component.literal(LocalPresetDataFiles.getPresetDisplayName(this.preset, this.metadata));
+    return Component.literal(this.displayName);
   }
 
   @Override

@@ -85,10 +85,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "basic",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.BASIC_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.BASIC_OBJECTIVE)));
 
     this.followObjectiveButton =
         this.addRenderableWidget(
@@ -97,10 +94,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "follow",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.FOLLOW_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.FOLLOW_OBJECTIVE)));
 
     this.attackObjectiveButton =
         this.addRenderableWidget(
@@ -109,10 +103,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "attack",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ATTACK_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.ATTACK_OBJECTIVE)));
 
     this.targetObjectiveButton =
         this.addRenderableWidget(
@@ -121,10 +112,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "target",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.TARGET_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.TARGET_OBJECTIVE)));
 
     this.fleeObjectiveButton =
         this.addRenderableWidget(
@@ -133,10 +121,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "flee",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.FLEE_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.FLEE_OBJECTIVE)));
 
     this.lookObjectiveButton =
         this.addRenderableWidget(
@@ -145,9 +130,6 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 50,
                 "look",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.LOOK_OBJECTIVE)));
+                onPress -> this.openConfiguration(ConfigurationType.LOOK_OBJECTIVE)));
   }
 }

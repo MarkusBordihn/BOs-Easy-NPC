@@ -40,10 +40,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw> {
 
@@ -177,16 +175,5 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
   @Override
   protected Brain.Provider<Villager> brainProvider() {
     return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
-  }
-
-  @Override
-  public void travel(Vec3 vec3) {
-    this.handleNavigationTravelEvent(vec3);
-
-    if (this.hasTravelTargetObjectives()) {
-      super.travel(vec3);
-    } else {
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
-    }
   }
 }

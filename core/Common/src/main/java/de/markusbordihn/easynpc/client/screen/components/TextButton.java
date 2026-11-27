@@ -26,14 +26,6 @@ public class TextButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
 
-  public TextButton(int left, int top, int width, int height) {
-    this(left, top, width, height, "", null);
-  }
-
-  public TextButton(int left, int top, int width, String label, Component data, OnPress onPress) {
-    this(left, top, width, DEFAULT_HEIGHT, TextComponent.getTextComponent(label, data), onPress);
-  }
-
   public TextButton(int left, int top, int width, String label, String data, OnPress onPress) {
     this(left, top, width, DEFAULT_HEIGHT, TextComponent.getTextComponent(label, data), onPress);
   }
