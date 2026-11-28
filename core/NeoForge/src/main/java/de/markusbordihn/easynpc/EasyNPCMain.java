@@ -102,8 +102,13 @@ public class EasyNPCMain {
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener((final RegisterPayloadHandlersEvent event) -> {
-      NetworkHandlerManager.registerHandler(new NetworkHandler());
-      NetworkHandler.registerNetworkHandler(event);
+      NetworkHandler networkHandler =
+          new NetworkHandler(
+              Constants.MOD_ID,
+              NetworkHandlerManager::isClientNetworkHandler,
+              NetworkHandlerManager::isServerNetworkHandler);
+      networkHandler.registerNetworkHandler(event);
+      NetworkHandlerManager.registerHandler(networkHandler);
       NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
     });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());

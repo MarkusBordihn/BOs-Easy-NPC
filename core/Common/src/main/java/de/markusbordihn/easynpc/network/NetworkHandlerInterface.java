@@ -38,6 +38,10 @@ public interface NetworkHandlerInterface {
   String LOG_PREFIX = "[NetworkHandler]";
   int PROTOCOL_VERSION = 34;
 
+  boolean isClientNetworkHandler();
+
+  boolean isServerNetworkHandler();
+
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
@@ -197,7 +201,7 @@ public interface NetworkHandlerInterface {
     if (!this.hasServerMessage(type)) {
       this.registerServerPayloadType(type, codec);
     }
-    if (NetworkHandlerManager.isServerNetworkHandler()) {
+    if (this.isServerNetworkHandler()) {
       if (this.hasRegisteredServerMessage(type)) {
         log.error(
             "{} Server network message id {} already registered with {}",
@@ -241,7 +245,7 @@ public interface NetworkHandlerInterface {
     if (!this.hasClientMessage(type)) {
       this.registerClientPayloadType(type, codec);
     }
-    if (NetworkHandlerManager.isClientNetworkHandler()) {
+    if (this.isClientNetworkHandler()) {
       if (this.hasRegisteredClientMessage(type)) {
         log.error(
             "{} Client network message id {} already registered with {}",

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.SecurityManager;
@@ -38,7 +39,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeActionEventMessage(
     UUID uuid, ActionEventType actionEventType, ActionDataSet actionDataSet)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_action_event");
@@ -71,12 +72,7 @@ public record ChangeActionEventMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.actionEventType == null
         || this.actionEventType == ActionEventType.NONE
         || this.actionDataSet == null) {

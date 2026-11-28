@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,7 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, Double value)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_entity_base_attribute");
@@ -70,12 +70,7 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, D
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.BASE_ATTRIBUTE, "base attribute change")) {
       return;

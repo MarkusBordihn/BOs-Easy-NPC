@@ -269,9 +269,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 poseButtonWidth - 10,
                 "default",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSE)));
+                button -> this.openConfiguration(ConfigurationType.DEFAULT_POSE)));
 
     this.basicPoseButton =
         this.addRenderableWidget(
@@ -280,9 +278,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 poseButtonWidth,
                 "basic",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_POSE)));
+                button -> this.openConfiguration(ConfigurationType.BASIC_POSE)));
 
     this.advancedPoseButton =
         this.addRenderableWidget(
@@ -291,10 +287,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 poseButtonWidth + 9,
                 "advanced",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_POSE)));
+                button -> this.openConfiguration(ConfigurationType.ADVANCED_POSE)));
 
     this.customPoseButton =
         this.addRenderableWidget(
@@ -303,9 +296,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonTopPos,
                 poseButtonWidth + 9,
                 "custom",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_POSE)));
+                button -> this.openConfiguration(ConfigurationType.CUSTOM_POSE)));
 
     this.defaultPoseButton.active = this.supportsConfigurationType(ConfigurationType.DEFAULT_POSE);
     this.basicPoseButton.active = this.supportsConfigurationType(ConfigurationType.BASIC_POSE);

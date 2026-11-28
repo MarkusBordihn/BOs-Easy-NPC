@@ -71,12 +71,8 @@ public class AttributeHandler {
 
   public static boolean setCombatAttribute(
       EasyNPC<?> easyNPC, CombatAttributeType attributeType, boolean value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -107,12 +103,8 @@ public class AttributeHandler {
 
   public static boolean setCombatAttribute(
       EasyNPC<?> easyNPC, CombatAttributeType attributeType, double value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -202,12 +194,8 @@ public class AttributeHandler {
 
   public static boolean setEnvironmentalAttribute(
       EasyNPC<?> easyNPC, EnvironmentalAttributeType attributeType, boolean value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -252,12 +240,8 @@ public class AttributeHandler {
 
   public static boolean setInteractionAttribute(
       EasyNPC<?> easyNPC, InteractionAttributeType attributeType, boolean value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -293,12 +277,8 @@ public class AttributeHandler {
 
   public static boolean setInteractionAttribute(
       EasyNPC<?> easyNPC, InteractionAttributeType attributeType, double value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -322,12 +302,8 @@ public class AttributeHandler {
   }
 
   public static boolean setShoulderOffset(EasyNPC<?> easyNPC, Vec3 shoulderOffset) {
-    if (easyNPC == null || shoulderOffset == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (shoulderOffset == null || attributeData == null) {
       return false;
     }
 
@@ -345,12 +321,8 @@ public class AttributeHandler {
 
   public static boolean setInventoryAttribute(
       EasyNPC<?> easyNPC, InventoryAttributeType attributeType, boolean value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -371,12 +343,8 @@ public class AttributeHandler {
   }
 
   public static boolean setInventoryPlayerSlotCount(EasyNPC<?> easyNPC, int playerSlotCount) {
-    if (easyNPC == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeData == null) {
       return false;
     }
 
@@ -390,12 +358,8 @@ public class AttributeHandler {
 
   public static boolean setMovementAttribute(
       EasyNPC<?> easyNPC, MovementAttributeType attributeType, boolean value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -438,12 +402,8 @@ public class AttributeHandler {
 
   public static boolean setMovementAttribute(
       EasyNPC<?> easyNPC, MovementAttributeType attributeType, double value) {
-    if (easyNPC == null || attributeType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (attributeType == null || attributeData == null) {
       return false;
     }
 
@@ -470,12 +430,8 @@ public class AttributeHandler {
   }
 
   public static boolean setNavigationType(EasyNPC<?> easyNPC, NavigationType navigationType) {
-    if (easyNPC == null || navigationType == null) {
-      return false;
-    }
-
-    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+    AttributeDataCapable<?> attributeData = getAttributeDataWithEntityAttributes(easyNPC);
+    if (navigationType == null || attributeData == null) {
       return false;
     }
 
@@ -555,6 +511,16 @@ public class AttributeHandler {
       }
     }
     return true;
+  }
+
+  private static AttributeDataCapable<?> getAttributeDataWithEntityAttributes(EasyNPC<?> easyNPC) {
+    AttributeDataCapable<?> attributeData =
+        easyNPC != null ? easyNPC.getEasyNPCAttributeData() : null;
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return null;
+    }
+
+    return attributeData;
   }
 
   public static void handleDefaultAttributes(Mob mob) {

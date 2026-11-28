@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,20 +34,18 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber
 public class NetworkHandler implements NetworkHandlerInterface {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String PROTOCOL_VERSION = "1";
 
-  private static PayloadRegistrar payloadRegistrar;
+  private final String modId;
+  private final BooleanSupplier clientNetworkHandler;
+  private final BooleanSupplier serverNetworkHandler;
   private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
       new LinkedHashMap<>();
   private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
@@ -55,28 +54,36 @@ public class NetworkHandler implements NetworkHandlerInterface {
       registeredClientMessages = new LinkedHashMap<>();
   private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       registeredServerMessages = new LinkedHashMap<>();
+  private PayloadRegistrar payloadRegistrar;
 
-  public NetworkHandler() {
-    log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
+  public NetworkHandler(
+      final String modId,
+      final BooleanSupplier clientNetworkHandler,
+      final BooleanSupplier serverNetworkHandler) {
+    this.modId = modId;
+    this.clientNetworkHandler = clientNetworkHandler;
+    this.serverNetworkHandler = serverNetworkHandler;
+    log.info("{} NetworkHandler for {} ...", Constants.LOG_REGISTER_PREFIX, modId);
   }
 
-  public static void registerNetworkHandler(
-      final RegisterPayloadHandlersEvent payloadHandlersEvent) {
-    payloadRegistrar =
-        payloadHandlersEvent
-            .registrar(Constants.MOD_ID)
-            .versioned(String.valueOf(PROTOCOL_VERSION));
+  public void registerNetworkHandler(final RegisterPayloadHandlersEvent payloadHandlersEvent) {
+    this.payloadRegistrar =
+        payloadHandlersEvent.registrar(this.modId).versioned(String.valueOf(PROTOCOL_VERSION));
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
-        payloadRegistrar,
+        this.payloadRegistrar,
         PROTOCOL_VERSION);
   }
 
-  @SubscribeEvent
-  public static void registerNetworkMessageHandler(final RegisterPayloadHandlersEvent event) {
-    payloadRegistrar = event.registrar(PROTOCOL_VERSION);
-    log.info("{} Network Handler with {} ...", Constants.LOG_REGISTER_PREFIX, PROTOCOL_VERSION);
+  @Override
+  public boolean isClientNetworkHandler() {
+    return this.clientNetworkHandler.getAsBoolean();
+  }
+
+  @Override
+  public boolean isServerNetworkHandler() {
+    return this.serverNetworkHandler.getAsBoolean();
   }
 
   @Override
@@ -101,7 +108,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
     this.logRegisterClientNetworkMessageHandler(type, networkMessage);
-    payloadRegistrar.playToClient(
+    this.payloadRegistrar.playToClient(
         type,
         codec,
         (customPacketPayload, playPayloadContext) -> {
@@ -121,7 +128,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       Class<M> networkMessage,
       Function<FriendlyByteBuf, M> creator) {
     this.logRegisterServerNetworkMessageHandler(type, networkMessage);
-    payloadRegistrar.playToServer(
+    this.payloadRegistrar.playToServer(
         type,
         codec,
         (customPacketPayload, playPayloadContext) -> {

@@ -195,8 +195,7 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                   this.noDialogValue = this.noDialogBox.getValue();
                   NetworkMessageHandlerManager.getServerHandler()
                       .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG);
+                  this.openConfiguration(ConfigurationType.YES_NO_DIALOG);
                 }));
 
     this.cancelButton =

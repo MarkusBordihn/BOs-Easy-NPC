@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.NameHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeNameMessage(
     UUID uuid, String name, int color, NameVisibilityType nameVisibilityType)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_name");
@@ -69,12 +70,7 @@ public record ChangeNameMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.nameVisibilityType)) {
       log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }

@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.ScreenInterface;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -102,9 +101,7 @@ public class ConfigurationScreen<T extends ConfigUIMenu> extends Screen<T, Addit
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN)));
+                onPress -> this.openConfiguration(ConfigurationType.MAIN)));
   }
 
   @Override
@@ -121,8 +118,7 @@ public class ConfigurationScreen<T extends ConfigUIMenu> extends Screen<T, Addit
   }
 
   public void showMainScreen() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+    this.openConfiguration(ConfigurationType.MAIN);
   }
 
   protected String getOwnerName() {

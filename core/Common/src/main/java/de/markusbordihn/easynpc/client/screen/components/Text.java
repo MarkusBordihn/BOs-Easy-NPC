@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -34,7 +36,13 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
+  private static final Map<String, Component> configTextCache = new HashMap<>();
+
   private Text() {}
+
+  private static Component getConfigText(String translationKey) {
+    return configTextCache.computeIfAbsent(translationKey, TextComponent::getTranslatedConfigText);
+  }
 
   public static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y) {
     drawString(guiGraphics, font, text, x, y, Constants.FONT_COLOR_DEFAULT);
@@ -125,8 +133,7 @@ public class Text {
 
   public static void drawConfigString(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y, int color) {
-    drawString(
-        guiGraphics, font, TextComponent.getTranslatedConfigText(translationKey), x, y, color);
+    drawString(guiGraphics, font, getConfigText(translationKey), x, y, color);
   }
 
   public static void drawConfigStringWrapped(
@@ -138,8 +145,7 @@ public class Text {
       int maxWidth,
       int color) {
     int lineY = y;
-    for (FormattedCharSequence line :
-        font.split(TextComponent.getTranslatedConfigText(translationKey), maxWidth)) {
+    for (FormattedCharSequence line : font.split(getConfigText(translationKey), maxWidth)) {
       drawString(guiGraphics, font, line, x, lineY, color);
       lineY += font.lineHeight;
     }
@@ -147,8 +153,7 @@ public class Text {
 
   public static void drawConfigStringShadow(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y, int color) {
-    drawStringShadow(
-        guiGraphics, font, TextComponent.getTranslatedConfigText(translationKey), x, y, color);
+    drawStringShadow(guiGraphics, font, getConfigText(translationKey), x, y, color);
   }
 
   public static void drawConfigStringShadowWithData(

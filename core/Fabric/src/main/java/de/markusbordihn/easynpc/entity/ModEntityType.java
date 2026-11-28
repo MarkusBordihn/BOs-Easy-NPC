@@ -50,87 +50,19 @@ public class ModEntityType {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
-    for (ModRawEntityType type : ModRawEntityType.values()) {
-      log.debug("Registering raw entity type {}", type.getResourceKey());
-      RAW_TYPE.put(
-          type,
-          Registry.register(
-              BuiltInRegistries.ENTITY_TYPE,
-              Constants.MOD_PREFIX_ID + type.getId(),
-              type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} raw entity types.", RAW_TYPE.size());
-
-    for (ModNPCEntityType type : ModNPCEntityType.values()) {
-      log.debug("Registering NPC entity type {}", type.getResourceKey());
-      NPC_TYPE.put(
-          type,
-          Registry.register(
-              BuiltInRegistries.ENTITY_TYPE,
-              Constants.MOD_PREFIX_ID + type.getId(),
-              type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} NPC entity types.", NPC_TYPE.size());
-
-    for (ModCustomEntityType type : ModCustomEntityType.values()) {
-      log.debug("Registering custom entity type {}", type.getResourceKey());
-      CUSTOM_TYPE.put(
-          type,
-          Registry.register(
-              BuiltInRegistries.ENTITY_TYPE,
-              Constants.MOD_PREFIX_ID + type.getId(),
-              type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} custom entity types.", CUSTOM_TYPE.size());
-
-    for (ModProjectileEntityType type : ModProjectileEntityType.values()) {
-      log.debug("Registering projectile entity type {}", type.getResourceKey());
-      PROJECTILE_TYPE.put(
-          type,
-          Registry.register(
-              BuiltInRegistries.ENTITY_TYPE,
-              Constants.MOD_PREFIX_ID + type.getId(),
-              type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} projectile entity types.", PROJECTILE_TYPE.size());
-
+    registerEntityTypes(ModRawEntityType.values(), RAW_TYPE, "raw");
+    registerEntityTypes(ModNPCEntityType.values(), NPC_TYPE, "NPC");
+    registerEntityTypes(ModCustomEntityType.values(), CUSTOM_TYPE, "custom");
+    registerEntityTypes(ModProjectileEntityType.values(), PROJECTILE_TYPE, "projectile");
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      for (EpicFightEntityType type : EpicFightEntityType.values()) {
-        log.debug("Registering Epic Fight entity type {}", type.getResourceKey());
-        EPIC_FIGHT_TYPE.put(
-            type,
-            Registry.register(
-                BuiltInRegistries.ENTITY_TYPE,
-                Constants.MOD_PREFIX_ID + type.getId(),
-                type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Epic Fight entity types.", EPIC_FIGHT_TYPE.size());
+      registerEntityTypes(EpicFightEntityType.values(), EPIC_FIGHT_TYPE, "Epic Fight");
     }
-
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
-      for (CobblemonEntityType type : CobblemonEntityType.values()) {
-        log.debug("Registering Cobblemon entity type {}", type.getResourceKey());
-        COBBLEMON_TYPE.put(
-            type,
-            Registry.register(
-                BuiltInRegistries.ENTITY_TYPE,
-                Constants.MOD_PREFIX_ID + type.getId(),
-                type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Cobblemon entity types.", COBBLEMON_TYPE.size());
+      registerEntityTypes(CobblemonEntityType.values(), COBBLEMON_TYPE, "Cobblemon");
     }
-
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
-        log.debug("Registering Easy Model Entities entity type {}", type.getResourceKey());
-        EASY_MODEL_ENTITIES_TYPE.put(
-            type,
-            Registry.register(
-                BuiltInRegistries.ENTITY_TYPE,
-                Constants.MOD_PREFIX_ID + type.getId(),
-                type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Easy Model Entities entity types.", EASY_MODEL_ENTITIES_TYPE.size());
+      registerEntityTypes(
+          EasyModelEntitiesEntityType.values(), EASY_MODEL_ENTITIES_TYPE, "Easy Model Entities");
     }
   }
 
@@ -172,74 +104,45 @@ public class ModEntityType {
   }
 
   public static void registerEntityAttributes() {
-
-    for (ModRawEntityType type : ModRawEntityType.values()) {
-      if (type.getAttributes() != null) {
-        FabricDefaultAttributeRegistry.register(
-            (EntityType<? extends LivingEntity>) RAW_TYPE.get(type),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("Raw entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
-    for (ModNPCEntityType type : ModNPCEntityType.values()) {
-      if (type.getAttributes() != null) {
-        FabricDefaultAttributeRegistry.register(
-            (EntityType<? extends LivingEntity>) NPC_TYPE.get(type),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("NPC entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
-    for (ModCustomEntityType type : ModCustomEntityType.values()) {
-      if (type.getAttributes() != null) {
-        FabricDefaultAttributeRegistry.register(
-            (EntityType<? extends LivingEntity>) CUSTOM_TYPE.get(type),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("Custom entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
+    registerAttributes(ModRawEntityType.values(), RAW_TYPE, "Raw");
+    registerAttributes(ModNPCEntityType.values(), NPC_TYPE, "NPC");
+    registerAttributes(ModCustomEntityType.values(), CUSTOM_TYPE, "Custom");
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      for (EpicFightEntityType type : EpicFightEntityType.values()) {
-        if (type.getAttributes() != null) {
-          FabricDefaultAttributeRegistry.register(
-              (EntityType<? extends LivingEntity>) EPIC_FIGHT_TYPE.get(type),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Epic Fight entity type {} does not have attributes defined!", type.getResourceKey());
-        }
-      }
+      registerAttributes(EpicFightEntityType.values(), EPIC_FIGHT_TYPE, "Epic Fight");
     }
-
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
-      for (CobblemonEntityType type : CobblemonEntityType.values()) {
-        if (type.getAttributes() != null) {
-          FabricDefaultAttributeRegistry.register(
-              (EntityType<? extends LivingEntity>) COBBLEMON_TYPE.get(type),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Cobblemon entity type {} does not have attributes defined!", type.getResourceKey());
-        }
-      }
+      registerAttributes(CobblemonEntityType.values(), COBBLEMON_TYPE, "Cobblemon");
     }
-
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
-        if (type.getAttributes() != null) {
-          FabricDefaultAttributeRegistry.register(
-              (EntityType<? extends LivingEntity>) EASY_MODEL_ENTITIES_TYPE.get(type),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Easy Model Entities entity type {} does not have attributes defined!",
-              type.getResourceKey());
-        }
+      registerAttributes(
+          EasyModelEntitiesEntityType.values(), EASY_MODEL_ENTITIES_TYPE, "Easy Model Entities");
+    }
+  }
+
+  private static <E extends ModEntityTypeProvider> void registerEntityTypes(
+      E[] types, Map<E, EntityType<?>> registeredTypes, String typeName) {
+    for (E type : types) {
+      log.debug("Registering {} entity type {}", typeName, type.getResourceKey());
+      registeredTypes.put(
+          type,
+          Registry.register(
+              BuiltInRegistries.ENTITY_TYPE,
+              Constants.MOD_PREFIX_ID + type.getId(),
+              type.getBuilder().build(type.getResourceKey())));
+    }
+    log.info("Registered {} {} entity types.", registeredTypes.size(), typeName);
+  }
+
+  private static <E extends ModEntityTypeProvider> void registerAttributes(
+      E[] types, Map<E, EntityType<?>> registeredTypes, String typeName) {
+    for (E type : types) {
+      if (type.getAttributes() != null) {
+        FabricDefaultAttributeRegistry.register(
+            (EntityType<? extends LivingEntity>) registeredTypes.get(type),
+            ModEntityAttributes.buildWithNavigationAttributes(type));
+      } else {
+        log.warn(
+            "{} entity type {} does not have attributes defined!", typeName, type.getResourceKey());
       }
     }
   }

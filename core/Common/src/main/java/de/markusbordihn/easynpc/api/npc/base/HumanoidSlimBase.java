@@ -95,6 +95,11 @@ public class HumanoidSlimBase extends PathfinderMobRaw implements BaseEasyNPC<Pa
   }
 
   @Override
+  public boolean skipsTravelWithoutTravelObjectives() {
+    return false;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PLAYER_HURT);

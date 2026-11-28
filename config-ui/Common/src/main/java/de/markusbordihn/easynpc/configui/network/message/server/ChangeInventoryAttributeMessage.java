@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeInventoryAttributeMessage(
     UUID uuid, InventoryAttributeType attributeType, boolean booleanValue)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_inventory_attribute");
@@ -69,12 +70,7 @@ public record ChangeInventoryAttributeMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.attributeType == null) {
       log.warn("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
       return;

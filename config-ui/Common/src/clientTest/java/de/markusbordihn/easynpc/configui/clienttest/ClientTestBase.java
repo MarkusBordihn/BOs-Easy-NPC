@@ -42,7 +42,7 @@ abstract class ClientTestBase {
   static final String TEST_NPC_TYPE = "easy_npc:humanoid";
   static final String MAIN_CONFIGURATION_SCREEN_ID =
       "de.markusbordihn.easynpc.configui.client.screen.configuration.main."
-          + "mainconfigurationscreenwrapper";
+          + "mainconfigurationscreen";
 
   @RegisterExtension
   static final GameClientExtension client =
@@ -141,11 +141,6 @@ abstract class ClientTestBase {
   }
 
   static boolean isScreenOfClass(String screenId, String screenClassName) {
-    String lowerCaseClassName = screenClassName.toLowerCase(Locale.ROOT);
-    String neoForgeWrapperClassName =
-        lowerCaseClassName.replace("containerscreen", "screen") + "wrapper";
-    return screenId.endsWith("." + lowerCaseClassName)
-        || screenId.endsWith("." + lowerCaseClassName + "wrapper")
-        || screenId.endsWith("." + neoForgeWrapperClassName);
+    return screenId.endsWith("." + screenClassName.toLowerCase(Locale.ROOT));
   }
 }

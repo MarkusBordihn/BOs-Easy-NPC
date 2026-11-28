@@ -75,90 +75,20 @@ public class ConfigurationMenuHandler {
       final MenuType<? extends ConfigurationMenu> menuType,
       final ScreenData screenData) {
     final Component displayName = getConfigurationTitle(configurationType, easyNPC);
-
-    if (configurationType == ConfigurationType.EQUIPMENT) {
-      return new MenuProvider() {
-        @Override
-        public AbstractContainerMenu createMenu(
-            int containerId, Inventory playerInventory, Player player) {
-          return new EquipmentConfigurationMenu(
-              menuType, containerId, playerInventory, screenData.encode());
-        }
-
-        @Override
-        public Component getDisplayName() {
-          return displayName;
-        }
-
-        @Override
-        public String toString() {
-          return "EquipmentConfigurationMenu[" + displayName + "]";
-        }
-      };
-    } else if (configurationType == ConfigurationType.INVENTORY) {
-      return new MenuProvider() {
-        @Override
-        public AbstractContainerMenu createMenu(
-            int containerId, Inventory playerInventory, Player player) {
-          return new InventoryConfigurationMenu(
-              menuType, containerId, playerInventory, screenData.encode());
-        }
-
-        @Override
-        public Component getDisplayName() {
-          return displayName;
-        }
-
-        @Override
-        public String toString() {
-          return "InventoryConfigurationMenu[" + displayName + "]";
-        }
-      };
-    } else if (configurationType == ConfigurationType.ADVANCED_TRADING) {
-      return new MenuProvider() {
-        @Override
-        public AbstractContainerMenu createMenu(
-            int containerId, Inventory playerInventory, Player player) {
-          return new AdvancedTradingConfigurationMenu(
-              menuType, containerId, playerInventory, screenData.encode());
-        }
-
-        @Override
-        public Component getDisplayName() {
-          return displayName;
-        }
-
-        @Override
-        public String toString() {
-          return "AdvancedTradingConfigurationMenu[" + displayName + "]";
-        }
-      };
-    } else if (configurationType == ConfigurationType.BASIC_TRADING) {
-      return new MenuProvider() {
-        @Override
-        public AbstractContainerMenu createMenu(
-            int containerId, Inventory playerInventory, Player player) {
-          return new BasicTradingConfigurationMenu(
-              menuType, containerId, playerInventory, screenData.encode());
-        }
-
-        @Override
-        public Component getDisplayName() {
-          return displayName;
-        }
-
-        @Override
-        public String toString() {
-          return "BasicTradingConfigurationMenu[" + displayName + "]";
-        }
-      };
-    }
+    final ConfigurationMenuFactory menuFactory =
+        switch (configurationType) {
+          case EQUIPMENT -> EquipmentConfigurationMenu::new;
+          case INVENTORY -> InventoryConfigurationMenu::new;
+          case ADVANCED_TRADING -> AdvancedTradingConfigurationMenu::new;
+          case BASIC_TRADING -> BasicTradingConfigurationMenu::new;
+          default -> ConfigurationMenu::new;
+        };
 
     return new MenuProvider() {
       @Override
       public AbstractContainerMenu createMenu(
           int containerId, Inventory playerInventory, Player player) {
-        return new ConfigurationMenu(menuType, containerId, playerInventory, screenData.encode());
+        return menuFactory.create(menuType, containerId, playerInventory, screenData.encode());
       }
 
       @Override
@@ -371,5 +301,10 @@ public class ConfigurationMenuHandler {
       }
     }
     AdditionalScreenData.addBlockedConfigurations(additionalSyncData, blockedTypes);
+  }
+
+  private interface ConfigurationMenuFactory {
+    ConfigurationMenu create(
+        MenuType<?> menuType, int containerId, Inventory playerInventory, CompoundTag data);
   }
 }

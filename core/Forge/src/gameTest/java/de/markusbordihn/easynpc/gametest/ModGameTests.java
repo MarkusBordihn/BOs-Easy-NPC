@@ -814,6 +814,15 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "trade_actions_trigger_for_wandering_trader",
         () -> TradingActionTest::testTradeActionsTriggerForWanderingTrader);
+    TEST_FUNCTIONS.register(
+        "menu_trade_counts_once_for_humanoid",
+        () -> TradingActionTest::testMenuTradeCountsOnceForHumanoid);
+    TEST_FUNCTIONS.register(
+        "menu_trade_counts_once_for_villager",
+        () -> TradingActionTest::testMenuTradeCountsOnceForVillager);
+    TEST_FUNCTIONS.register(
+        "menu_trade_counts_once_for_wandering_trader",
+        () -> TradingActionTest::testMenuTradeCountsOnceForWanderingTrader);
 
     TEST_FUNCTIONS.register(
         "wait_delays_the_following_actions",

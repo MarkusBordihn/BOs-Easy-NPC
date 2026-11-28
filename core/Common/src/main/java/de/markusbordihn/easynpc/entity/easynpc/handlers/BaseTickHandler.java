@@ -56,7 +56,6 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
         TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData != null && tradingData.hasTradingData()) {
           tradingData.resetExpiredTradingOffers();
-          actionHandler.checkTradingActions();
         }
         tickerData.resetTicker(TickerType.TRADING_BASE_TICK);
       }

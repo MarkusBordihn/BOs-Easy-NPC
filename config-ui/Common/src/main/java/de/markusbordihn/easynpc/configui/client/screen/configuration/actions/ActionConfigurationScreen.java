@@ -57,9 +57,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 76,
                 "basic",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_ACTION)));
+                onPress -> this.openConfiguration(ConfigurationType.BASIC_ACTION)));
     this.dialogActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -67,10 +65,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 76,
                 "dialog_actions",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DIALOG_ACTION)));
+                onPress -> this.openConfiguration(ConfigurationType.DIALOG_ACTION)));
     this.distanceActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -78,10 +73,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 76,
                 "distance_actions",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DISTANCE_ACTION)));
+                onPress -> this.openConfiguration(ConfigurationType.DISTANCE_ACTION)));
     this.intervalActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -89,10 +81,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 this.buttonTopPos,
                 76,
                 "interval_actions",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.INTERVAL_ACTION)));
+                onPress -> this.openConfiguration(ConfigurationType.INTERVAL_ACTION)));
   }
 
   protected Button getActionDataButton(

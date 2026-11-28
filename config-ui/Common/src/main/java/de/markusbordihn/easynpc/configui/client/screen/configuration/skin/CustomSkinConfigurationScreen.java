@@ -202,8 +202,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     this.skinReloadButton =
         this.addRenderableWidget(
             new ReloadButton(
-                this.skinFolderButton.getX() + this.skinFolderButton.getWidth(),
-                this.skinFolderButton.getY(),
+                this.contentLeftPos + 273,
+                this.contentTopPos + 65,
                 20,
                 16,
                 null,

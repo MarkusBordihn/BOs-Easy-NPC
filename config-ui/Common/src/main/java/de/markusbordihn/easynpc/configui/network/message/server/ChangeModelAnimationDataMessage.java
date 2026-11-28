@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelAnimationDataCapable;
-import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,7 +33,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeModelAnimationDataMessage(UUID uuid, ModelAnimationData animationData)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_model_animation_data");
@@ -65,12 +65,7 @@ public record ChangeModelAnimationDataMessage(UUID uuid, ModelAnimationData anim
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!(easyNPC instanceof ModelAnimationDataCapable<?> capable)) {
       log.error("Invalid model animation data capable for {} from {}", easyNPC, serverPlayer);
       return;

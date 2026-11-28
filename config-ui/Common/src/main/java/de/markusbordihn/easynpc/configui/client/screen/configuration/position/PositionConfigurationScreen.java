@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -56,10 +55,7 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 positionButtonWidth,
                 "default",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSITION)));
+                button -> this.openConfiguration(ConfigurationType.DEFAULT_POSITION)));
   }
 
   @Override

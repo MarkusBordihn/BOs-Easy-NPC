@@ -27,4 +27,8 @@ public interface BaseEasyNPC<T extends Mob> {
   default ConfigurationData getConfigurationData() {
     return ConfigurationData.STANDARD;
   }
+
+  default boolean skipsTravelWithoutTravelObjectives() {
+    return true;
+  }
 }

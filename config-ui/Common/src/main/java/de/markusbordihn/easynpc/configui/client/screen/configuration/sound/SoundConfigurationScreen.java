@@ -190,8 +190,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 onPress -> {
                   NetworkMessageHandlerManager.getServerHandler()
                       .soundReset(this.getEasyNPCUUID(), soundType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .openConfiguration(this.getEasyNPCUUID(), configurationType);
+                  this.openConfiguration(configurationType);
                 }));
     resetButton.setTooltip(
         Tooltip.create(TextComponent.getTranslatedConfigText("sound_reset.tooltip")));
@@ -335,9 +334,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 50,
                 "basic",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_SOUND)));
+                onPress -> this.openConfiguration(ConfigurationType.BASIC_SOUND)));
     this.blockButtonWithoutPermission(this.basicSoundButton, ConfigurationType.BASIC_SOUND);
 
     this.combatSoundButton =
@@ -347,9 +344,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 60,
                 "combat",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.COMBAT_SOUND)));
+                onPress -> this.openConfiguration(ConfigurationType.COMBAT_SOUND)));
     this.blockButtonWithoutPermission(this.combatSoundButton, ConfigurationType.COMBAT_SOUND);
 
     this.interactionSoundButton =
@@ -359,10 +354,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 70,
                 "interaction",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.INTERACTION_SOUND)));
+                onPress -> this.openConfiguration(ConfigurationType.INTERACTION_SOUND)));
     this.blockButtonWithoutPermission(
         this.interactionSoundButton, ConfigurationType.INTERACTION_SOUND);
 
@@ -373,9 +365,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
                 this.buttonTopPos,
                 50,
                 "trade",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.TRADE_SOUND)));
+                onPress -> this.openConfiguration(ConfigurationType.TRADE_SOUND)));
     this.blockButtonWithoutPermission(this.tradeSoundButton, ConfigurationType.TRADE_SOUND);
   }
 

@@ -78,8 +78,7 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
   }
 
   private void openPreviousScreen() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MISC_ATTRIBUTE);
+    this.openConfiguration(ConfigurationType.MISC_ATTRIBUTE);
   }
 
   private List<FactionRow> getVisibleFactionRows() {

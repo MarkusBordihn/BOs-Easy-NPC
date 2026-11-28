@@ -30,142 +30,20 @@ import net.minecraft.world.inventory.MenuType;
 
 public class MenuHandler implements MenuHandlerInterface {
 
-  protected static final Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
+  private static final Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
       configurationMenuMap = new EnumMap<>(ConfigurationType.class);
-  protected static final Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap =
+  private static final Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap =
       new EnumMap<>(EditorType.class);
-  protected static final Map<CustomMenuType, MenuType<? extends ConfigUIMenu>> customMenuMap =
+  private static final Map<CustomMenuType, MenuType<? extends ConfigUIMenu>> customMenuMap =
       new EnumMap<>(CustomMenuType.class);
-
-  public MenuHandler() {}
 
   private static synchronized void initializeConfigurationMaps() {
     if (!configurationMenuMap.isEmpty()) {
       return;
     }
 
-    configurationMenuMap.put(
-        ConfigurationType.ABILITIES_ATTRIBUTE,
-        ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.ADVANCED_DIALOG, ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.ADVANCED_POSE, ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.ADVANCED_TRADING, ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.ATTACK_OBJECTIVE, ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.TARGET_OBJECTIVE, ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.FLEE_OBJECTIVE, ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASE_ATTRIBUTE, ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_ACTION, ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_DIALOG, ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_OBJECTIVE, ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_POSE, ModMenuTypes.BASIC_POSE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_TRADING, ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BASIC_SOUND, ModMenuTypes.BASIC_SOUND_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.COMBAT_ATTRIBUTE, ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.PROJECTILE_ATTRIBUTE,
-        ModMenuTypes.PROJECTILE_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.BOSS_BAR_ATTRIBUTE,
-        ModMenuTypes.BOSS_BAR_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.COMBAT_SOUND, ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_POSE, ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_PRESET_EXPORT,
-        ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_PRESET_IMPORT,
-        ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.LOCAL_PRESET_EXPORT,
-        ModMenuTypes.LOCAL_EXPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.COBBLEMON_MODEL, ModMenuTypes.COBBLEMON_MODEL_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_MODEL, ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.EASY_MODEL_ENTITIES_MODEL,
-        ModMenuTypes.EASY_MODEL_ENTITIES_MODEL_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_SKIN, ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_TRADING, ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_MODEL, ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_POSE, ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_POSITION, ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_PRESET_IMPORT,
-        ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_ROTATION, ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DEFAULT_SKIN, ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DIALOG_ACTION, ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DISPLAY_ATTRIBUTE,
-        ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.DISTANCE_ACTION, ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.INTERACTION_SOUND,
-        ModMenuTypes.INTERACTION_SOUND_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.TRADE_SOUND, ModMenuTypes.TRADE_SOUND_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.INTERVAL_ACTION, ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.EQUIPMENT, ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.INVENTORY, ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.FOLLOW_OBJECTIVE, ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.LOCAL_PRESET_IMPORT,
-        ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.LOOK_OBJECTIVE, ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(ConfigurationType.MAIN, ModMenuTypes.MAIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.MISC_ATTRIBUTE, ModMenuTypes.MISC_ATTRIBUTE_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.NONE_DIALOG, ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.ADVANCED_SKIN, ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.NONE_TRADING, ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.PLAYER_SKIN, ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.SCALING, ModMenuTypes.SCALING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.URL_SKIN, ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.WORLD_PRESET_EXPORT,
-        ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.WORLD_PRESET_IMPORT,
-        ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.YES_NO_DIALOG, ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get());
+    ModMenuTypes.CONFIGURATION_MENU_TYPES.forEach((configurationType, menuType) ->
+        configurationMenuMap.put(configurationType, menuType.get()));
   }
 
   private static synchronized void initializeEditorMaps() {
@@ -173,18 +51,8 @@ public class MenuHandler implements MenuHandlerInterface {
       return;
     }
 
-    editorMenuMap.put(EditorType.ACTION_DATA, ModMenuTypes.ACTION_DATA_EDITOR_MENU.get());
-    editorMenuMap.put(
-        EditorType.ACTION_DATA_ENTRY, ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.CONDITION_DATA, ModMenuTypes.CONDITION_DATA_EDITOR_MENU.get());
-    editorMenuMap.put(
-        EditorType.CONDITION_DATA_ENTRY, ModMenuTypes.CONDITION_DATA_ENTRY_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.DIALOG_OPTIONS, ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.FACTION, ModMenuTypes.FACTION_EDITOR_MENU.get());
-    editorMenuMap.put(EditorType.FACTIONS, ModMenuTypes.FACTIONS_EDITOR_MENU.get());
+    ModMenuTypes.EDITOR_MENU_TYPES.forEach(
+        (editorType, menuType) -> editorMenuMap.put(editorType, menuType.get()));
   }
 
   private static synchronized void initializeCustomMaps() {
@@ -192,7 +60,8 @@ public class MenuHandler implements MenuHandlerInterface {
       return;
     }
 
-    customMenuMap.put(CustomMenuType.PRESET_BROWSER, ModMenuTypes.PRESET_BROWSER_MENU.get());
+    ModMenuTypes.CUSTOM_MENU_TYPES.forEach(
+        (customMenuType, menuType) -> customMenuMap.put(customMenuType, menuType.get()));
   }
 
   @Override

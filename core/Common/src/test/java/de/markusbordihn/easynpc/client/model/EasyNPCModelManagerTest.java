@@ -26,9 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
-import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.lang.reflect.Proxy;
 import java.util.EnumMap;
@@ -72,11 +70,9 @@ class EasyNPCModelManagerTest {
                   case "getModelPose" -> ModelPose.CUSTOM;
                   case "getModelType" -> ModelType.HUMANOID;
                   case "getModelPartVisibility" -> this.modelPartVisibility;
-                  case "getModelPartRotation" ->
-                      this.modelPartRotation.getOrDefault(
-                          (ModelPartType) arguments[0], new CustomRotation(0, 0, 0));
-                  case "getModelPartPosition" -> new CustomPosition(0, 0, 0);
-                  case "getModelPartScale" -> new CustomScale(1, 1, 1);
+                  case "getModelPartRotation" -> this.modelPartRotation;
+                  case "getModelPartPosition", "getModelPartScale" ->
+                      new EnumMap<>(ModelPartType.class);
                   default -> throw new UnsupportedOperationException(method.getName());
                 });
   }

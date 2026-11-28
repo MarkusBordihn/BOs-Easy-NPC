@@ -11,6 +11,7 @@ base {
 }
 
 sourceSets {
+  main.java.srcDir rootProject.file('Shared/src/main/java')
   gameTest {
     java.srcDir project(":Common").file('src/gameTest/java')
     resources.srcDir project(":Common").file('src/gameTest/resources')

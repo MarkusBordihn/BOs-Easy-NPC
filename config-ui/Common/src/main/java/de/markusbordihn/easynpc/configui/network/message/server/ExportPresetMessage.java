@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +36,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ExportPresetMessage(
     UUID uuid, String name, PresetExportFormat exportFormat, PresetMetadata metadata)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "export_preset");
@@ -70,12 +71,7 @@ public record ExportPresetMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.name == null || this.name.isEmpty()) {
       log.warn("Export preset name is empty for {}", easyNPC);
       return;

@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public abstract class CustomModelRenderLayer<
+public class CustomModelRenderLayer<
         S extends LivingEntityRenderState, M extends EntityModel<? super S>>
     extends RenderLayer<S, M> {
 
@@ -37,7 +37,7 @@ public abstract class CustomModelRenderLayer<
   protected final CustomModelConfig config;
   protected final RenderLayerParent<S, M> renderer;
 
-  protected CustomModelRenderLayer(
+  public CustomModelRenderLayer(
       RenderLayerParent<S, M> renderer, M customModel, CustomModelConfig config) {
     super(renderer);
     this.renderer = renderer;

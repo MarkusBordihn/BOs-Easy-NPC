@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.ContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -59,9 +58,7 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN)));
+                onPress -> this.openConfiguration(ConfigurationType.MAIN)));
   }
 
   @Override
@@ -73,8 +70,7 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
   }
 
   public void showMainScreen() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+    this.openConfiguration(ConfigurationType.MAIN);
   }
 
   @Override

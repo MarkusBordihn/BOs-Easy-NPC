@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.ProjectileHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +34,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeProjectileDataMessage(UUID uuid, ProjectileData projectileData)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_projectile_data");
@@ -67,12 +67,7 @@ public record ChangeProjectileDataMessage(UUID uuid, ProjectileData projectileDa
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.COMBAT_ATTRIBUTE, "projectile data change")) {
       return;

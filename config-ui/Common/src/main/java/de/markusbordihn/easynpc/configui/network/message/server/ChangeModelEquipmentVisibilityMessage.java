@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,7 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public record ChangeModelEquipmentVisibilityMessage(
-    UUID uuid, EquipmentSlot equipmentSlot, boolean visible) implements NetworkMessageRecord {
+    UUID uuid, EquipmentSlot equipmentSlot, boolean visible) implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_model_equipment_visibility");
@@ -70,12 +71,7 @@ public record ChangeModelEquipmentVisibilityMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (this.equipmentSlot == null) {
       log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
       return;

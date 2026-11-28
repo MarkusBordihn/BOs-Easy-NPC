@@ -153,18 +153,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     return false;
   }
 
-  default void checkTradingActions() {
-    this.getProfiler().push("npcCheckTradingActions");
-
-    TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
-    TickerDataCapable<E> tickerData = this.getEasyNPCTickerData();
-    if (tradingData == null || tickerData == null) {
-      return;
-    }
-
-    this.getProfiler().pop();
-  }
-
   default void checkDistanceActions() {
     this.getProfiler().push("npcCheckDistanceActions");
 

@@ -38,8 +38,6 @@ import org.lwjgl.glfw.GLFW;
 
 public class SliderButton extends AbstractSliderButton {
 
-  public static final int DEFAULT_HEIGHT = 16;
-  protected static final Component EMPTY_TEXT = TextComponent.getBlankText();
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Identifier SLIDER_SPRITE =
       Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider");
@@ -61,119 +59,6 @@ public class SliderButton extends AbstractSliderButton {
   private float roundFactor = 100.0f;
   private float targetValue;
   private float formerTargetValue;
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      String name,
-      float initValue,
-      Type type,
-      SliderButton.OnChange onChange) {
-    this(
-        x,
-        y,
-        width,
-        DEFAULT_HEIGHT,
-        TextComponent.getText(name),
-        initValue,
-        getMinValue(type),
-        getMaxValue(type),
-        onChange,
-        type);
-  }
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      int height,
-      float initValue,
-      Type type,
-      SliderButton.OnChange onChange) {
-    this(
-        x,
-        y,
-        width,
-        height,
-        EMPTY_TEXT,
-        initValue,
-        getMinValue(type),
-        getMaxValue(type),
-        onChange,
-        type);
-  }
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      int height,
-      String name,
-      double initValue,
-      double minValue,
-      double maxValue,
-      SliderButton.OnChange onChange) {
-    this(
-        x,
-        y,
-        width,
-        height,
-        TextComponent.getText(name),
-        (float) initValue,
-        (float) minValue,
-        (float) maxValue,
-        onChange,
-        Type.DOUBLE);
-  }
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      int height,
-      double initValue,
-      double minValue,
-      double maxValue,
-      SliderButton.OnChange onChange,
-      Type type) {
-    this(
-        x,
-        y,
-        width,
-        height,
-        EMPTY_TEXT,
-        (float) initValue,
-        (float) minValue,
-        (float) maxValue,
-        onChange,
-        type);
-  }
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      int height,
-      Component name,
-      float initValue,
-      float minValue,
-      float maxValue,
-      SliderButton.OnChange onChange,
-      Type type) {
-    this(
-        x,
-        y,
-        width,
-        height,
-        name,
-        initValue,
-        minValue,
-        maxValue,
-        getStepSize(type),
-        onChange,
-        type);
-  }
 
   public SliderButton(
       int x,

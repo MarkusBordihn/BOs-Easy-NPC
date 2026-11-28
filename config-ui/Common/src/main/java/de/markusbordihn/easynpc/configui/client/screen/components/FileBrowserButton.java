@@ -22,14 +22,11 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
-@SuppressWarnings("unused")
 public class FileBrowserButton extends SpriteButton {
 
   private static final int DEFAULT_HEIGHT = 16;
-  private static final int DEFAULT_WIDTH_SMALL = 16;
   private static final int SPRITE_HEIGHT = 12;
   private static final int SPRITE_OFFSET_X = 105;
   private static final int SPRITE_OFFSET_Y = 56;
@@ -37,28 +34,6 @@ public class FileBrowserButton extends SpriteButton {
   private static final int SPRITE_X = 2;
   private static final int SPRITE_Y = 2;
   private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
-
-  public FileBrowserButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, DEFAULT_HEIGHT, onPress);
-  }
-
-  public FileBrowserButton(
-      int left, int top, int width, int height, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        height,
-        component,
-        TEXTURE,
-        height > DEFAULT_HEIGHT ? SPRITE_X + 2 : SPRITE_X,
-        height > DEFAULT_HEIGHT ? SPRITE_Y + 2 : SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
 
   public FileBrowserButton(
       int left, int top, int width, int height, String label, OnPress onPress) {
@@ -68,26 +43,6 @@ public class FileBrowserButton extends SpriteButton {
         width,
         height,
         label,
-        TEXTURE,
-        height > DEFAULT_HEIGHT ? SPRITE_X + 2 : SPRITE_X,
-        height > DEFAULT_HEIGHT ? SPRITE_Y + 2 : SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public FileBrowserButton(int left, int top, int width, Component component, OnPress onPress) {
-    this(left, top, width, DEFAULT_HEIGHT, component, onPress);
-  }
-
-  public FileBrowserButton(int left, int top, int width, int height, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        height,
         TEXTURE,
         height > DEFAULT_HEIGHT ? SPRITE_X + 2 : SPRITE_X,
         height > DEFAULT_HEIGHT ? SPRITE_Y + 2 : SPRITE_Y,

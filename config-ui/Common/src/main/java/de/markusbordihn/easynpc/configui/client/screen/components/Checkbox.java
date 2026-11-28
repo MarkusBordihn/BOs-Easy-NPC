@@ -49,16 +49,6 @@ public class Checkbox extends AbstractButton {
   }
 
   public Checkbox(
-      int left,
-      int top,
-      String label,
-      Component data,
-      boolean selected,
-      Checkbox.OnChange onChange) {
-    this(left, top, TextComponent.getTextComponent(label, data), selected, true, onChange);
-  }
-
-  public Checkbox(
       int left, int top, String label, String data, boolean selected, Checkbox.OnChange onChange) {
     this(left, top, TextComponent.getTextComponent(label, data), selected, true, onChange);
   }

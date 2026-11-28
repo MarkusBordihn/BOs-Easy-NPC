@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.block;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntityWrapper;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import java.util.Properties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

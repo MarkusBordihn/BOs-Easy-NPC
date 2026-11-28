@@ -19,15 +19,15 @@
 
 package de.markusbordihn.easynpc.configui;
 
-import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
-import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
@@ -73,8 +73,13 @@ public class ConfigUIMain {
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener((final RegisterPayloadHandlersEvent event) -> {
-      NetworkHandlerManager.registerHandler(new NetworkHandler());
-      NetworkHandler.registerNetworkHandler(event);
+      NetworkHandler networkHandler =
+          new NetworkHandler(
+              Constants.MOD_ID,
+              NetworkHandlerManager::isClientNetworkHandler,
+              NetworkHandlerManager::isServerNetworkHandler);
+      networkHandler.registerNetworkHandler(event);
+      NetworkHandlerManager.registerHandler(networkHandler);
       NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
     });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());

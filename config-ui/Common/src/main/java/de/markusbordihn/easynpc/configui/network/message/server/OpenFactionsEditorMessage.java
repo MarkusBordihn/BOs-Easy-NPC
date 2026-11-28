@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public record OpenFactionsEditorMessage(UUID uuid) implements NetworkMessageRecord {
+public record OpenFactionsEditorMessage(UUID uuid) implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "open_factions_editor");
@@ -63,12 +63,7 @@ public record OpenFactionsEditorMessage(UUID uuid) implements NetworkMessageReco
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.FACTION_MANAGEMENT, "open factions editor")) {
       return;

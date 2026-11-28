@@ -19,22 +19,45 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
+import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
+  private static final Set<String> PRESET_CATEGORIES =
+      new LinkedHashSet<>(List.of("General", "Villager", "Guard", "Trader", "Quest", "Custom"));
+
   protected Button localExportPresetButton;
   protected Button customExportPresetButton;
   protected Button worldExportPresetButton;
+  protected Button exportPresetButton;
+  protected EditBox nameBox;
+  private SpinButton<String> categorySpinButton;
+  private EditBox versionBox;
+  private EditBox descriptionBox;
+  private EditBox authorBox;
+  private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public ExportPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -48,6 +71,50 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
 
     var integratedServer = mc.getSingleplayerServer();
     return integratedServer == null || !integratedServer.isPublished();
+  }
+
+  protected void addPresetMetadataWidgets(Component descriptionText, int descriptionTextWidth) {
+    this.textComponents = this.font.split(descriptionText, descriptionTextWidth);
+
+    this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 140, 300);
+    this.nameBox.setMaxLength(64);
+    this.nameBox.setValue(
+        PresetExportFormat.removePresetExtension(
+            CustomPresetDataFiles.getPresetFile(this.getSkinModel(), this.getEasyNPCUUID())
+                .getName()));
+    this.nameBox.setResponder(name -> this.exportPresetButton.active = !name.isEmpty());
+    this.addRenderableWidget(this.nameBox);
+
+    int metaDataYOffset = this.nameBox.getY() + 35;
+    this.categorySpinButton =
+        new SpinButton<>(
+            this.contentLeftPos + 5, metaDataYOffset, 130, 16, PRESET_CATEGORIES, "General", null);
+    this.addRenderableWidget(this.categorySpinButton);
+
+    this.versionBox = new TextField(this.font, this.contentLeftPos + 230, metaDataYOffset, 75);
+    this.versionBox.setMaxLength(12);
+    this.versionBox.setValue("1.0.0");
+    this.addRenderableWidget(this.versionBox);
+
+    this.descriptionBox =
+        new TextField(this.font, this.contentLeftPos + 5, metaDataYOffset + 35, 180);
+    this.descriptionBox.setMaxLength(128);
+    this.addRenderableWidget(this.descriptionBox);
+
+    this.authorBox = new TextField(this.font, this.contentLeftPos + 200, metaDataYOffset + 35, 105);
+    this.authorBox.setMaxLength(16);
+    this.authorBox.setValue(
+        this.minecraft != null && this.minecraft.player != null
+            ? this.minecraft.player.getName().getString()
+            : "Unknown");
+    this.addRenderableWidget(this.authorBox);
+  }
+
+  protected PresetMetadata getPresetMetadata() {
+    return PresetMetadata.createDefault(this.nameBox.getValue(), this.authorBox.getValue())
+        .withCategory(this.categorySpinButton.get())
+        .withVersion(this.versionBox.getValue())
+        .withDescription(this.descriptionBox.getValue());
   }
 
   @Override
@@ -64,10 +131,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 singlePlayer ? buttonWidth + 16 : buttonWidth,
                 "local",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
+                button -> this.openConfiguration(ConfigurationType.LOCAL_PRESET_EXPORT)));
     this.blockButtonWithoutPermission(
         this.localExportPresetButton, ConfigurationType.LOCAL_PRESET_EXPORT);
 
@@ -80,10 +144,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                   this.buttonTopPos,
                   buttonWidth,
                   "custom",
-                  button ->
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(
-                              this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+                  button -> this.openConfiguration(ConfigurationType.CUSTOM_PRESET_EXPORT)));
       this.blockButtonWithoutPermission(
           this.customExportPresetButton, ConfigurationType.CUSTOM_PRESET_EXPORT);
     }
@@ -99,11 +160,36 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth,
                 "world_preset",
-                button ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
+                button -> this.openConfiguration(ConfigurationType.WORLD_PRESET_EXPORT)));
     this.blockButtonWithoutPermission(
         this.worldExportPresetButton, ConfigurationType.WORLD_PRESET_EXPORT);
+  }
+
+  @Override
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
+
+    for (int line = 0; line < this.textComponents.size(); ++line) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          this.textComponents.get(line),
+          this.leftPos + 15,
+          this.topPos + 25 + (line * (this.font.lineHeight + 2)));
+    }
+
+    if (this.categorySpinButton == null) {
+      return;
+    }
+
+    this.drawFieldLabel(guiGraphics, "Category:", this.categorySpinButton);
+    this.drawFieldLabel(guiGraphics, "Version:", this.versionBox);
+    this.drawFieldLabel(guiGraphics, "Author:", this.authorBox);
+    this.drawFieldLabel(guiGraphics, "Description:", this.descriptionBox);
+  }
+
+  private void drawFieldLabel(GuiGraphics guiGraphics, String label, AbstractWidget widget) {
+    Text.drawString(
+        guiGraphics, this.font, Component.literal(label), widget.getX(), widget.getY() - 10);
   }
 }

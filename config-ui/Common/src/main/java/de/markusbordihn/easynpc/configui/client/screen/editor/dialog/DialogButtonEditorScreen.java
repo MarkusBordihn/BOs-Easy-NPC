@@ -122,9 +122,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 10,
                 16,
                 "<",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
+                onPress -> this.openConfiguration(ConfigurationType.DIALOG)));
 
     this.dialogButton =
         this.addRenderableWidget(

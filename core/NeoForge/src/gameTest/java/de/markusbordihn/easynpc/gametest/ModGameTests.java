@@ -1172,6 +1172,18 @@ public final class ModGameTests {
         "trade_actions_trigger_for_wandering_trader",
         TradingActionTest::testTradeActionsTriggerForWanderingTrader,
         DEFAULT_STRUCTURE);
+    register(
+        "menu_trade_counts_once_for_humanoid",
+        TradingActionTest::testMenuTradeCountsOnceForHumanoid,
+        DEFAULT_STRUCTURE);
+    register(
+        "menu_trade_counts_once_for_villager",
+        TradingActionTest::testMenuTradeCountsOnceForVillager,
+        DEFAULT_STRUCTURE);
+    register(
+        "menu_trade_counts_once_for_wandering_trader",
+        TradingActionTest::testMenuTradeCountsOnceForWanderingTrader,
+        DEFAULT_STRUCTURE);
 
     register(
         "wait_delays_the_following_actions",

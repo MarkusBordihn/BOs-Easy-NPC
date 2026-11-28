@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.message.AccessCheckedMessageRecord;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +48,7 @@ public record OpenActionConditionDataEntryEditorMessage(
     UUID dialogButtonId,
     int contextIndex,
     ConditionDataEntry conditionDataEntry)
-    implements NetworkMessageRecord {
+    implements AccessCheckedMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "open_action_condition_data_entry_editor");
@@ -99,12 +100,7 @@ public record OpenActionConditionDataEntryEditorMessage(
   }
 
   @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
-    }
-
+  public void handleServer(final EasyNPC<?> easyNPC, final ServerPlayer serverPlayer) {
     CompoundTag additionalSyncData = new CompoundTag();
     AdditionalScreenData.addActionEventType(additionalSyncData, this.actionEventType);
     AdditionalScreenData.addConfigurationType(additionalSyncData, this.configurationType);

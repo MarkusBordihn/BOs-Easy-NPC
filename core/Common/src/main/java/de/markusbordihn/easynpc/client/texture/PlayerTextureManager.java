@@ -90,13 +90,13 @@ public class PlayerTextureManager {
   private static Identifier createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
-    SkinModel skinModel = skinData.getSkinModel();
-    Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinModel);
-    if (textureDataFolder == null) {
+    if (AsyncTextureLoader.shouldSkipDiskLookup(textureModelKey)) {
       return null;
     }
 
-    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+    SkinModel skinModel = skinData.getSkinModel();
+    Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinModel);
+    if (textureDataFolder == null) {
       return null;
     }
 
@@ -186,6 +186,7 @@ public class PlayerTextureManager {
     textureCache.remove(textureModelKey);
     textureSkinTypeCache.remove(textureModelKey);
     textureReloadProtection.remove(textureModelKey.getUUID());
+    AsyncTextureLoader.clearDiskLookup(textureModelKey);
     revalidatedTextures.remove(textureModelKey.getUUID());
     log.info("{} Dropped cached player texture for {}", LOG_PREFIX, textureModelKey);
     return true;
@@ -203,6 +204,7 @@ public class PlayerTextureManager {
   }
 
   public static void clearTextureCache() {
+    AsyncTextureLoader.clearDiskLookups();
     TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
     revalidatedTextures.clear();
